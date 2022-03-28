@@ -1,0 +1,108 @@
+button{
+    padding: 10px;
+    width: 100px;
+    height: 50px;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    font-size: 20px;
+    border: none;
+    border-bottom: 1px solid rgb(207, 207, 207);
+    margin: 10px;
+    cursor: pointer;
+}
+
+button#noBorder{
+border: none;
+}
+
+.button{
+    cursor: pointer;
+    width: 130px;
+    height: 50px;
+    margin-top: 25px;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    margin-left: 20px;
+    margin-right: 20px;
+    font-weight: bold;
+    font-size: 15px;
+    background-color: #FF1818;
+}
+
+.button#ok{
+    margin-left: 10px;
+    background-color: #00C200;
+}
+
+mat-form-field{
+    margin-top: 20px;
+    width:360px !important;
+    height: 52px;
+    overflow: hidden;
+    border-bottom: 1px solid rgb(207, 207, 207);
+}
+
+mat-label{
+    color: black;
+    font-weight: bold;
+}
+
+input{
+    font-size: 28px;
+    background-color: white;
+}
+
+.allButtons{
+    margin-top: 30px;
+}
+
+.flexItens{
+    display: flex;
+    width: 100%;
+}
+
+.dialog{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+}
+
+.leftPart{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 606px;
+    background-color: #9ea7a5;
+}
+
+.alignIcon{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.actions{
+    display: flex;
+    flex-direction: column;
+}
+
+mat-icon{
+    margin-right: 5px;
+}
+
+span{
+    line-height: 30px;
+}
+
+.username{
+    font-size: 28px;
+    color: white;
+    font-weight: bold;
+    font-family: Ubuntu;
+}

@@ -1,0 +1,45 @@
+<div class="flexItens">
+    <div class="leftPart">
+        <p class="username">João Vieira</p>
+        <div class="actions" mat-dialog-actions>
+            <div class="alignIcon" (click)="onNoClick()">
+                <mat-icon>keyboard_backspace</mat-icon>
+                <span>Change User</span>
+            </div>
+            <div class="alignIcon" [mat-dialog-close]="data.password" cdkFocusInitial>
+                <mat-icon>done</mat-icon>
+                <span>Ok</span>
+            </div>
+        </div>
+    </div>
+    <div class="dialog">
+        <div mat-dialog-content>
+            <mat-form-field appearance="fill">
+                <mat-label>Password</mat-label>
+                <input matInput #input [(ngModel)]="data.password" maxlength="4" type="password">
+            </mat-form-field>
+        </div>
+        <div class="allButtons">
+            <div class="first-row">
+                <button (click)="addNumber(1)">1</button>
+                <button (click)="addNumber(2)">2</button>
+                <button (click)="addNumber(3)">3</button>
+            </div>
+            <div class="second-row">
+                <button (click)="addNumber(4)">4</button>
+                <button (click)="addNumber(5)">5</button>
+                <button (click)="addNumber(6)">6</button>
+            </div>
+            <div class="third-row">
+                <button (click)="addNumber(7)">7</button>
+                <button (click)="addNumber(8)">8</button>
+                <button (click)="addNumber(9)">9</button>
+            </div>
+            <div class="fourth-row">
+                <button id="noBorder" (click)="reset()">Clear</button>
+                <button id="noBorder" (click)="addNumber(0)">0</button>
+                <button id="noBorder" (click)="delete()">Del</button>
+            </div>
+        </div>
+    </div>
+</div>
