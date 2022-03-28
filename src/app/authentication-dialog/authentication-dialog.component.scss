@@ -61,6 +61,7 @@ input{
 .flexItens{
     display: flex;
     width: 100%;
+    height: 100%;
 }
 
 .dialog{
@@ -69,6 +70,7 @@ input{
     align-items: center;
     justify-content: center;
     width: 50%;
+    height: 100%;
     background-color: #eaece5;
 }
 
@@ -78,7 +80,7 @@ input{
     justify-content: center;
     align-items: center;
     width: 50%;
-    height: 606px;
+    height: 100%;
     background-color: #b2c2bf;
 }
 

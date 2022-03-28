@@ -1,0 +1,87 @@
+.height{
+    width: 270px;
+    height: 100vh;
+    border: 1px solid rgb(211, 211, 211);
+    background-color: #f7f7f7;
+}
+
+mat-icon{
+    margin-right: 10px;
+}
+
+.center{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: Poppins;
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.center#logo{
+    color: red;
+    font-size: 26px;
+    font-weight: bold;
+    font-family: Ubuntu;
+    cursor: default;
+}
+
+.center:focus{
+    background-color: #ffca40;
+    border-radius: 15px;
+    margin-left:15px;
+    margin-right: 15px;
+    padding-left: 10px;
+}
+
+.copyright{
+    color: #808080;
+    text-align: center;
+    margin-top: 25px;
+}
+
+.profile{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    margin-left: 10%;
+    background-color: white;
+    padding: 10px 0 10px 0;
+    border-radius: 15px;
+    line-height: 10px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+    margin-top: 130px;
+}
+
+.avatar{
+    width: 80px;
+    height: 80px;
+    border-radius: 100px;
+    margin-bottom: 5px;
+}
+
+.leave{
+    width: 110px;
+    height: 35px;
+    border-radius: 10px;
+    background-color: #f7f7f7;
+    font-weight: bold;
+    font-family: Ubuntu;
+    margin: 25px 0 10px 0;
+    font-size: 15px;
+}
+
+.username{
+    font-size: 20px;
+    font-family: Ubuntu;
+    font-weight: bold;
+}
+
+.userStatus{
+    color: #808080;
+    font-family: poppins;
+    font-size: 16px;
+}
