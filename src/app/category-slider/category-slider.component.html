@@ -1,13 +1,7 @@
 <swiper [slidesPerView]="8" [spaceBetween]="30" [freeMode]="true" [pagination]="{
       clickable: true
     }" class="mySwiper">
-    <ng-template swiperSlide>Slide 1</ng-template>
-    <ng-template swiperSlide>Slide 2</ng-template>
-    <ng-template swiperSlide>Slide 3</ng-template>
-    <ng-template swiperSlide>Slide 4</ng-template>
-    <ng-template swiperSlide>Slide 5</ng-template>
-    <ng-template swiperSlide>Slide 6</ng-template>
-    <ng-template swiperSlide>Slide 7</ng-template>
-    <ng-template swiperSlide>Slide 8</ng-template>
-    <ng-template swiperSlide>Slide 9</ng-template>
+  <ng-template swiperSlide *ngFor="let cat of categories; index as i">
+    {{cat.name}}
+  </ng-template>
 </swiper>
