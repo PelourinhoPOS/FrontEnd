@@ -82,3 +82,29 @@ mat-grid-tile{
     justify-content: center;
     width: 100%;
 }
+
+.productName{
+    font-size: 26px;
+    font-family: Poppins;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+span{
+    line-height: 30px;
+}
+
+.productPrice{
+    font-size: 24px;
+    font-family: Ubuntu;
+    font-weight: bold;
+    color: #fdbc18;
+    margin-top: 20px;
+}
+
+.productWeight{
+    font-size: 18px;
+    font-family: Ubuntu;
+    font-weight: 700px;
+    color: #808080;
+}

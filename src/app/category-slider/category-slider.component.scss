@@ -12,7 +12,6 @@
   text-align: center;
   font-size: 18px;
   background: #fff;
-
   /* Center slide text vertically */
   display: -webkit-box;
   display: -ms-flexbox;
@@ -28,7 +27,6 @@
   align-items: center;
   border-radius: 10px;
   cursor: pointer;
-  box-shadow: none;
 }
 
 .swiper-slide img {
@@ -41,12 +39,6 @@
 .swiper-pagination-bullet{
   display: none;
 }
-
-// #card{
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-// }
 
 .categoryName{
   font-weight: bold;

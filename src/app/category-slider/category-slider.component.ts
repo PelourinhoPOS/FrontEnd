@@ -50,7 +50,7 @@ export class CategorySliderComponent implements OnInit {
         categoryData.style.flexDirection = "column";
         categoryData.style.justifyContent = "center";
         categoryData.style.borderRadius = "10px";
-        categoryData.style.boxShadow = "0px 0px 10px #424242";
+        categoryData.style.boxShadow = "0px 0px 10px #ffffff";
       }
       if (oldCategoryData) {
         oldCategoryData.style.backgroundColor = "";
