@@ -5,6 +5,7 @@
 html,body{
     margin: 0;
     padding: 0;
+    height: 100vh;
     background-color:  #eaece5;
     cursor: default;
 }
@@ -21,4 +22,8 @@ html,body{
 button{
     cursor: pointer;
     border: none;
+}
+
+img{
+    object-fit: cover;
 }

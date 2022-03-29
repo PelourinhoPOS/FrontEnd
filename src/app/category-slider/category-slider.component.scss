@@ -1,10 +1,11 @@
 @import "~swiper/css";
 @import "~swiper/css/free-mode";
 @import "~swiper/css/pagination";
+
 .swiper {
   margin-left: 30px;
   width: 1200px;
-  height: 130px;
+  height: 110px;
 }
 
 .swiper-slide {
@@ -26,15 +27,30 @@
   -webkit-align-items: center;
   align-items: center;
   border-radius: 10px;
+  cursor: pointer;
+  box-shadow: none;
 }
 
 .swiper-slide img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  border-radius: 100%;
+  margin-top: 35px;
+  width: 60px;
+  height: 60px;
 }
 
 .swiper-pagination-bullet{
   display: none;
+}
+
+// #card{
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+// }
+
+.categoryName{
+  font-weight: bold;
+  font-family: Ubuntu;
+  margin-bottom: 30px;
+  font-size: 16px;
 }

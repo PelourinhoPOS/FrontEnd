@@ -9,5 +9,16 @@
             </div>
         </div>
         <app-category-slider></app-category-slider>
+        <div class="alignGrid">
+            <mat-grid-list cols="4" rowHeight="250px" gutterSize="40px">
+                <mat-grid-tile *ngFor="let prod of products">
+                    <div class="card">
+                        <img class="productImg" src="{{prod.image}}" alt="">
+                        <p class="productName">{{prod.name}}</p>
+                        <p class="productPrice">{{prod.price}}</p>
+                    </div>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
     </div>
 </div>
