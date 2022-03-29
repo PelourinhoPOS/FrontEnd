@@ -4,14 +4,28 @@
             <img class="image" src="assets/images/restaurante.jpg" alt="">
             <div class="profile">
                 <img class="leftAvatar" src="assets/images/Joao.jpeg" alt="">
-                <span class="date">{{myDate | date}}</span>
-                <span class="date">{{myDate | date:"shortTime"}}</span>
+                <span class="date">{{todayDate}}</span>
+                <span class="date" id="hour">{{hourNow}}</span>
             </div>
         </div>
         <div class="users">
-            <p class="text">Select User</p>
-            <div class="allProfiles">
-                <button class="dialogBt" mat-raised-button (click)="openDialog()">
+            <!--<p class="text">Select User</p>-->
+            <mat-grid-list cols="4" rowHeight="5:6">
+                <mat-grid-tile *ngFor="let user of users; index as i">
+
+                    <div class="dialogBt" mat-raised-button (click)="openDialog(user.nome, user.funcao, user.avatar)">
+                        <div class="profileItens">
+                            <img class="avatar" src="{{user.avatar}}" alt="">
+                            <p class="name">{{user.nome}}</p>
+                        </div>
+                    </div>
+
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <br>
+
+            <!--<button class="dialogBt" mat-raised-button (click)="openDialog()">
                     <div class="profileItens">
                         <img class="avatar" src="assets/images/Joao.jpeg" alt="">
                         <p class="name">João Vieira</p>
@@ -34,14 +48,7 @@
                         <img class="avatar" src="assets/images/Joao.jpeg" alt="">
                         <p class="name">João Vieira</p>
                     </div>
-                </button>
-                <button class="dialogBt" mat-raised-button (click)="openDialog()">
-                    <div class="profileItens">
-                        <img class="avatar" src="assets/images/Joao.jpeg" alt="">
-                        <p class="name">João Vieira</p>
-                    </div>
-                </button>
-            </div>
+                </button>-->
         </div>
     </div>
 </div>

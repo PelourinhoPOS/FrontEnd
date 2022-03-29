@@ -56,6 +56,7 @@ input{
 
 .allButtons{
     margin-top: 30px;
+    align-items: center;
 }
 
 .flexItens{
@@ -94,6 +95,22 @@ input{
     font-family: Ubuntu;
 }
 
+.doneButton{
+    background-color: #b4ffb4;
+    width: 50%;
+    display: inline-flex;
+    padding-left: 27%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-left: 11%;
+    align-items: center;
+    cursor: pointer;
+    color: #3b3a30;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: Ubuntu;
+}
+
 .actions{
     display: flex;
     flex-direction: column;
@@ -110,6 +127,14 @@ span{
 
 .username{
     font-size: 36px;
+    color: #3b3a30;
+    font-family: Ubuntu;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.userFunction{
+    font-size: 26px;
     color: #3b3a30;
     font-family: Ubuntu;
     font-weight: bold;

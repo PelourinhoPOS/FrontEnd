@@ -12,6 +12,13 @@
 
 <body>
   <app-root></app-root>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://momentjs.com/downloads/moment.js"></script>
+  <script>
+    window.setInterval(function () {
+      $('#hour').html(moment().format('H:mm:ss'))
+    }, 1000);
+  </script>
 </body>
 
 </html>

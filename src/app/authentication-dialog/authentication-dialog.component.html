@@ -1,15 +1,12 @@
 <div class="flexItens">
     <div class="leftPart">
-        <p class="username">João Vieira</p>
-        <img class="avatar" src="assets/images/Joao.jpeg" alt="">
+        <p class="username">{{data.userName}}</p>
+        <img class="avatar" src="{{data.avatar}}" alt="">
+        <p class="userFunction">{{data.funcao}}</p>
         <div class="actions" mat-dialog-actions>
             <div class="alignIcon" (click)="onNoClick()">
                 <mat-icon>keyboard_backspace</mat-icon>
                 <span>Change User</span>
-            </div>
-            <div class="alignIcon" [mat-dialog-close]="data.password" cdkFocusInitial>
-                <mat-icon>done</mat-icon>
-                <span>Ok</span>
             </div>
         </div>
     </div>
@@ -40,6 +37,11 @@
                 <button id="noBorder" (click)="reset()">Clear</button>
                 <button id="noBorder" (click)="addNumber(0)">0</button>
                 <button id="noBorder" (click)="delete()">Del</button>
+            </div>
+            <br>
+            <div class="doneButton" [mat-dialog-close]="data.password" routerLink="food&drinks">
+                <mat-icon>done</mat-icon>
+                <span>Ok</span>
             </div>
         </div>
     </div>

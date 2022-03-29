@@ -14,6 +14,7 @@ import { SideBarComponent } from './side-bar/side-bar.component';
 import { FoodDrinksComponent } from './food-drinks/food-drinks.component';
 import { SwiperModule } from 'swiper/angular';
 import { CategorySliderComponent } from './category-slider/category-slider.component';
+import { MatGridListModule } from '@angular/material/grid-list';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,6 +34,7 @@ import { CategorySliderComponent } from './category-slider/category-slider.compo
     BrowserAnimationsModule,
     MatIconModule,
     SwiperModule,
+    MatGridListModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

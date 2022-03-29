@@ -4,6 +4,9 @@ import { ViewChild } from '@angular/core';
 
 export interface DialogData {
   password: string;
+  userName: string;
+  funcao: string;
+  avatar: string;
 }
 
 @Component({
@@ -30,7 +33,7 @@ export class AuthenticationDialogComponent implements OnInit {
 
   addNumber(nbr: number) {
     if (this.data.password.length < this.maxLenght) {
-      this.data.password += `${nbr}`
+      this.data.password += nbr
     }
   }
 
@@ -46,6 +49,7 @@ export class AuthenticationDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
   }
 
 }
