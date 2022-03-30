@@ -27,14 +27,11 @@
 </div>
 
 <app-drawer [(visible)]="visible" [position]="position" [header]="'Drawer Header'" (onHide)="onDrawerHide()">
-    <ul class="app-list">
-        <li class="app-list-item">
-            <em class="fa fa-home app-list-icons"></em>
-            some text
-        </li>
-        <li class="app-list-item">
-            <em class="far fa-smile app-list-icons"></em>
-            some other text
-        </li>
-    </ul>
+    <div class="drawer">
+        <img src="https://previews.123rf.com/images/rvlsoft/rvlsoft1509/rvlsoft150900014/45570624-big-hamburger-su-sfondo-bianco.jpg"
+            alt="logo" class="foodImg" />
+        <span>Big John</span>
+        <span>650g</span>
+        <span>7.25€</span>
+    </div>
 </app-drawer>

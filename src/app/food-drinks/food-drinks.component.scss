@@ -134,3 +134,15 @@ span{
     position: absolute;
     background-color: black;
   }
+
+  .foodImg{
+    border-radius: 100%;
+    width: 60%;
+  }
+
+  .drawer{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+  }

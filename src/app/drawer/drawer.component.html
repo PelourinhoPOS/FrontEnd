@@ -4,7 +4,6 @@
     [@panelState]="{value: 'visible', params:{transform: transformOptions, transition: transitionOptions}}"
     (@panelState.start)="onAnimationStart($event)" (@panelState.done)="onAnimationEnd($event)">
     <div class="p-sidebar-header" [ngClass]="{'sidebar-right-header': position === 'right'}">
-        <h2 *ngIf="header">{{header}}</h2>
         <em class="fa fa-times" (click)="close($event)" (keydown.enter)="close($event)" *ngIf="showCloseIcon"></em>
     </div>
     <div class="p-sidebar-content">
