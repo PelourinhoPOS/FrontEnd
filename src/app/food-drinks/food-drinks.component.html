@@ -11,23 +11,30 @@
         <app-category-slider></app-category-slider>
         <div class="alignGrid">
             <mat-grid-list cols="4" rowHeight="260px" gutterSize="40px">
-                <mat-grid-tile *ngFor="let prod of products">
-                    <div class="card">
-                        <img class="productImg" src="{{prod.image}}" alt="">
-                        <span class="productName">{{prod.name}}</span>
-                        <span class="productWeight">{{prod.weight}}</span>
-                        <span class="productPrice">{{prod.price}}€</span>
-                    </div>
-                </mat-grid-tile>
+                <button (click)="setVisibilty('right')">
+                    <mat-grid-tile *ngFor="let prod of products">
+                        <div class="card">
+                            <img class="productImg" src="{{prod.image}}" alt="">
+                            <span class="productName">{{prod.name}}</span>
+                            <span class="productWeight">{{prod.weight}}</span>
+                            <span class="productPrice">{{prod.price}}€</span>
+                        </div>
+                    </mat-grid-tile>
+                </button>
             </mat-grid-list>
         </div>
     </div>
 </div>
 
-
-
-<!-- <p>Auto-resizing sidenav</p>
-<p *ngIf="showFiller">Lorem, ipsum dolor sit amet consectetur.</p>
-<button (click)="showFiller = !showFiller" mat-raised-button>
-    Toggle extra text
-</button> -->
+<app-drawer [(visible)]="visible" [position]="position" [header]="'Drawer Header'" (onHide)="onDrawerHide()">
+    <ul class="app-list">
+        <li class="app-list-item">
+            <em class="fa fa-home app-list-icons"></em>
+            some text
+        </li>
+        <li class="app-list-item">
+            <em class="far fa-smile app-list-icons"></em>
+            some other text
+        </li>
+    </ul>
+</app-drawer>

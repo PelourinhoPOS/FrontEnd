@@ -7,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FoodDrinksComponent implements OnInit {
 
+  position = '';
+  visible = false;
+
   public products = [
     { id: 1, name: 'Coca Cola', price: '1.00', weight: "150g", image: 'https://previews.123rf.com/images/rvlsoft/rvlsoft1509/rvlsoft150900014/45570624-big-hamburger-su-sfondo-bianco.jpg' },
     { id: 2, name: 'Pepsi', price: '1.00', weight: "180g", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqGT9OxdI7j78oYbAWgltb9O8Ek_0XjRaPsg&usqp=CAU' },
@@ -27,6 +30,15 @@ export class FoodDrinksComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  setVisibilty(position: string) {
+    this.visible = true;
+    this.position = position;
+  }
+
+  onDrawerHide() {
+
   }
 
 }
