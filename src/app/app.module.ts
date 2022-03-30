@@ -15,6 +15,9 @@ import { FoodDrinksComponent } from './food-drinks/food-drinks.component';
 import { SwiperModule } from 'swiper/angular';
 import { CategorySliderComponent } from './category-slider/category-slider.component';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { DashboardHomeComponent } from './dashboard-home/dashboard-home.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { DrawerComponent } from './drawer/drawer.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,7 +25,9 @@ import { MatGridListModule } from '@angular/material/grid-list';
     AuthenticationDialogComponent,
     SideBarComponent,
     FoodDrinksComponent,
-    CategorySliderComponent
+    CategorySliderComponent,
+    DashboardHomeComponent,
+    DrawerComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +40,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
     MatIconModule,
     SwiperModule,
     MatGridListModule,
+    MatSidenavModule
   ],
   providers: [],
   bootstrap: [AppComponent]

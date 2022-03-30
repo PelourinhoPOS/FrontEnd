@@ -22,6 +22,8 @@ export class FoodDrinksComponent implements OnInit {
     { id: 4, name: 'Fanta', price: '1.00', weight: "500g", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2dI66fU-yV3E7VcHivZ9EnRUFb-xYUnnPkA&usqp=CAU' },
   ]
 
+  showFiller = false;
+
   constructor() { }
 
   ngOnInit(): void {
