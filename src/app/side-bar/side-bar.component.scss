@@ -1,4 +1,4 @@
-.height{
+.height {
     position: fixed;
     width: 270px;
     height: 100%;
@@ -6,11 +6,11 @@
     background-color: #f7f7f7;
 }
 
-mat-icon{
+mat-icon {
     margin-right: 10px;
 }
 
-.center{
+.center {
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -20,7 +20,7 @@ mat-icon{
     margin-bottom: 10px;
 }
 
-.center#logo{
+.center#logo {
     color: red;
     font-size: 26px;
     font-weight: bold;
@@ -28,21 +28,23 @@ mat-icon{
     cursor: default;
 }
 
-.center:focus{
+.center:focus {
     background-color: #ffca40;
     border-radius: 15px;
-    margin-left:15px;
+    margin-left: 15px;
     margin-right: 15px;
     padding-left: 10px;
 }
 
-.copyright{
+.copyright {
     color: #808080;
     text-align: center;
+    font-family: Roboto;
+    font-size: 13px;
     margin-top: 25px;
 }
 
-.profile{
+.profile {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -57,14 +59,14 @@ mat-icon{
     margin-top: 130px;
 }
 
-.avatar{
+.avatar {
     width: 80px;
     height: 80px;
     border-radius: 100px;
     margin-bottom: 5px;
 }
 
-.leave{
+.leave {
     width: 110px;
     height: 35px;
     border-radius: 10px;
@@ -75,14 +77,18 @@ mat-icon{
     font-size: 15px;
 }
 
-.username{
+.username {
     font-size: 20px;
     font-family: Ubuntu;
     font-weight: bold;
 }
 
-.userStatus{
+.userStatus {
     color: #808080;
-    font-family: poppins;
-    font-size: 16px;
+    font-family: Roboto;
+    font-size: 14px;
+}
+
+p {
+    font-family: Ubuntu;
 }

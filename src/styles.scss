@@ -2,11 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;1,700&display=swap');
 @import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
 
-html,body{
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    background-color:  #eaece5;
+    background-color: #eaece5;
     cursor: default;
 }
 
@@ -19,11 +20,11 @@ html,body{
     padding: 0;
 }
 
-button{
+button {
     cursor: pointer;
     border: none;
 }
 
-img{
+img {
     object-fit: cover;
 }
