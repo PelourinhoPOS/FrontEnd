@@ -4,7 +4,7 @@
 
   <ng-template swiperSlide *ngFor="let cat of categories; index as i">
     <div id="card {{cat.id}}" (click)="selectCategory(cat.id)">
-      <img id="image {{cat.id}}" src="{{cat.image}}" alt="">
+      <img src="{{cat.image}}" alt="">
       <p class="categoryName">{{cat.name}}</p>
     </div>
   </ng-template>
