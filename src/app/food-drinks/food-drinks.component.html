@@ -10,17 +10,15 @@
         </div>
         <app-category-slider></app-category-slider>
         <div class="alignGrid">
-            <mat-grid-list cols="4" rowHeight="260px" gutterSize="40px">
-                <button (click)="setVisibilty('right')">
-                    <mat-grid-tile *ngFor="let prod of products">
-                        <div class="card">
-                            <img class="productImg" src="{{prod.image}}" alt="">
-                            <span class="productName">{{prod.name}}</span>
-                            <span class="productWeight">{{prod.weight}}</span>
-                            <span class="productPrice">{{prod.price}}€</span>
-                        </div>
-                    </mat-grid-tile>
-                </button>
+            <mat-grid-list cols="5" rowHeight="230px" gutterSize="40px">
+                <mat-grid-tile *ngFor="let prod of products">
+                    <div class="card" (click)="toggleVisibilty('right')" id="{{prod.id}}">
+                        <img class="productImg" src="{{prod.image}}" alt="">
+                        <span class="productName">{{prod.name}}</span>
+                        <span class="productWeight">{{prod.weight}}</span>
+                        <span class="productPrice">{{prod.price}}€</span>
+                    </div>
+                </mat-grid-tile>
             </mat-grid-list>
         </div>
     </div>
@@ -30,8 +28,29 @@
     <div class="drawer">
         <img src="https://previews.123rf.com/images/rvlsoft/rvlsoft1509/rvlsoft150900014/45570624-big-hamburger-su-sfondo-bianco.jpg"
             alt="logo" class="foodImg" />
-        <span>Big John</span>
-        <span>650g</span>
-        <span>7.25€</span>
+        <span class="name">Big John</span>
+        <span class="weight">150g</span>
+        <span class="price">8.30€</span>
+        <div class="ingredientSelection">
+            <div class="flexIg">
+                <div class="ingInfo">
+                    <img class="ingredients" src="assets/images/chips.jpg" alt="">
+                    <p class="ingredientName">Chips</p>
+                </div>
+                <button class="handleQuantity" id="decrease" (click)="decreaseQuantity()">–</button>
+                <p class="quantity">{{quantity}}x</p>
+                <button class="handleQuantity" (click)="increaseQuantity()">+</button>
+            </div>
+            <div class="flexIg">
+                <div class="ingInfo">
+                    <img class="ingredients" src="assets/images/chips.jpg" alt="">
+                    <p class="ingredientName">Cheese</p>
+                </div>
+                <button class="handleQuantity" id="decrease" (click)="decreaseQuantity()">–</button>
+                <p class="quantity">{{quantity}}x</p>
+                <button class="handleQuantity" (click)="increaseQuantity()">+</button>
+            </div>
+        </div>
+        <button class="addBtn">Add to Order</button>
     </div>
 </app-drawer>

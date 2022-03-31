@@ -1,16 +1,16 @@
-.flex{
+.flex {
     display: flex;
     width: 100%;
     height: 100vh;
 }
 
-.alignSlider{
+.alignSlider {
     display: flex;
     flex-direction: column;
     margin-left: 270px;
 }
 
-.searchBar{
+.searchBar {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,7 +21,7 @@
     margin: 30px 0 30px 0;
 }
 
-.searchField{
+.searchField {
     width: 100%;
     height: 80%;
     border: none;
@@ -32,77 +32,77 @@
     outline: none;
 }
 
-.searchIcon{
+.searchIcon {
     font-size: 35px;
     margin-right: 20px;
 }
 
-.flexSearch{
+.flexSearch {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.category{
+.category {
     font-size: 30px;
     font-family: Ubuntu;
     font-weight: bold;
     margin-left: 30px;
 }
 
-mat-grid-tile{
+mat-grid-tile {
     background-color: white;
     border-radius: 20px;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
-.card{
+.card {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
     justify-content: center;
-    align-items: center;   
-    cursor: pointer; 
+    align-items: center;
+    cursor: pointer;
 }
 
-.mat-grid-list{
+.mat-grid-list {
     margin: 40px 0 40px 20px;
     width: 100%;
 }
 
-.productImg{
-    width: 60%;
+.productImg {
+    width: 50%;
     height: 35%;
 }
 
-.alignGrid{
+.alignGrid {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
 }
 
-.productName{
+.productName {
     font-size: 26px;
     font-family: Poppins;
     font-weight: bold;
     margin-top: 20px;
 }
 
-span{
+span {
     line-height: 30px;
 }
 
-.productPrice{
+.productPrice {
     font-size: 24px;
     font-family: Ubuntu;
     font-weight: bold;
     color: #fdbc18;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
-.productWeight{
+.productWeight {
     font-size: 18px;
     font-family: Ubuntu;
     font-weight: 700px;
@@ -113,36 +113,116 @@ span{
     width: 500px;
     height: 300px;
     border: 1px solid rgba(0, 0, 0, 0.5);
-  }
-  
-  .example-sidenav-content {
+}
+
+.example-sidenav-content {
     display: flex;
     height: 100%;
     align-items: center;
     justify-content: center;
-  }
-  
-  .example-sidenav {
+}
+
+.example-sidenav {
     padding: 20px;
-  }
+}
 
-  .button{
-      background-color: white;
-  }
+.button {
+    background-color: white;
+}
 
-  .app-drawer{
+.app-drawer {
     position: absolute;
     background-color: black;
-  }
+}
 
-  .foodImg{
+.foodImg {
     border-radius: 100%;
     width: 60%;
-  }
+}
 
-  .drawer{
+.drawer {
     display: flex;
     width: 100%;
     align-items: center;
     flex-direction: column;
-  }
+    margin-top: 100px;
+}
+
+.name {
+    margin-top: 20px;
+    font-family: Ubuntu;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.weight {
+    color: #808080;
+    font-family: Ubuntu;
+    font-size: 16px;
+    margin: 5px 0 5px 0;
+    font-weight: 500;
+}
+
+.price {
+    color: #fdbc18;
+    font-family: Ubuntu;
+    font-size: 24px;
+    font-weight: bold
+}
+
+.addBtn {
+    background-color: #fdbc18;
+    width: 90%;
+    border-radius: 10px;
+    height: 40px;
+    font-family: Ubuntu;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.ingredients {
+    width: 45px;
+    height: 45px;
+}
+
+.flexIg {
+    display: flex;
+    align-items: center;
+}
+
+.ingredientSelection {
+    margin: 35px 0 35px 0;
+}
+
+.ingredientName {
+    margin-left: 10px;
+    font-family: Ubuntu;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.handleQuantity {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    background-color: #fdbc18;
+    margin: 12px;
+}
+
+.handleQuantity#decrease {
+    background-color: #f2f2f2;
+}
+
+.quantity {
+    font-weight: bold;
+    font-family: Ubuntu;
+    font-size: 16px;
+}
+
+.ingInfo {
+    display: flex;
+    align-items: center;
+    width: 170px;
+}
