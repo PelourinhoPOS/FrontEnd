@@ -1,0 +1,246 @@
+.flex {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+.alignSlider {
+    display: flex;
+    flex-direction: column;
+    margin-left: 320px;
+}
+
+.searchBar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    width: 600px;
+    height: 55px;
+    border-radius: 10px;
+    margin: 35px 0 30px 0;
+}
+
+.searchField {
+    width: 100%;
+    height: 80%;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-family: Poppins;
+    margin-left: 20px;
+    outline: none;
+}
+
+.searchIcon {
+    font-size: 35px;
+    margin-right: 20px;
+}
+
+.flexSearch {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.category {
+    font-size: 30px;
+    font-family: Ubuntu;
+    font-weight: bold;
+    margin-left: 30px;
+}
+
+mat-grid-tile {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 1.5s;
+}
+
+.card:active {
+    background-color: rgb(236, 236, 236);
+    transition: 0s;
+}
+
+.mat-grid-list {
+    margin: 40px 0 40px 20px;
+    width: 100%;
+}
+
+.productImg {
+    width: 40%;
+    height: 30%;
+}
+
+.alignGrid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-left: 5px;
+}
+
+.productName {
+    font-size: 24px;
+    font-family: Roboto;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+span {
+    line-height: 30px;
+}
+
+.productPrice {
+    font-size: 24px;
+    font-family: Ubuntu;
+    font-weight: bold;
+    color: #fdbc18;
+    margin-top: 10px;
+}
+
+.productWeight {
+    font-size: 18px;
+    font-family: Ubuntu;
+    font-weight: 700px;
+    color: #808080;
+}
+
+.example-container {
+    width: 500px;
+    height: 300px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.example-sidenav-content {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.example-sidenav {
+    padding: 20px;
+}
+
+.button {
+    background-color: white;
+}
+
+.height {
+    position: fixed;
+    width: 320px;
+    height: 100%;
+    border: 1px solid rgb(211, 211, 211);
+    background-color: #f7f7f7;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    margin: 20px 10px 20px 0;
+}
+
+.userActivity {
+    display: flex;
+    flex-direction: column;
+    margin: 0 25px 0 25px;
+}
+
+.avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 100px;
+    margin-bottom: 5px;
+}
+
+.username {
+    font-size: 20px;
+    font-family: Ubuntu;
+    font-weight: bold;
+}
+
+.username#board {
+    text-align: center;
+}
+
+p {
+    font-family: Ubuntu;
+}
+
+.line {
+    margin-left: 21px;
+    display: flex;
+    align-items: center;
+    font-family: Roboto;
+}
+
+.overflow {
+    height: 68%;
+    overflow: auto;
+    position: relative;
+}
+
+.overflow::-webkit-scrollbar {
+    display: none;
+}
+
+.empty {
+    color: red;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 100px;
+}
+
+.quantity {
+    position: absolute;
+    right: 30px;
+}
+
+.price_card {
+    position: absolute;
+    right: 70px;
+}
+
+.totalPrice {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.iva {
+    font-size: 17px;
+}
+
+.flexBottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 20px 0 20px;
+}
+
+button#pay {
+    width: 120px;
+    height: 40px;
+    background-color: #fdbc18;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 10px;
+}
+
+.iconBack {
+    cursor: pointer;
+    font-size: 35px
+}

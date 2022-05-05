@@ -1,0 +1,41 @@
+<form [formGroup]="Form" (ngSubmit)="addBoard()">
+    <div class="center">
+        <div class="flex">
+            <div class="boardItens">
+                <label id="title" for="boardName">Board Name</label>
+                <input id="boardName" type="text" formControlName="name" />
+                <div class="flexCapacity">
+                    <label id="title">Seating Places</label>
+                    <div class="boardButtons">
+                        <div class="buttonDiv" (click)="decrease()">–</div>
+                        <div class="capacityNumber">{{this.capacity}}</div>
+                        <div class="buttonDiv" (click)="increase()">+</div>
+                    </div>
+                </div>
+            </div>
+            <div class="rightPart">
+                <div *ngIf="selected === 'square'" class="item">
+                    <p>Board #{{this.number}}</p>
+                    <div class="capacityContent">
+                        <mat-icon>person</mat-icon>{{this.capacity}}
+                    </div>
+                </div>
+                <div *ngIf="selected === 'round'" class="item" id="round">
+                    <p>Board #{{this.number}}</p>
+                    <span>{{this.capacity}}</span>
+                </div>
+                <mat-form-field>
+                    <mat-label>Shape</mat-label>
+                    <mat-select [(value)]="selected">
+                        <mat-option value="round">Round</mat-option>
+                        <mat-option value="square">Square</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="flexActions">
+            <div (click)="onNoClick()" class="cancel">Cancel</div>
+            <button class="done">Done</button>
+        </div>
+    </div>
+</form>

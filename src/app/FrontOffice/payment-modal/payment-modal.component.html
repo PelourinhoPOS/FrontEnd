@@ -1,0 +1,49 @@
+<hr>
+<div class="flex">
+    <button class="top" (click)="onNoClick()">
+        <mat-icon>arrow_back_ios</mat-icon>
+        BACK
+    </button>
+    <h2>PAYMENT</h2>
+    <button class="top">
+        VALIDATE
+        <mat-icon>arrow_forward_ios</mat-icon>
+    </button>
+</div>
+<hr>
+<div class="centerCDK" cdkDropListGroup>
+    <div class="example-container">
+        <h2>Items</h2>
+
+        <div cdkDropList [cdkDropListData]="todo" class="example-list" (cdkDropListDropped)="drop($event)">
+            <div class="example-box" *ngFor="let items of todo" cdkDrag>
+                <span>{{items.name}}</span>
+                <span>{{items.price}}</span>
+                <span>{{this.quantity}}</span>
+            </div>
+        </div>
+        <p>Total: {{this.total}}</p>
+    </div>
+    <div class="margins">
+        <div class=" actions" (click)="changeRight()">
+            <mat-icon id="change">keyboard_arrow_right</mat-icon>
+            <mat-icon id="changed">keyboard_arrow_right</mat-icon>
+        </div>
+        <div class="actions" id="left" (click)="changeLeft()">
+            <mat-icon id="change">keyboard_arrow_left</mat-icon>
+            <mat-icon id="changed">keyboard_arrow_left</mat-icon>
+        </div>
+    </div>
+    <div class="example-container">
+        <h2>To Pay</h2>
+
+        <div cdkDropList [cdkDropListData]="done" class="example-list" (cdkDropListDropped)="drop($event)">
+            <div class="example-box" *ngFor="let item of done" cdkDrag>
+                <span>{{items.name}}</span>
+                <span>{{items.price}}</span>
+                <span>{{this.quantity}}</span>
+            </div>
+        </div>
+        <p>Total</p>
+    </div>
+</div>

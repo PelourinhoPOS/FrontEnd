@@ -1,0 +1,10 @@
+<div mat-dialog-content>
+    <div style="text-align:center">
+        <input (input)="onInputChange($event)" class="input" value={{value}} placeholder="" [(ngModel)]="value">
+        <div class="simple-keyboard"></div>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancelar</button>
+    <button class="ok" mat-button [mat-dialog-close]="[value, data]" cdkFocusInitial>Ok</button>
+</div>

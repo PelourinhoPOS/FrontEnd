@@ -1,0 +1,31 @@
+<div class="deleteData" (click)="deleteBoard(data.id)">
+    <button mat-icon-button color="warn">
+        <mat-icon>delete</mat-icon>
+    </button>
+</div>
+
+<form [formGroup]="Form" (ngSubmit)="updateBoard(data.id)">
+    <div class="boardItens">
+        <label id="title" for="boardName">Reserve Name</label>
+        <input id="boardName" type="text" formControlName="name" [(ngModel)]="data.name" />
+        <label id="title" for="boardNumber">Board Number</label>
+        <input id="boardNumber" type="text" formControlName="number" [(ngModel)]="data.number">
+        <div class="flexCapacity">
+            <label id="title">Seating Places</label>
+            <div class="boardButtons">
+                <div class="buttonDiv" (click)="decrease()">–</div>
+                <div class="capacityNumber">{{data.capacity}}</div>
+                <div class="buttonDiv" (click)="increase()">+</div>
+            </div>
+        </div>
+        <div class="flexActions">
+            <div (click)="onNoClick()" class="cancel">Cancel</div>
+            <button class="done">Done</button>
+        </div>
+    </div>
+</form>
+
+<button (click)="increaseOccupy()">{{this.data.occupy}}</button>
+<button (click)="decreaseOccupy()">-</button>
+
+<button (click)="onSelect()">Add Itens</button>

@@ -1,0 +1,148 @@
+<ng-container *ngIf="update; else elseBlock">
+    <h1 mat-dialog-title>Atualizar utilizador</h1>
+</ng-container>
+
+<ng-template #elseBlock>
+    <h1 mat-dialog-title>Adicionar novo utilizador</h1>
+</ng-template>
+
+<!-- <form>
+    <mat-form-field appearance="outline">
+                <mat-label>ID</mat-label>
+                <input matInput placeholder="ID" [(ngModel)]="cliente.id" [ngModelOptions]="{standalone: true}">
+                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                <mat-hint>Hint</mat-hint>
+            </mat-form-field> 
+    <p>
+        <mat-form-field appearance="outline">
+            <mat-label>Nome</mat-label>
+            <input matInput placeholder="Nome" (click)="openKeyboard()" [(ngModel)]="cliente.name"
+                [ngModelOptions]="{standalone: true}">
+            <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+        </mat-form-field>
+    </p>
+
+    <p>
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Telefone</mat-label>
+            <span matPrefix>+351 &nbsp;</span>
+            <input type="tel" matInput placeholder="999 999 999" [(ngModel)]="cliente.phone"
+                [ngModelOptions]="{standalone: true}">
+            <mat-icon matSuffix>mode_edit</mat-icon>
+        </mat-form-field>
+    </p>
+</form> -->
+<form class="example-form">
+    <table class="table-form">
+        <tr>
+            <td>
+                <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
+                <input type="file" class="file" style="display: none;" (change)="onFileSelected($event)" #fileUpload>
+                <div class="file-upload" (click)="fileUpload.click()">
+                    <button mat-mini-fab color="primary" class="upload-btn">
+                        <mat-icon>attach_file</mat-icon>
+                    </button>
+                    <p class="input-text"> {{fileName || "Sem imagem"}} </p>
+                </div>
+            </td>
+            <td>
+                <table>
+                    <td>
+                        <br>
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Nome</mat-label>
+                            <input matInput (click)="openKeyboard('name', 'text', empregado.name)"
+                                [(ngModel)]="empregado.name" [ngModelOptions]="{standalone: true}">
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Função</mat-label>
+                            <input matInput (click)="openKeyboard('function', 'text', empregado.function)"
+                                [(ngModel)]="empregado.function" [ngModelOptions]="{standalone: true}">
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Nível</mat-label>
+                            <mat-select [(value)]="levelSelected" (selectionChange)="levelSelect()">
+                                <mat-option value="1">Administrador</mat-option>
+                                <mat-option value="2">Gerente</mat-option>
+                                <mat-option value="3">Empregado</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Telefone</mat-label>
+                            <input matInput (click)="openKeyboard('phone', 'number', empregado.phone, 9)" #telefone
+                                placeholder="Ex. 2715443890" maxlength="9" [(ngModel)]="empregado.phone"
+                                [ngModelOptions]="{standalone: true}">
+                            <mat-hint align="end">{{telefone.value.length}} / 9</mat-hint>
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Password</mat-label>
+                            <input type="password" matInput
+                                (click)="openKeyboard('password', 'number', empregado.password, 9)" #password
+                                placeholder="Ex. 2715443890" maxlength="4" [(ngModel)]="empregado.password"
+                                [ngModelOptions]="{standalone: true}">
+                            <mat-hint align="end">{{password.value.length}} / 4</mat-hint>
+                        </mat-form-field>
+
+                        <!-- <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Morada</mat-label>
+                            <textarea matInput (click)="openKeyboard('address', 'text', empregado.address)" placeholder="Ex. Rua da Liberdade, 25"
+                                [(ngModel)]="empregado.address" [ngModelOptions]="{standalone: true}"></textarea>
+                        </mat-form-field>
+            
+            
+                        <table class="example-full-width" cellspacing="0">
+                            <tr>
+                                <td>
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Código Postal</mat-label>
+                                        <input matInput (click)="openKeyboard('postalCode', 'number', empregado.postalCode)" #postalCode maxlength="8"
+                                            placeholder="Ex. 4200-000" [(ngModel)]="empregado.postalCode"
+                                            [ngModelOptions]="{standalone: true}">
+                                        <mat-hint align="end">{{postalCode.value.length}} / 8</mat-hint>
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Freguesia</mat-label>
+                                        <input matInput (click)="openKeyboard('parish', 'text', empregado.parish)" placeholder="Ex. Campanhã"
+                                            [(ngModel)]="empregado.parish" [ngModelOptions]="{standalone: true}">
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Concelho</mat-label>
+                                        <input matInput (click)="openKeyboard('county', 'text', empregado.county)" placeholder="Ex. Porto"
+                                            [(ngModel)]="empregado.county" [ngModelOptions]="{standalone: true}">
+                                    </mat-form-field>
+                                </td>
+                            </tr>
+                        </table> -->
+                    </td>
+                    <tr>
+                        <td width="100%">
+                            <mat-dialog-actions align="end">
+                                <button mat-stroked-button class="dialog-btn"
+                                    [mat-dialog-close]="false">Cancelar</button>
+
+                                <ng-container *ngIf="update; else elseBlockButton">
+                                    <button mat-stroked-button color="warn" class="dialog-btn"
+                                        [mat-dialog-close]="empregado" cdkFocusInitial>Atualizar</button>
+                                </ng-container>
+
+                                <ng-template #elseBlockButton>
+                                    <button mat-stroked-button color="warn" class="dialog-btn"
+                                        [mat-dialog-close]="empregado" cdkFocusInitial>Registar</button>
+                                </ng-template>
+
+                            </mat-dialog-actions>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</form>

@@ -1,0 +1,44 @@
+<mat-nav-list>
+    <div class="logo" routerLink="/backoffice/dashboard">
+        <mat-icon>business_center</mat-icon>
+        <p style="font-weight: bold;"><span style="color: black;">Smart</span>POS</p>
+    </div>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/dashboard">
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/clientes">
+        <mat-icon>group</mat-icon>
+        Clientes
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/empregados">
+        <mat-icon>wc</mat-icon>
+        Utilizadores
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/produtos">
+        <mat-icon>shopping_basket</mat-icon>
+        Artigos
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/categorias">
+        <mat-icon>category</mat-icon>
+        Categorias
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/mesas">
+        <mat-icon>table_chart</mat-icon>
+        Mesas
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/faturas">
+        <mat-icon>payment</mat-icon>
+         Documentos
+    </a>
+
+    <mat-divider></mat-divider>
+
+    <div class="profile-card">
+        <div class="header">
+            <h2>Paulo Sousa</h2>
+        </div>
+        <img src="https://media-exp1.licdn.com/dms/image/C4E03AQGrZ_EMwgu-lw/profile-displayphoto-shrink_800_800/0/1643915772499?e=1655942400&v=beta&t=pJCuRfKOQvOjQYxEWCkfG3FO3hlty4RJxGT95yJ5f84" alt="foto_de_perfil">
+        <button class="leave" mat-raised-button color="warn">Terminar Sessão</button>
+    </div>
+</mat-nav-list>

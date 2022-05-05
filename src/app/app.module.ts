@@ -2,34 +2,56 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AuthenticationComponent } from './authentication/authentication.component';
-import { AuthenticationDialogComponent } from './authentication-dialog/authentication-dialog.component';
+import { AuthenticationComponent } from './FrontOffice/authentication/authentication.component';
+import { AuthenticationDialogComponent } from './FrontOffice/authentication-dialog/authentication-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
-import { SideBarComponent } from './side-bar/side-bar.component';
-import { FoodDrinksComponent } from './food-drinks/food-drinks.component';
+import { FoodDrinksComponent } from './FrontOffice/food-drinks/food-drinks.component';
 import { SwiperModule } from 'swiper/angular';
-import { CategorySliderComponent } from './category-slider/category-slider.component';
+import { CategorySliderComponent } from './FrontOffice/category-slider/category-slider.component';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { DashboardHomeComponent } from './dashboard-home/dashboard-home.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { DrawerComponent } from './drawer/drawer.component';
+import { DrawerComponent } from './FrontOffice/drawer/drawer.component';
+import { BoardComponent } from './FrontOffice/board/board.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { KeyboardDialogComponent } from './FrontOffice/keyboard-dialog/keyboard-dialog.component';
+import { ToastrModule } from 'ngx-toastr';
+import { MatButtonModule } from '@angular/material/button';
+import { BoardDialogComponent } from './FrontOffice/board-dialog/board-dialog.component';
+import { ChangeBoardDialogComponent } from './FrontOffice/change-board-dialog/change-board-dialog.component';
+import { MatSelectModule } from '@angular/material/select';
+import { ChangeProductDialogComponent } from './FrontOffice/change-product-dialog/change-product-dialog.component';
+import { PaymentModalComponent } from './FrontOffice/payment-modal/payment-modal.component';
+import { CookieService } from 'ngx-cookie-service';
+import { authenticationService } from './FrontOffice/authentication-dialog/authentication-dialog.service';
+import { OnlineOfflineService } from './BackOffice/services/online-offline.service';
+import { HttpClientModule } from '@angular/common/http';
+import { DefaultModule } from './BackOffice/layouts/default/default.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from 'src/environments/environment';
+
 @NgModule({
   declarations: [
     AppComponent,
     AuthenticationComponent,
     AuthenticationDialogComponent,
-    SideBarComponent,
     FoodDrinksComponent,
     CategorySliderComponent,
-    DashboardHomeComponent,
-    DrawerComponent
+    DrawerComponent,
+    BoardComponent,
+    KeyboardDialogComponent,
+    BoardDialogComponent,
+    ChangeBoardDialogComponent,
+    ChangeProductDialogComponent,
+    PaymentModalComponent,
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     MatDialogModule,
@@ -40,9 +62,28 @@ import { DrawerComponent } from './drawer/drawer.component';
     MatIconModule,
     SwiperModule,
     MatGridListModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatTabsModule,
+    DragDropModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatSelectModule,
+    DefaultModule,
+    ToastrModule.forRoot({
+      timeOut: 1500,
+      progressBar: true,
+      progressAnimation: 'increasing',
+
+    }),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
   ],
-  providers: [],
+  providers: [CookieService, authenticationService, OnlineOfflineService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

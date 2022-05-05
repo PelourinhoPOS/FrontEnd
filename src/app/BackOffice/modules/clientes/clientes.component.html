@@ -1,0 +1,79 @@
+<div class="fixedHeader">
+    <button mat-raised-button class="btnOptions" (click)="openCreateModal()">Novo</button>
+    <button mat-raised-button class="btnOptions" (click)="openUpdateModal(dataRow)">Atualizar</button>
+    <button mat-raised-button class="btnOptions" (click)="openDeleteModal(dataRow)" >Eliminar</button>
+
+    <div class="orderList">
+        <mat-form-field appearance="fill">
+            <mat-label>Ordenar por:</mat-label>
+            <mat-select [(value)]="orderBy" (selectionChange)="onOptionsSelected()">
+                <mat-option value="id">ID</mat-option>
+                <mat-option value="name">Nome</mat-option>
+                <mat-option value="localidade">Localidade</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</div>
+<div class="containerDefault">
+
+    <ng-container *ngIf="showProgressBar; else elseBlock">
+        <mat-progress-bar mode="indeterminate" color="warn"></mat-progress-bar>
+    </ng-container>
+
+    <!-- <ng-container *ngIf="!(allClientesData | async)?.length; else elseBlock">
+        <span>Não existem clientes registados</span>
+    </ng-container> -->
+
+    <ng-template #elseBlock>
+
+        <ng-container *ngIf="!(clientesOff | async)?.length; else elseBlock1">
+            <span>Não existem clientes registados</span>
+        </ng-container>
+
+        <ng-template #elseBlock1>
+            <table mat-table [dataSource]="clientesOff" class="mat-elevation-z8">
+                <!-- <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef> Id. </th>
+                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                </ng-container> -->
+    
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Nome </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="nif">
+                    <th mat-header-cell *matHeaderCellDef> NIF </th>
+                    <td mat-cell *matCellDef="let element"> {{element.nif}} </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="phone">
+                    <th mat-header-cell *matHeaderCellDef> Telefone </th>
+                    <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="county">
+                    <th mat-header-cell *matHeaderCellDef> Localidade </th>
+                    <td mat-cell *matCellDef="let element"> {{element.county}} </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="state">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element">
+                        <ng-template [ngIf]="element.synchronized">
+                            <mat-icon class="synchronizedTrue">lens</mat-icon>
+                        </ng-template>
+                        <ng-template [ngIf]="!element.synchronized">
+                            <mat-icon class="synchronizedFalse">lens</mat-icon>
+                        </ng-template>
+                    </td>
+                </ng-container>
+    
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row (click)="onRowClicked(row)" *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'highlight': selectedRowIndex == row.id}"></tr>
+            </table>
+        </ng-template>
+
+        <!-- <button (click)="synchronizeData()">Sincronizar dados</button> -->
+    </ng-template>
+</div>

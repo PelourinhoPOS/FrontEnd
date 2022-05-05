@@ -1,0 +1,60 @@
+<div class="flex">
+    <div class="height" id="reload">
+        <div class="profile">
+            <img class="avatar" src="{{this.avatar}}" alt="">
+            <div class="userActivity">
+                <span class="username" id="board">Board #{{this.board.number}}</span>
+                <span class="username">{{this.username}}</span>
+                <span>{{this.time}}</span>
+            </div>
+            <mat-icon class="iconBack" routerLink="/board">keyboard_backspace</mat-icon>
+        </div>
+        <ng-container *ngIf="cart.length==0; else elseBlock">
+            <p class="empty"> The Cart Is Empty!</p>
+        </ng-container>
+        <ng-template #elseBlock>
+            <hr>
+            <div class="overflow">
+                <div *ngFor="let item of cart" (click)="openProductDialog(item.product.id)">
+                    <div class="line">
+                        <mat-icon (click)="removeProduct(item.product.id)" (click)="totalPrice()">close</mat-icon>
+                        <span *ngIf="this.cart">{{item.product.name}} </span>
+                        <span class="price_card">{{item.product.price}}€</span>
+                        <span class="quantity">{{item.quantity}}</span>
+                    </div>
+                    <hr style="width: 100%; height: 1px;">
+                </div>
+            </div>
+            <div class="flexBottom">
+                <div style=" display: flex; flex-direction: column; font-family: Ubuntu;">
+                    <span class="totalPrice">Total: {{this.total}}€</span>
+                    <span class="iva">Tax: {{this.totalIva}}</span>
+                </div>
+                <button id="pay" (click)="openPaymentDialog()">PAY</button>
+            </div>
+        </ng-template>
+    </div>
+    <div class="alignSlider">
+        <div class="flexSearch">
+            <p class="category">Choose Category</p>
+            <div class="searchBar">
+                <input (click)="openDialog()" matInput [(ngModel)]="item" class="searchField" type="text"
+                    placeholder="Press here to search category or itens...">
+                <mat-icon class="searchIcon">search</mat-icon>
+            </div>
+        </div>
+        <app-category-slider></app-category-slider>
+        <div class="alignGrid">
+            <mat-grid-list cols="5" rowHeight="210px" gutterSize="40px">
+                <mat-grid-tile *ngFor="let prod of products">
+                    <div class="card" id="{{prod.id}}" (click)="addProduct(prod.id)">
+                        <img class="productImg" src="{{prod.image}}" alt="">
+                        <span class="productName">{{prod.name}}</span>
+                        <span class="productWeight">{{prod.weight}}</span>
+                        <span class="productPrice">{{prod.price}}€</span>
+                    </div>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+    </div>
+</div>
