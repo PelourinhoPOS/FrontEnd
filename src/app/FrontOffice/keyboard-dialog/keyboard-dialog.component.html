@@ -1,0 +1,9 @@
+<div style="text-align:center">
+    <input matInput [(ngModel)]="data.item" (input)="onInputChange($event)" class="input" id="searchBar" value={{value}}
+        placeholder="Search name or category" />
+    <div class="simple-keyboard"></div>
+</div>
+
+<div mat-dialog-actions>
+    <button id="ok" mat-button [mat-dialog-close]="data.item" cdkFocusInitial>OK</button>
+</div>

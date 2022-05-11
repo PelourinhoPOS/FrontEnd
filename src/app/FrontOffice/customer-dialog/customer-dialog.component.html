@@ -1,0 +1,54 @@
+<div class="top">
+  <div>
+    <button mat-raised-button class="btnOptions" [mat-dialog-close]="name">Select</button>
+    <button mat-raised-button class="btnOptions">Update</button>
+  </div>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Order By:</mat-label>
+    <mat-select [(value)]="orderBy" (selectionChange)="onOptionsSelected()">
+      <mat-option value="nif">NIF</mat-option>
+      <mat-option value="name">Name</mat-option>
+      <mat-option value="location">Location</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="customer" class="tab">
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="nif">
+      <th mat-header-cell *matHeaderCellDef> NIF </th>
+      <td mat-cell *matCellDef="let element"> {{element.nif}} </td>
+    </ng-container>
+
+    <!-- Position Column -->
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef> Phone </th>
+      <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="parish">
+      <th mat-header-cell *matHeaderCellDef> Parish </th>
+      <td mat-cell *matCellDef="let element"> {{element.parish}} </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="address">
+      <th mat-header-cell *matHeaderCellDef> Address </th>
+      <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+    </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row (click)="onRowClicked(row)" *matRowDef="let row; columns: displayedColumns;"
+      [ngClass]="{'highlight': selectedRowIndex == row.id}"></tr>
+  </table>
+</div>

@@ -1,0 +1,40 @@
+table {
+  width: 100%;
+  overflow: hidden;
+}
+
+.mat-elevation-z8 {
+  height: 87%;
+  overflow-x: auto;
+}
+
+.mat-elevation-z8::-webkit-scrollbar {
+  display: none;
+}
+
+th {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.btnOptions {
+  width: 125px;
+  height: 50px;
+  margin: 5px 20px 0 0;
+}
+
+.top{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: -20px;
+}
+
+.mat-form-field{
+  position: relative;
+  font-size: 15px;
+  top: -10px;
+}
+
+.highlight{
+  background-color: rgb(255, 229, 180);
+}

@@ -1,0 +1,84 @@
+<ng-container *ngIf="update; else elseBlock">
+    <h1 mat-dialog-title>Atualizar artigo</h1>
+</ng-container>
+
+<ng-template #elseBlock>
+    <h1 mat-dialog-title>Adicionar novo artigo</h1>
+</ng-template>
+
+<form class="example-form">
+    <table class="table-form">
+        <tr>
+            <td>
+                <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
+                <input type="file" class="file" style="display: none;" (change)="onFileSelected($event)" #fileUpload>
+                <div class="file-upload" (click)="fileUpload.click()">
+                    <button mat-mini-fab color="primary" class="upload-btn">
+                        <mat-icon>attach_file</mat-icon>
+                    </button>
+                    <p class="input-text"> {{fileName || "Sem imagem"}} </p>
+                </div>
+            </td>
+            <td>
+                <table>
+                    <td>
+                        <br>
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Nome</mat-label>
+                            <input matInput (click)="openKeyboard('name', 'text', artigo.name)"
+                                [(ngModel)]="artigo.name" [ngModelOptions]="{standalone: true}">
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Preço</mat-label>
+                            <input matInput type="number" (click)="openKeyboard('price', 'number', artigo.price, 9)" #telefone
+                                placeholder="Ex. 2715443890" [(ngModel)]="artigo.price"
+                                [ngModelOptions]="{standalone: true}">
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>IVA</mat-label>
+                            <mat-select [(value)]="ivaSelected" (selectionChange)="ivaSelect()">
+                                <mat-option value="0.4"> 4% </mat-option>
+                                <mat-option value="0.6"> 6% </mat-option>
+                                <mat-option value="0.9"> 9% </mat-option>
+                                <mat-option value="0.13"> 13% </mat-option>
+                                <mat-option value="0.18"> 18% </mat-option>
+                                <mat-option value="0.23"> 23% </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>Categoria</mat-label>
+                            <mat-select [(value)]="categorySelected" (selectionChange)="categorySelect()">
+                                <mat-option *ngFor="let category of categoryItems" [value]="category.id">
+                                    {{category.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                    </td>
+                    <tr>
+                        <td width="100%">
+                            <mat-dialog-actions align="end">
+                                <button mat-stroked-button class="dialog-btn"
+                                    [mat-dialog-close]="false">Cancelar</button>
+
+                                <ng-container *ngIf="update; else elseBlockButton">
+                                    <button mat-stroked-button color="warn" class="dialog-btn"
+                                        [mat-dialog-close]="artigo" cdkFocusInitial>Atualizar</button>
+                                </ng-container>
+
+                                <ng-template #elseBlockButton>
+                                    <button mat-stroked-button color="warn" class="dialog-btn"
+                                        [mat-dialog-close]="artigo" cdkFocusInitial>Registar</button>
+                                </ng-template>
+
+                            </mat-dialog-actions>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</form>

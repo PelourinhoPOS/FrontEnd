@@ -1,0 +1,93 @@
+.buttonDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 45px;
+    height: 45px;
+    background-color: #673AB7;
+    border-radius: 10px;
+    color: white;
+    font-size: 22px;
+}
+
+.flexCapacity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+
+.boardItens {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Roboto;
+    margin-top: 15px;
+}
+
+.boardButtons {
+    display: flex;
+    margin-top: 10px;
+}
+
+.capacityNumber {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 270px;
+    height: 50px;
+}
+
+.done {
+    width: 180px;
+    height: 50px;
+    background-color: #673AB7;
+    color: white;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.cancel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 180px;
+    height: 50px;
+    background-color: rgb(240, 240, 240);
+    color: black;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.flexActions {
+    display: flex;
+}
+
+input {
+    border: 1px solid grey;
+    border-radius: 10px;
+    width: 370px;
+    height: 40px;
+    margin-bottom: 30px;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+label#title {
+    font-weight: bold;
+}
+
+.deleteData {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+}

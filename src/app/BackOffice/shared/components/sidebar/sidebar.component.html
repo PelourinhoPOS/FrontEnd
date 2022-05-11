@@ -1,0 +1,49 @@
+<mat-nav-list>
+    <div class="logo" routerLink="/backoffice/dashboard">
+        <mat-icon>business_center</mat-icon>
+        <p style="font-weight: bold;"><span style="color: black;">Smart</span>POS</p>
+    </div>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/dashboard">
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/clientes">
+        <mat-icon>group</mat-icon>
+        Clientes
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/empregados">
+        <mat-icon>wc</mat-icon>
+        Utilizadores
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/artigos">
+        <mat-icon>shopping_basket</mat-icon>
+        Artigos
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/categorias">
+        <mat-icon>category</mat-icon>
+        Categorias
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/mesas">
+        <mat-icon>table_chart</mat-icon>
+        Mesas
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/faturas">
+        <mat-icon>payment</mat-icon>
+        Métodos de Pagamento
+    </a>
+    <a mat-list-item routerLinkActive="list-item-active" routerLink="/backoffice/docs">
+        <mat-icon>description</mat-icon>
+        Documentos
+    </a>
+
+    <mat-divider></mat-divider>
+
+    <div class="profile-card">
+        <div class="header">
+            <h2>{{data.name}}</h2>
+        </div>
+        <img src={{data.avatar}} alt="foto_de_perfil">
+        <button class="leave" mat-raised-button color="warn" (click)="logout()">Terminar Sessão</button>
+    </div>
+
+</mat-nav-list>

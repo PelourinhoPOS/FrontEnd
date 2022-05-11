@@ -1,0 +1,140 @@
+.buttonDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 45px;
+    height: 45px;
+    background-color: #673AB7;
+    border-radius: 10px;
+    color: white;
+    font-size: 22px;
+}
+
+.flexCapacity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+}
+
+.boardItens {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Roboto;
+    margin-right: 50px;
+}
+
+.boardButtons {
+    display: flex;
+    margin-top: 10px;
+}
+
+.capacityNumber {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 50px;
+}
+
+.done {
+    width: 300px;
+    height: 50px;
+    background-color: #673AB7;
+    color: white;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 15px;
+    margin-left: 50px;
+    font-family: Ubuntu;
+}
+
+.cancel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 50px;
+    background-color: rgb(240, 240, 240);
+    color: black;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: Ubuntu;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.flexActions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-left: 40px;
+}
+
+input {
+    border: 1px solid grey;
+    border-radius: 10px;
+    width: 300px;
+    height: 40px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+label#title {
+    font-weight: bold;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    width: 110px;
+    height: 110px;
+    border: 1px solid grey;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    font-family: Ubuntu;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.item#round {
+    border-radius: 100%;
+}
+
+.rightPart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+mat-form-field {
+    margin-top: 25px;
+    width: 250px;
+}
+
+.center {
+    margin-top: 45px;
+}
+
+.capacityContent {
+    display: flex;
+    align-items: center;
+
+    mat-icon {
+        margin-right: 5px;
+    }
+}

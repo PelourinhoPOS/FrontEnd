@@ -1,0 +1,51 @@
+.btnOptions {
+    width: 125px;
+    height: 50px;
+    margin: 12px;
+}
+
+.dialog-btn {
+    width: 125px;
+    height: 50px;
+    margin-top: -12px;
+}
+
+.table-form{
+    width: 145%;
+}
+
+// img {
+//     width: 245px;
+//     height: 245px;
+//     border-radius: 50%;
+//     padding: 5px;
+// }
+
+.preview-avatar{
+    width: 245px;
+    height: 245px;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.preview{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.file-upload{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.input-text{
+    padding: 5px;
+}
+
+.disablePaginator{
+    display: none;
+}
+

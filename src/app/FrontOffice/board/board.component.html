@@ -1,0 +1,127 @@
+<mat-tab-group mat-align-tabs="center">
+    <mat-tab label="Main Room">
+        <div class="allBoards">
+            <div class="example-boundary">
+                <div class="dbButtons">
+                    <div class="example-button-container">
+                        <button mat-mini-fab color="primary" (click)="openDialog()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                        <p class="txt">Add Board</p>
+                    </div>
+                    <div class="example-button-container" id="remove">
+                        <button mat-mini-fab color="warn" (click)="deleteCollection()">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <p class="txt">Delete All</p>
+                    </div>
+                    <div class="example-button-container">
+                        <button mat-mini-fab color="primary" routerLink="/" (click)="logout()">
+                            <mat-icon>arrow_back</mat-icon>
+                        </button>
+                        <p class="txt">Change User</p>
+                    </div>
+                </div>
+                <!-- <ul>
+                    <li>bottom: {{position.bottom}}</li>
+                    <li>height: {{position.height}}</li>
+                    <li>left: {{position.left}}</li>
+                    <li>right: {{position.right}}</li>
+                    <li>top: {{position.top}}</li>
+                    <li>width: {{position.width}}</li>
+                    <li>x: {{position.x}}</li>
+                    <li>y: {{position.y}}</li>
+                </ul> -->
+                <div (dblclick)="openUpdateDialog(b.id)" *ngFor="let b of boards;">
+                    <div *ngIf="b.capacity === 4 && b.type==='round'" class="example-round"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>{{b.occupy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                    <div *ngIf="b.capacity === 2 && b.type==='round'" class="example-round" id="two"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>{{b.occupy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                    <div *ngIf="b.capacity === 6 && b.type==='round'" class="example-round" id="six"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>{{b.occupy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                    <div *ngIf="b.capacity === 8 && b.type==='round'" class="example-round" id="eight"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>{{b.occupy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                    <div *ngIf="b.capacity === 10 && b.type==='round'" class="example-round" id="ten"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>{{b.occupy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                    <div *ngIf="b.capacity === 12 && b.type==='round'" class="example-round" id="twelve"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>{{b.occupy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                    <div *ngIf="b.capacity === 4 && b.type==='square'" class="example-box"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>{{b.occupy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                    <div *ngIf="b.capacity === 2 && b.type=== 'square'" class="example-box" id="two"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>{{b.occupy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                    <div *ngIf="b.capacity === 6 && b.type=== 'square'" class="example-box" id="six"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>{{b.occupy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                    <div *ngIf="b.capacity === 8 && b.type=== 'square'" class="example-box" id="eight"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>{{b.occupy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                    <div *ngIf="b.capacity === 10 && b.type=== 'square'" class="example-box" id="ten"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>{{b.occuppy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                    <div *ngIf="b.capacity === 12 && b.type=== 'square'" class="example-box" id="twelve"
+                        cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event , b.id)">
+                        <span>Board #{{b.number}}</span>
+                        <div class="capacityContent">
+                            <mat-icon>person</mat-icon>
+                            {{b.occupy}}/{{b.capacity}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-tab>
+    <mat-tab label="Coffee Bar">Content 2</mat-tab>
+    <mat-tab label="Vip Room">Content 3</mat-tab>
+</mat-tab-group>

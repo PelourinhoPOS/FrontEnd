@@ -1,0 +1,41 @@
+<div class="fixedHeader">
+  <button mat-raised-button class="btnOptions" (click)="openCreateModal()">Novo</button>
+  <button mat-raised-button class="btnOptions" (click)="openUpdateModal(dataRow)">Atualizar</button>
+  <button mat-raised-button class="btnOptions" (click)="openDeleteModal(dataRow)">Eliminar</button>
+
+  <div class="orderList">
+    <mat-form-field appearance="fill">
+      <mat-label>Ordenar por:</mat-label>
+      <mat-select [(value)]="orderBy" (selectionChange)="onOptionsSelected()">
+        <mat-option value="id">ID</mat-option>
+        <mat-option value="name">Nome</mat-option>
+        <mat-option value="localidade">Localidade</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+<div class="containerDefault">
+
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="dataTable">
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="capacity">
+        <th mat-header-cell *matHeaderCellDef> Weight </th>
+        <td mat-cell *matCellDef="let element"> {{element.capacity}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[2, 4, 8]" showFirstLastButtons aria-label="Select page of periodic elements">
+    </mat-paginator>
+  </div>
+</div>

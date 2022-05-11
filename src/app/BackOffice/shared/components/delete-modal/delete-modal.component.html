@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>Deseja eliminar o registo selecionado?</h2>
+<mat-dialog-content class="mat-typography">
+    <p>{{register.name}}</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close cdkFocusInitial>Não</button>
+    <button mat-button [mat-dialog-close]="register" color="warn">Sim</button>
+</mat-dialog-actions>

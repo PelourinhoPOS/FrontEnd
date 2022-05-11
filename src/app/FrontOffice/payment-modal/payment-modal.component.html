@@ -1,0 +1,95 @@
+<div class="flex">
+    <button class="top" [routerLink]="['/food&drinks', this.id]">
+        <mat-icon>arrow_back_ios</mat-icon>
+        BACK
+    </button>
+    <h2>PAYMENT</h2>
+    <button class="top">
+        VALIDATE
+        <mat-icon>arrow_forward_ios</mat-icon>
+    </button>
+</div>
+<hr>
+<div class="centerCDK" cdkDropListGroup>
+    <div class="example-container">
+        <h2>Items:</h2>
+        <div class="example-list">
+            <div class="example-box" *ngFor="let items of todo; let i = index"
+                [ngClass]="{'active': clickedIndex == i }" (click)="clickedIndex = i; changeClick1()"
+                (click)="getId(items.id)">
+                <span>{{items.name}}</span>
+                <span>{{items.price}}</span>
+                <span>{{this.quantity}}</span>
+            </div>
+        </div>
+        <p>Total: {{this.total}}€</p>
+        <div style="display: flex;">
+            <div class="methods">
+                <button>Money</button>
+            </div>
+            <div class="methods">
+                <button>MB</button>
+            </div>
+            <div class="methods" id="noMargin">
+                <button>MBWay</button>
+            </div>
+        </div>
+        <div class="splitColumn">
+            <span class="toPay">To Pay:</span>
+            <span class="toPay" id="val" *ngIf="!this.splited">{{this.eachtotal}}€</span>
+            <span class="toPay" id="val" *ngIf="this.splited && this.done.length > 0">{{this.splited[1]}} x {{this.splited[0]}}€</span>
+            <span class="toPay" id="eur" *ngIf="this.done.length < 1"></span>
+        </div>
+    </div>
+    <div class="margins">
+        <div class="actions" (click)="receiveDone()">
+            <mat-icon id="change">arrow_forward</mat-icon>
+        </div>
+        <div class="actions" id="todo" (click)="receiveTodo()">
+            <mat-icon id="change">arrow_back</mat-icon>
+        </div>
+        <div class="actions" id="done" (click)="changeRight()">
+            <mat-icon id="change">keyboard_arrow_right</mat-icon>
+            <mat-icon id="changed">keyboard_arrow_right</mat-icon>
+        </div>
+        <div class="actions" id="left" (click)="changeLeft()">
+            <mat-icon id="change">keyboard_arrow_left</mat-icon>
+            <mat-icon id="changed">keyboard_arrow_left</mat-icon>
+        </div>
+    </div>
+    <div class="example-container">
+        <h2>Selected:</h2>
+
+        <div class="example-list">
+            <div class="example-box" *ngFor="let items of done; let j = index"
+                [ngClass]="{'active': clickedIndexJ == j }" (click)="clickedIndexJ = j; changeClick2()"
+                (click)="getId(items.id)">
+                <span>{{items.name}}</span>
+                <span>{{items.price}}</span>
+                <span>{{this.quantity}}</span>
+            </div>
+        </div>
+        <p>Total: {{this.eachtotal}}€</p>
+        <div style="display:flex;">
+            <div class="customer" (click)="openDialog()">
+                <mat-icon>person</mat-icon>
+                <button *ngIf="!this.name">Select Customer</button>
+                <button *ngIf="this.name">{{this.name}}</button>
+            </div>
+            <div class="createUser" (click)="createUser()">
+                <mat-icon>add_circle_outline</mat-icon>
+                <button>Add</button>
+            </div>
+        </div>
+        <div style="display:flex;">
+            <div class="customer" id="invoice" (click)="getInvoice()">
+                <mat-icon> insert_drive_file</mat-icon>
+                <button id="button">Simplified Invoice</button>
+            </div>
+            <div class="createUser" (click)="splitDialog()">
+                <mat-icon>horizontal_split</mat-icon>
+                <button>Split</button>
+            </div>
+        </div>
+    </div>
+</div>

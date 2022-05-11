@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Big John of Selling</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1976d2">
+</head>
+
+<body>
+  <app-root></app-root>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://momentjs.com/downloads/moment.js"></script>
+  <script>
+    window.setInterval(function () {
+      $('#hour').html(moment().format('H:mm:ss'))
+    }, 1000);
+  </script>
+  <script src="https://unpkg.com/localbase/dist/localbase.dev.js"></script>
+  <noscript>Please enable JavaScript to continue using this application.</noscript>
+</body>
+
+</html>
