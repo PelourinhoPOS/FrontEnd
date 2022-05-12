@@ -21,7 +21,6 @@ export class FoodDrinksComponent implements OnInit {
   public item: string;
   public boardId;
   public board;
-  public teste;
   public cart = [];
   public total: number;
   public totalIva: number;
@@ -32,6 +31,9 @@ export class FoodDrinksComponent implements OnInit {
   public productId;
   public userData;
   public subscriptionData!: Subscription; //subscription to refresh data
+  public productarray: any = [];
+  public quantity: number = 0;
+  public i;
 
   constructor(
     private empregadosService: EmpregadosService,
@@ -113,8 +115,7 @@ export class FoodDrinksComponent implements OnInit {
         this.productId = data.find(x => x.id == this.boardId)
 
         board.cart.forEach((id) => {
-          this.productId = id.product.id;
-          console.log(this.productId)
+          this.productarray.push(id.product.id);
         });
 
       })
@@ -123,12 +124,25 @@ export class FoodDrinksComponent implements OnInit {
 
   addProduct(id) {
 
-    this.products.forEach((product) => {
-      if (product.id == id && product.id != this.productId) {
-        this.teste = product
-        console.log(this.teste.id);
-      }
-    });
+    let product;
+
+    this.artigosService.getLocalDataFromId('id', id).then(
+      (data => {
+        product = data
+
+        if (!this.productarray.includes(id)) {
+          this.cart.push({ product: product[0], quantity: 1 });
+          this.totalPrice();
+        } else {
+          for (let i = 0; i < this.cart.length; i++) {
+            if (this.cart[i].product.id == id) {
+              this.cart[i].quantity++;
+              this.totalPrice();
+            }
+          }
+        }
+      })
+    );
 
     let mesa: Mesa = {
       id: this.boardId,
@@ -136,19 +150,11 @@ export class FoodDrinksComponent implements OnInit {
       total: this.total
     }
 
-    this.cart.push({ product: this.teste, quantity: 1 });
-
     this.mesasService.updateDataOffline(mesa);
-
-    // db.collection('boards').doc({ id: this.boardId }).update({
-    //   cart: this.cart,
-    //   total: this.total,
-    // });
-    this.totalPrice();
   }
 
   removeProduct(id) {
-    
+
     let mesa: Mesa = {
       id: this.boardId,
       cart: this.cart,
@@ -158,6 +164,7 @@ export class FoodDrinksComponent implements OnInit {
     this.cart.forEach((product) => {
       if (product.product.id == id) {
         this.cart.splice(this.cart.indexOf(product), 1);
+        this.productarray.splice(this.productarray.indexOf(id));
       }
       this.mesasService.updateDataOffline(mesa);
     });
@@ -179,7 +186,7 @@ export class FoodDrinksComponent implements OnInit {
   getIva() {
     let iva = 0;
     this.cart.forEach((product) => {
-      iva += product.product.iva * product.product.price;
+      iva += product.product.iva * product.product.price * product.quantity;
     });
     this.totalIva = parseFloat(iva.toFixed(2));
   }
@@ -191,6 +198,7 @@ export class FoodDrinksComponent implements OnInit {
   ngOnInit(): void {
     let id = parseInt(this.route.snapshot.paramMap.get('id'));
     this.boardId = id;
+    this.getProductsId();
     //this.addNewProduct();
     this.getProducts();
     this.getBoard();

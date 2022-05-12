@@ -21,12 +21,12 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
-import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
 import { ArtigosComponent, CreateArticleModalComponent } from '../../modules/artigos/artigos.component';
 import { CreateBoardModalComponent, MesasComponent } from '../../modules/mesas/mesas.component';
 import { CategoriesComponent, CreateCategorieModalComponent, CreateSubCategorieModalComponent } from '../../modules/categories/categories.component';
 
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -62,6 +62,6 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     MatProgressBarModule,
     MatPaginatorModule
   ],
-  providers: [OnlineOfflineService],
+  providers: [CookieService ,OnlineOfflineService],
 })
 export class DefaultModule { }

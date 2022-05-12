@@ -29,7 +29,7 @@
         </ng-container>
 
         <ng-template #elseBlock1>
-            <table mat-table [dataSource]="artigosOff" class="mat-elevation-z8 dataTable">
+            <table mat-table [dataSource]="dataSource.data" class="mat-elevation-z8 dataTable">
                 <!-- <ng-container matColumnDef="position">
                     <th mat-header-cell *matHeaderCellDef> Id. </th>
                     <td mat-cell *matCellDef="let element"> {{element.id}} </td>
@@ -47,7 +47,7 @@
     
                 <ng-container matColumnDef="category">
                     <th mat-header-cell *matHeaderCellDef> Categoria </th>
-                    <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+                    <td mat-cell *matCellDef="let element"> {{element.name_category}} </td>
                 </ng-container>
     
                 <ng-container matColumnDef="iva">
@@ -84,4 +84,6 @@
 
         <!-- <button (click)="synchronizeData()">Sincronizar dados</button> -->
     </ng-template>
+    <mat-paginator [ngClass]="{'disablePaginator': showProgressBar || !(artigosOff | async)?.length}" [pageSizeOptions]="[7, 14, 21]" showFirstLastButtons
+        aria-label="Select page of periodic elements"></mat-paginator>
 </div>

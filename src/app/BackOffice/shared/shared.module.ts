@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { VirtualKeyboardComponent } from './components/virtual-keyboard/virtual-keyboard.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,6 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
     VirtualKeyboardComponent,
     DeleteModalComponent
   ],
-  providers: [],
+  providers: [CookieService],
 })
 export class SharedModule { }

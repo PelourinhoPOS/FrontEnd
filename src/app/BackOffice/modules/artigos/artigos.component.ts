@@ -1,12 +1,15 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
-import { combineLatest, map, Observable, Subscription } from 'rxjs';
+import { combineLatest, map, Observable, of, Subscription } from 'rxjs';
 import { Artigo } from '../../models/artigo';
 import { OnlineOfflineService } from '../../services/online-offline.service';
 import { DeleteModalComponent } from '../../shared/components/delete-modal/delete-modal.component';
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
 import { CategoriesService } from '../categories/categories.service';
+import { SubcategoriesService } from '../categories/subcategories.service';
 import { ArtigosService } from './artigos.service';
 
 @Component({
@@ -19,7 +22,7 @@ export class ArtigosComponent implements OnInit {
   public header: any
   public sticky: any;
 
-  constructor(public dialog: MatDialog, private artigosService: ArtigosService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService) { }
+  constructor(public dialog: MatDialog, private artigosService: ArtigosService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService, private subcategoriesService: SubcategoriesService) { }
 
   public artigos!: Observable<Artigo[]>; //save the clients returned from the API
   public artigosOff!: Observable<Artigo[]>; //save the clients returned from the local storage
@@ -34,6 +37,13 @@ export class ArtigosComponent implements OnInit {
   orderBy = 'name'; //save the order by selected
 
   showProgressBar = false;
+
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  dataSource = new MatTableDataSource<Artigo>();
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
 
   ngOnInit(): void {
     //list data on init
@@ -73,7 +83,44 @@ export class ArtigosComponent implements OnInit {
     //this.clientesOff = this.clientesService.getDataOffline();
     this.showProgressBar = true;
 
-    this.artigosOff = this.artigosService.getDataOffline();
+    switch (this.orderBy) { //order by
+      case 'name'://order by name
+
+        this.artigosService.getDataOffline().pipe(
+          map(arr => arr.sort((a, b) => a.name.localeCompare(b.name)))
+        ).subscribe(data => {
+          this.artigosOff = of(data);
+
+          for (let i = 0; i < data.length; i++) {
+            this.subcategoriesService.getLocalDataFromId('id', data[i].id_category).then(subcategorie => {
+              this.dataSource.data[i] = ({
+                ...data[i],
+                name_category: subcategorie[0].name,
+              });
+            });
+          }
+
+          // this.dataSource.data = data
+        })
+        break;
+
+      case 'category'://order by function
+        this.artigosService.getDataOffline().pipe(
+          map(arr => arr.sort((a, b) => a.name_category.localeCompare(b.name_category)))
+        ).subscribe(data => {
+          this.artigosOff = of(data);
+          this.dataSource.data = data
+        })
+        break;
+
+      case 'id':
+        this.artigosService.getDataOffline().subscribe(data => {
+          this.artigosOff = of(data);
+          this.dataSource.data = data
+        })
+        break;
+    }
+
     setInterval(() => {
       this.showProgressBar = false;
     }, 1300); //wait 1,30 seconds to show progress bar
@@ -112,10 +159,10 @@ export class ArtigosComponent implements OnInit {
       height: '690px',
       width: '770px',
     });
-    dialogRef.afterClosed().subscribe(cliente => {
-      //console.log(cliente)
-      if (cliente) {
-        this.register(cliente);
+    dialogRef.afterClosed().subscribe(artigo => {
+      console.log(artigo)
+      if (artigo) {
+        this.register(artigo);
       }
     });
   }
@@ -197,7 +244,7 @@ export class ArtigosComponent implements OnInit {
 
 export class CreateArticleModalComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private categorieServive: CategoriesService) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private categorieServive: CategoriesService, private subcategorieServive: SubcategoriesService) { }
 
   public artigo: Artigo = new Artigo(); //save the client data
   public dialogRef: any; //save the dialog reference
@@ -205,20 +252,24 @@ export class CreateArticleModalComponent implements OnInit {
 
   fileName = '';
   url = './assets/images/user.png';
-  categorySelected = 1;
   ivaSelected = "0.23";
+  categorySelected = 1;
   categoryItems: any;
+
+  subcategorySelected = 0;
+  subcategoryItems: any;
 
   ngOnInit(): void {
     //get the data from client and set it in the form
     this.getCategories();
+    this.getSubcategories();
 
     if (this.data) {
       this.update = true; //set update to true, to know if is update or create
       this.artigo = this.data.values; //set the data in the form
       this.fileName = 'Alterar imagem'; //set the file name
       this.url = this.artigo.image; //set the photo in the form
-      this.categorySelected = this.artigo.id_category; //set the category in the form
+      this.subcategorySelected = this.artigo.id_category; //set the category in the form
       this.ivaSelected = (this.artigo.iva).toString(); //set the iva in the form
     } else {
       this.categorySelect(); //set the category data if the user don't change the select
@@ -232,6 +283,19 @@ export class CreateArticleModalComponent implements OnInit {
       this.categoryItems = data
     });
   };
+
+  getSubcategories() {
+    this.subcategorieServive.getLocalDataFromId('id_category', this.categorySelected).then(data => {
+
+      if (data.length) {
+        this.subcategorySelected = data[0].id;
+        this.artigo.id_category = this.subcategorySelected;
+        this.subcategoryItems = data
+      } else {
+        this.subcategorySelected = 0;
+      }
+    });
+  }
 
   //open the modal keyboard
   openKeyboard(inputName: string, type: string, data: any, maxLength?: number) {
@@ -287,11 +351,15 @@ export class CreateArticleModalComponent implements OnInit {
   }
 
   categorySelect() {
-    this.artigo.id_category = this.categorySelected;
+    this.getSubcategories();
   }
 
-  ivaSelect(){
-    this.artigo.iva =  parseFloat(this.ivaSelected);
+  subcategorySelect() {
+    this.artigo.id_category = this.subcategorySelected;
+  }
+
+  ivaSelect() {
+    this.artigo.iva = parseFloat(this.ivaSelected);
   }
 
 }

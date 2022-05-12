@@ -10,9 +10,9 @@
     margin-top: -12px;
 }
 
-.table-form {
-    width: 145%;
-}
+// .table-form {
+//     width: 145%;
+// }
 
 // img {
 //     width: 245px;
@@ -56,5 +56,10 @@
 
 .disablePaginator{
     display: none;
+}
+
+.example-form{
+    display: flex;
+    justify-content: center;
 }
 

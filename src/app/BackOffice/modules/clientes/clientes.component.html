@@ -76,6 +76,6 @@
         </ng-template>
     </ng-template>
     
-    <mat-paginator class="mat-paginator" [pageSizeOptions]="[7, 14, 21]" showFirstLastButtons
+    <mat-paginator [ngClass]="{'disablePaginator': showProgressBar || !(clientesOff | async)?.length}" [pageSizeOptions]="[7, 14, 21]" showFirstLastButtons
     aria-label="Select page of periodic elements"></mat-paginator>
 </div>

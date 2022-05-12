@@ -42,8 +42,9 @@ export class PaymentModalComponent implements OnInit {
   public number: number = 0;
   public name: string;
   public splited;
+  public split;
   public teste;
-
+  
   openDialog(): void {
     const dialogRef = this.dialog.open(CustomerDialogComponent, {
       width: '1300px',
@@ -78,6 +79,7 @@ export class PaymentModalComponent implements OnInit {
       });
       dialogRef.afterClosed().subscribe(result => {
         this.splited = result;
+        this.split = this.eachtotal / this.splited[1];
       });
     } else {
       this.toastr.warning('No products to split!');
@@ -107,6 +109,7 @@ export class PaymentModalComponent implements OnInit {
         this.eachPrice();
       }
     });
+    this.splited = null;
     this.clickedIndex = -1;
   }
 
@@ -120,6 +123,7 @@ export class PaymentModalComponent implements OnInit {
         this.eachPrice();
       }
     });
+    this.splited = null;
     this.clickedIndexJ = -1;
   }
 
@@ -147,7 +151,7 @@ export class PaymentModalComponent implements OnInit {
 
     let total = 0;
     this.todo.forEach((item) => {
-      total += item.price * this.quantity * item.iva + item.price;
+      total += (item.price * this.quantity * item.iva) + item.price * this.quantity;
     });
     this.total = round(total, 2);
   }
@@ -159,7 +163,7 @@ export class PaymentModalComponent implements OnInit {
 
     let total = 0;
     this.done.forEach((item) => {
-      total += item.price * this.quantity * item.iva + item.price;
+      total += (item.price * this.quantity * item.iva) + item.price * this.quantity;
     });
     this.eachtotal = round(total, 2);
   }

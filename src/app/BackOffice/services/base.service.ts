@@ -5,11 +5,12 @@ import { Dexie } from 'dexie';
 import { ToastrService } from 'ngx-toastr';
 import { OnlineOfflineService } from './online-offline.service';
 import { tap } from 'rxjs/operators';
+import { CookieService } from 'ngx-cookie-service';
 
 @Inject({
   providedIn: 'root'
 })
-export abstract class BaseService<T extends { id: number, nif?: number, phone?: number, name?: string, category?: string }> {
+export abstract class BaseService<T extends { id: number, nif?: number, phone?: number, name?: string, id_category?: number }> {
 
   //variables dexie-indexedDB
   private db: Dexie = new Dexie('pos');
@@ -17,6 +18,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
   protected http!: HttpClient;
   protected onlineOfflineService!: OnlineOfflineService;
   protected toastr!: ToastrService;
+  protected cookieService: CookieService
 
   private sendData: boolean = false;
 
@@ -24,6 +26,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
     this.http = this.injector.get(HttpClient);
     this.onlineOfflineService = this.injector.get(OnlineOfflineService);
     this.toastr = this.injector.get(ToastrService);
+    this.cookieService = this.injector.get(CookieService);
     this.listenerStatusConnection(); //listener status connection
     this.startIndexedDb(); //start indexedDB
   }
@@ -60,7 +63,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
       mesa: 'id',
       artigo: 'id',
       categories: 'id',
-      subcategories: 'id',
+      subcategories: 'id, id_category',
     });
     this.table = this.db.table(this.nomeTabela);
   }
@@ -269,28 +272,60 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
     }
   }
 
+  public userId;
+
   //delete data from LocalStorage
   async deleteDataOffline(data: T) {
 
     switch (this.nomeTabela) {
+      case 'empregado':
+        try {
+          this.userId = this.cookieService.get('userId');
+          if (this.userId == data.id) {
+            this.toastr.warning('Não pode eliminar o seu próprio utilizador', 'Aviso');
+          } else {
+            await this.table.delete(data.id);
+            this.toastr.info(this.dataName + ' eliminado', 'Aviso');
+            this.refreshData.next();
+          }
+        } catch (error) {
+          this.toastr.error('Erro ao eliminar ' + this.dataName + ' localmente', 'Aviso');
+        }
+        break;
+
       case 'categories':
         try {
-          this.table = this.db.table('artigo');
+          // this.table = this.db.table('artigo');
+          // this.getDataOffline().subscribe(async (getData) => {
+          //   this.getData = getData.find(x => x.category == data.name);
+
+          //   if (this.getData === undefined) {
+          //     this.table = this.db.table(this.nomeTabela);
+          //     await this.table.delete(data.id);
+          //     this.toastr.info(this.dataName + ' eliminada', 'Aviso');
+          //   } else {
+          //     this.toastr.warning('Não é possível eliminar uma categoria que contém artigos associados', 'Aviso');
+          //   }
+          //   this.table = this.db.table(this.nomeTabela);
+          //   this.refreshData.next();
+          // });
+          this.table = this.db.table('subcategories');
           this.getDataOffline().subscribe(async (getData) => {
-            this.getData = getData.find(x => x.category == data.name);
+            this.getData = getData.find(x => x.id_category == data.id);
 
             if (this.getData === undefined) {
               this.table = this.db.table(this.nomeTabela);
               await this.table.delete(data.id);
               this.toastr.info(this.dataName + ' eliminada', 'Aviso');
+              this.table = this.db.table(this.nomeTabela);
+              this.refreshData.next();
             } else {
-              this.toastr.warning('Não é possível eliminar uma categoria que contém artigos associados', 'Aviso');
+              this.toastr.warning('Não é possível eliminar uma categoria que contém subcategorias associadas', 'Aviso');
             }
-            this.table = this.db.table(this.nomeTabela);
-            this.refreshData.next();
-          });
+
+          })
+
         } catch (error) {
-          console.log(error);
           this.toastr.error('Erro ao eliminar ' + this.dataName + ' localmente', 'Aviso');
         }
         break;
@@ -355,7 +390,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
     //    this.registerDataOffline(data); //register in indexedDB
     //    //console.log('salvar na base de dados local');
     //  }
-    console.log(data);
+    //console.log(data);
     this.registerDataOffline(data);
   }
 

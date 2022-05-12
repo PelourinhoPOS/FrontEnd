@@ -105,9 +105,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
       this.dataSourceCategories.data = data
     });
 
-    this.subcategoriesService.getDataOffline().pipe(
-      map(arr => arr.sort((a, b) => a.name.localeCompare(b.name)))
-    ).subscribe(data => {
+    this.subcategoriesService.getDataOffline().subscribe(data => {
 
       this.subcategoriesOff = of(data);
 
@@ -123,7 +121,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
           });
         });
       }
-      
+
     });
 
     setInterval(() => {

@@ -5,6 +5,7 @@ export class Artigo {
     iva: number;
     weight: number;
     id_category: number;
+    name_category?: string;
     image: string;
     synchronized?: boolean = false;
 }
