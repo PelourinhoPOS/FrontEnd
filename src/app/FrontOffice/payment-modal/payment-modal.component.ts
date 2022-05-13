@@ -27,9 +27,7 @@ export class PaymentModalComponent implements OnInit {
   ) { }
 
   public id;
-  public items;
   public new;
-  public quantity;
   public total;
   public eachtotal: number = 0;
   public totalIva;
@@ -96,15 +94,15 @@ export class PaymentModalComponent implements OnInit {
 
   getId(id) {
     this.productid = id;
-    console.log(id);
   }
 
   receiveDone() {
     this.getId(this.productid);
     this.todo.filter((item) => {
-      if (item.id === this.productid) {
+      if (item.product.id === this.productid) {
         this.done.push(item);
         this.todo.splice(this.todo.indexOf(item), 1);
+        console.log(this.done);
         this.totalPrice();
         this.eachPrice();
       }
@@ -116,7 +114,7 @@ export class PaymentModalComponent implements OnInit {
   receiveTodo() {
     this.getId(this.productid);
     this.done.filter((item) => {
-      if (item.id === this.productid) {
+      if (item.product.id === this.productid) {
         this.todo.push(item);
         this.done.splice(this.done.indexOf(item), 1);
         this.totalPrice();
@@ -136,9 +134,8 @@ export class PaymentModalComponent implements OnInit {
     this.mesasService.getDataOffline().subscribe((data: any) => {
       this.teste = data.find(x => x.id === this.id);
       this.teste.cart.forEach((item) => {
-        this.items = item.product;
-        this.quantity = item.quantity;
-        this.todo.push(this.items);
+        this.todo.push(item);
+        console.log(this.todo);
         this.totalPrice();
       });
     })
@@ -151,7 +148,7 @@ export class PaymentModalComponent implements OnInit {
 
     let total = 0;
     this.todo.forEach((item) => {
-      total += (item.price * this.quantity * item.iva) + item.price * this.quantity;
+      total += (item.product.price * item.quantity * item.product.iva) + item.product.price * item.quantity;
     });
     this.total = round(total, 2);
   }
@@ -163,7 +160,7 @@ export class PaymentModalComponent implements OnInit {
 
     let total = 0;
     this.done.forEach((item) => {
-      total += (item.price * this.quantity * item.iva) + item.price * this.quantity;
+      total += (item.product.price * item.quantity * item.product.iva) + item.product.price * item.quantity;
     });
     this.eachtotal = round(total, 2);
   }

@@ -16,10 +16,10 @@
         <div class="example-list">
             <div class="example-box" *ngFor="let items of todo; let i = index"
                 [ngClass]="{'active': clickedIndex == i }" (click)="clickedIndex = i; changeClick1()"
-                (click)="getId(items.id)">
-                <span>{{items.name}}</span>
-                <span>{{items.price}}</span>
-                <span>{{this.quantity}}</span>
+                (click)="getId(items.product.id)">
+                <span>{{items.product.name}}</span>
+                <span>{{items.product.price}}</span>
+                <span>{{items.quantity}}</span>
             </div>
         </div>
         <p>Total: {{this.total}}€</p>
@@ -64,10 +64,10 @@
         <div class="example-list">
             <div class="example-box" *ngFor="let items of done; let j = index"
                 [ngClass]="{'active': clickedIndexJ == j }" (click)="clickedIndexJ = j; changeClick2()"
-                (click)="getId(items.id)">
-                <span>{{items.name}}</span>
-                <span>{{items.price}}</span>
-                <span>{{this.quantity}}</span>
+                (click)="getId(items.product.id)">
+                <span>{{items.product.name}}</span>
+                <span>{{items.product.price}}</span>
+                <span>{{items.quantity}}</span>
             </div>
         </div>
         <p>Total: {{this.eachtotal}}€</p>

@@ -17,9 +17,10 @@
       <div class="overflow">
         <div *ngFor="let item of cart" (click)="openProductDialog(item.product.id)">
           <div class="line">
-            <mat-icon (click)="removeProduct(item.product.id)" (click)="totalPrice()">close</mat-icon>
+            <mat-icon class="x" (click)="removeProduct(item.product.id)" (click)="totalPrice()">close</mat-icon>
             <span *ngIf="this.cart">{{ item.product.name }} </span>
-            <span class="price_card">{{ item.product.price}}€</span>
+            <span class="iva_card">{{item.product.iva * 100}}%</span>
+            <span class="price_card">{{ item.product.price }}€</span>
             <span class="quantity">{{ item.quantity }}</span>
           </div>
           <hr style="width: 100%; height: 1px" />
@@ -50,7 +51,7 @@
           <div class="card" id="{{ prod.id }}" (click)="addProduct(prod.id); getProductsId()">
             <img class="productImg" src="{{ prod.image }}" alt="" />
             <span class="productName">{{ prod.name }}</span>
-            <span class="productWeight">{{ prod.weight }}</span>
+            <span class="productWeight">{{ prod.unity_value }} {{prod.sub_unity}}</span>
             <span class="productPrice">{{ prod.price }}€</span>
           </div>
         </mat-grid-tile>

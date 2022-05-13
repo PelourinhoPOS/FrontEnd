@@ -207,12 +207,18 @@ p {
 
 .quantity {
     position: absolute;
-    right: 30px;
+    right: 20px;
 }
+
+.iva_card {
+    position: absolute;
+    right: 50px;
+}
+
 
 .price_card {
     position: absolute;
-    right: 70px;
+    right: 100px;
 }
 
 .totalPrice {
@@ -243,4 +249,9 @@ button#pay {
 .iconBack {
     cursor: pointer;
     font-size: 35px
+}
+
+.x {
+    margin-left: -15px;
+    margin-right: 5px;
 }

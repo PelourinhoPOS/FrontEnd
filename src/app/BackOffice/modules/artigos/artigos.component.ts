@@ -91,14 +91,24 @@ export class ArtigosComponent implements OnInit {
         ).subscribe(data => {
           this.artigosOff = of(data);
 
-          for (let i = 0; i < data.length; i++) {
-            this.subcategoriesService.getLocalDataFromId('id', data[i].id_category).then(subcategorie => {
-              this.dataSource.data[i] = ({
-                ...data[i],
-                name_category: subcategorie[0].name,
-              });
-            });
-          }
+          this.dataSource.data = data
+
+          // for (let i = 0; i < data.length; i++) {
+          //   this.subcategoriesService.getLocalDataFromId('id', data[i].id_category).then(category => {
+          //     console.log(category);
+          //      this.dataSource.data[i] = ({
+          //        id: data[i].id,
+          //        name: data[i].name,
+          //        price:  data[i].price,
+          //        iva: data[i].iva,
+          //        weight: data[i].weight,
+          //        id_category: data[i].id_category,
+          //        name_category: category[0].name,
+          //        image: data[i].image,
+          //        synchronized: false
+          //      });
+          //   });
+          // }
 
           // this.dataSource.data = data
         })
@@ -156,8 +166,8 @@ export class ArtigosComponent implements OnInit {
   openCreateModal() {
     this.unselectRow();
     const dialogRef = this.dialog.open(CreateArticleModalComponent, {
-      height: '690px',
-      width: '770px',
+      height: '710px',
+      width: '870px',
     });
     dialogRef.afterClosed().subscribe(artigo => {
       console.log(artigo)
@@ -259,6 +269,9 @@ export class CreateArticleModalComponent implements OnInit {
   subcategorySelected = 0;
   subcategoryItems: any;
 
+  unitySelected = "peso";
+  subUnitySelected = "kg";
+
   ngOnInit(): void {
     //get the data from client and set it in the form
     this.getCategories();
@@ -274,6 +287,7 @@ export class CreateArticleModalComponent implements OnInit {
     } else {
       this.categorySelect(); //set the category data if the user don't change the select
       this.ivaSelect(); //set the iva data if the user don't change the select
+      this.unitySelect(); //set the unity data if the user don't change the select
     }
   }
 
@@ -360,6 +374,22 @@ export class CreateArticleModalComponent implements OnInit {
 
   ivaSelect() {
     this.artigo.iva = parseFloat(this.ivaSelected);
+  }
+
+  unitySelect() {
+    this.artigo.unity = this.unitySelected;
+
+    if (this.unitySelected == "peso") {
+      this.subUnitySelected = "kg";
+      this.artigo.sub_unity = this.subUnitySelected;
+    } else if (this.unitySelected == "volume") {
+      this.subUnitySelected = "litro";
+      this.artigo.sub_unity = this.subUnitySelected;
+    }
+  }
+
+  subunitySelect(){
+    this.artigo.sub_unity = this.subUnitySelected;
   }
 
 }

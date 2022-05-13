@@ -45,13 +45,15 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
 
   showProgressBar = false;
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild('paginatorCategories', { static: true }) paginator: MatPaginator;
+  @ViewChild('paginatorSubCategories', { static: true }) paginator1: MatPaginator;
+
   dataSourceCategories = new MatTableDataSource<Categories>();
   dataSourceSubCategories = new MatTableDataSource<SubCategories>();
 
   ngAfterViewInit() {
     this.dataSourceCategories.paginator = this.paginator;
-    this.dataSourceSubCategories.paginator = this.paginator;
+    this.dataSourceSubCategories.paginator = this.paginator1;
   }
 
   ngOnInit(): void {
@@ -105,22 +107,25 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
       this.dataSourceCategories.data = data
     });
 
-    this.subcategoriesService.getDataOffline().subscribe(data => {
+    this.subcategoriesService.getDataOffline().pipe(
+      map(arr => arr.sort((a, b) => b.id - a.id))
+    ).subscribe(data => {
 
       this.subcategoriesOff = of(data);
+      this.dataSourceSubCategories.data = data
 
-      for (let i = 0; i < data.length; i++) {
-        this.categoriesService.getLocalDataFromId('id', data[i].id_category).then(category => {
-          this.dataSourceSubCategories.data[i] = ({
-            id: data[i].id,
-            id_category: data[i].id_category,
-            category_name: category[0].name,
-            name: data[i].name,
-            image: data[i].image,
-            synchronized: false
-          });
-        });
-      }
+      // for (let i = 0; i < data.length; i++) {
+      //   this.categoriesService.getLocalDataFromId('id', data[i].id_category).then(category => {
+      //     this.dataSourceSubCategories.data[i] = ({
+      //       id: data[i].id,
+      //       id_category: data[i].id_category,
+      //       category_name: category[0].name,
+      //       name: data[i].name,
+      //       image: data[i].image,
+      //       synchronized: false
+      //     });
+      //   });
+      // }
 
     });
 

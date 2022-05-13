@@ -73,7 +73,7 @@
                 </ng-template>
                 <!-- <button (click)="synchronizeData()">Sincronizar dados</button> -->
             </ng-template>
-            <mat-paginator [ngClass]="{'disablePaginator': showProgressBar || !(categoriesOff | async)?.length}"
+            <mat-paginator #paginatorCategories [ngClass]="{'disablePaginator': showProgressBar || !(categoriesOff | async)?.length}"
                 [pageSizeOptions]="[7, 14, 21]" showFirstLastButtons aria-label="Select page of periodic elements">
             </mat-paginator>
         </mat-tab>
@@ -95,10 +95,6 @@
 
                 <ng-template #elseBlock3>
                     <table mat-table [dataSource]="dataSourceSubCategories" class="mat-elevation-z8 dataTable">
-                        <!-- <ng-container matColumnDef="position">
-                            <th mat-header-cell *matHeaderCellDef> Id. </th>
-                            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-                        </ng-container> -->
 
                         <ng-container matColumnDef="image">
                             <th mat-header-cell *matHeaderCellDef> </th>
@@ -114,11 +110,6 @@
                             <th mat-header-cell *matHeaderCellDef> Categoria </th>
                             <td mat-cell *matCellDef="let element"> {{element.category_name}} </td>
                         </ng-container>
-
-                        <!-- <ng-container matColumnDef="county">
-                            <th mat-header-cell *matHeaderCellDef> Localidade </th>
-                            <td mat-cell *matCellDef="let element"> {{element.county}} </td>
-                        </ng-container> -->
 
                         <ng-container matColumnDef="state">
                             <th mat-header-cell *matHeaderCellDef> Estado </th>
@@ -139,8 +130,7 @@
                 </ng-template>
                 <!-- <button (click)="synchronizeData()">Sincronizar dados</button> -->
             </ng-template>
-
-            <mat-paginator [ngClass]="{'disablePaginator': showProgressBar || !(subcategoriesOff | async)?.length}"
+            <mat-paginator #paginatorSubCategories [ngClass]="{'disablePaginator': showProgressBar || !(subcategoriesOff | async)?.length}"
                 [pageSizeOptions]="[7, 14, 21]" showFirstLastButtons aria-label="Select page of periodic elements">
             </mat-paginator>
         </mat-tab>

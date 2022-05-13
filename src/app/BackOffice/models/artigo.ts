@@ -3,9 +3,12 @@ export class Artigo {
     name: string;
     price: number;
     iva: number;
-    weight: number;
+    unity: string;
+    sub_unity: string;
+    unity_value: string;
     id_category: number;
     name_category?: string;
     image: string;
+    description: string;
     synchronized?: boolean = false;
 }
