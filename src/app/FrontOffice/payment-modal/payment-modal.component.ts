@@ -102,7 +102,6 @@ export class PaymentModalComponent implements OnInit {
       if (item.product.id === this.productid) {
         this.done.push(item);
         this.todo.splice(this.todo.indexOf(item), 1);
-        console.log(this.done);
         this.totalPrice();
         this.eachPrice();
       }

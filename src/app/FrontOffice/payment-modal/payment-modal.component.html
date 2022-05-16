@@ -19,6 +19,8 @@
                 (click)="getId(items.product.id)">
                 <span>{{items.product.name}}</span>
                 <span>{{items.product.price}}</span>
+                <span>{{items.product.iva * 100}}%</span>
+                <span>{{items.product.unity_value }}{{items.product.sub_unity}}</span>
                 <span>{{items.quantity}}</span>
             </div>
         </div>
@@ -67,6 +69,8 @@
                 (click)="getId(items.product.id)">
                 <span>{{items.product.name}}</span>
                 <span>{{items.product.price}}</span>
+                <span>{{items.product.iva * 100}}%</span>
+                <span>{{items.product.unity_value }}{{items.product.sub_unity}}</span>
                 <span>{{items.quantity}}</span>
             </div>
         </div>
