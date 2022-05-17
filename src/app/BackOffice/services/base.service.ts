@@ -10,11 +10,12 @@ import { CookieService } from 'ngx-cookie-service';
 @Inject({
   providedIn: 'root'
 })
-export abstract class BaseService<T extends { id: number, nif?: number, phone?: number, name?: string, id_category?: number }> {
+export abstract class BaseService<T extends { id: number, nif?: number, phone?: number, name?: string, id_category?: number, teste?: T[] }> {
 
   //variables dexie-indexedDB
   private db: Dexie = new Dexie('pos');
   private table!: Dexie.Table<T, any>;
+  private table1!: Dexie.Table<T, any>;
   protected http!: HttpClient;
   protected onlineOfflineService!: OnlineOfflineService;
   protected toastr!: ToastrService;
@@ -358,52 +359,66 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
     return data;
   }
 
+  getCategoryFromSubcategory() {
+
+    this.table1 = this.db.table('subcategories');
+    return this.db.transaction('r', [this.table, this.table1], async () => {
+      const categories = await this.table.get({ id: 1});
+      // Query by "foreign key" on vehicles:
+      const categoriesSubcategories = await this.table1.where({ id_category: categories.id }).toArray();
+      // Include the vehicles in the result:
+      categories.teste = categoriesSubcategories;
+      return categories;
+    });
+    
+  }
+
   //send data to API when online
   async sendDatatoAPI() {
 
-    this.sendData = true;
+      this.sendData = true;
 
-    try {
-      const allData: T[] = await this.table.toArray();
+      try {
+        const allData: T[] = await this.table.toArray();
 
-      for (const data of allData) {
-        this.registerAPI(data);
-        await this.table.delete(data.id);
-        //console.log('eliminou localmente')
+        for (const data of allData) {
+          this.registerAPI(data);
+          await this.table.delete(data.id);
+          //console.log('eliminou localmente')
+        }
+
+        //when data in indexedDB is send to API, send the notification to the user
+        if (allData.length > 0) {
+          this.toastr.info(this.dataName + 's enviados para o servidor!', 'Aviso');
+        }
+      } catch (error) {
+        this.toastr.error(this.dataName + 's não enviados para o servidor, tente mais tarde', 'Aviso');
       }
 
-      //when data in indexedDB is send to API, send the notification to the user
-      if (allData.length > 0) {
-        this.toastr.info(this.dataName + 's enviados para o servidor!', 'Aviso');
-      }
-    } catch (error) {
-      this.toastr.error(this.dataName + 's não enviados para o servidor, tente mais tarde', 'Aviso');
     }
 
-  }
+    //register function - if online register in api, if offline register in indexedDB
+    register(data: T) {
+      //  if (this.onlineOfflineService.isOnline) { //if online
+      //    this.registerAPI(data); //register in api
+      //  } else { //if offline
+      //    this.registerDataOffline(data); //register in indexedDB
+      //    //console.log('salvar na base de dados local');
+      //  }
+      //console.log(data);
+      this.registerDataOffline(data);
+    }
 
-  //register function - if online register in api, if offline register in indexedDB
-  register(data: T) {
-    //  if (this.onlineOfflineService.isOnline) { //if online
-    //    this.registerAPI(data); //register in api
-    //  } else { //if offline
-    //    this.registerDataOffline(data); //register in indexedDB
-    //    //console.log('salvar na base de dados local');
-    //  }
-    //console.log(data);
-    this.registerDataOffline(data);
-  }
+    update(data: T) {
+      this.updateDataOffline(data);
+    }
 
-  update(data: T) {
-    this.updateDataOffline(data);
-  }
+    delete (data: T) {
+      this.deleteDataOffline(data);
+    }
 
-  delete(data: T) {
-    this.deleteDataOffline(data);
+    //list data from API
+    list(): Observable < T[] > {
+      return this.http.get<T[]>(this.urlAPI);
+    }
   }
-
-  //list data from API
-  list(): Observable<T[]> {
-    return this.http.get<T[]>(this.urlAPI);
-  }
-}

@@ -263,6 +263,7 @@ export class CreateArticleModalComponent implements OnInit {
   fileName = '';
   url = './assets/images/user.png';
   ivaSelected = "0.23";
+
   categorySelected = 1;
   categoryItems: any;
 
@@ -282,8 +283,13 @@ export class CreateArticleModalComponent implements OnInit {
       this.artigo = this.data.values; //set the data in the form
       this.fileName = 'Alterar imagem'; //set the file name
       this.url = this.artigo.image; //set the photo in the form
-      this.subcategorySelected = this.artigo.id_category; //set the category in the form
+      this.categorySelected = this.artigo.id_category; //set the category in the form
+      this.subcategorySelected = this.artigo.id_subcategory; //set the subcategory in the form
+      this.unitySelected = this.artigo.unity; //set the unity in the form
+      this.subUnitySelected = this.artigo.sub_unity; //set the sub unity in the form
       this.ivaSelected = (this.artigo.iva).toString(); //set the iva in the form
+      this.getSubcategories(); //call the function to get the subcategories
+
     } else {
       this.categorySelect(); //set the category data if the user don't change the select
       this.ivaSelect(); //set the iva data if the user don't change the select
@@ -300,16 +306,66 @@ export class CreateArticleModalComponent implements OnInit {
 
   getSubcategories() {
     this.subcategorieServive.getLocalDataFromId('id_category', this.categorySelected).then(data => {
-
       if (data.length) {
-        this.subcategorySelected = data[0].id;
-        this.artigo.id_category = this.subcategorySelected;
+        // this.subcategorySelected = data[0].id;
+        this.artigo.id_subcategory = this.subcategorySelected;
         this.subcategoryItems = data
       } else {
         this.subcategorySelected = 0;
       }
     });
   }
+
+  categorySelect() {
+    this.artigo.id_category = this.categorySelected;
+    this.getSubcategories();
+  }
+
+  subcategorySelect() {
+    this.artigo.id_subcategory = this.subcategorySelected;
+  }
+
+  ivaSelect() {
+    this.artigo.iva = parseFloat(this.ivaSelected);
+  }
+
+  unitySelect() {
+    this.artigo.unity = this.unitySelected;
+
+    if (this.unitySelected == "peso") {
+      this.subUnitySelected = "kg";
+      this.artigo.sub_unity = this.subUnitySelected;
+    } else if (this.unitySelected == "volume") {
+      this.subUnitySelected = "litro";
+      this.artigo.sub_unity = this.subUnitySelected;
+    }
+  }
+
+  subunitySelect() {
+    this.artigo.sub_unity = this.subUnitySelected;
+  }
+
+
+  onFileSelected(event) {
+
+    const file: File = event.target.files[0];
+
+    if (file) {
+      var reader = new FileReader();
+      reader.readAsDataURL(file)
+      reader.onload = (event: any) => {
+        this.url = event.target.result;
+        this.artigo.image = this.url;
+      }
+      // this.fileName = file.name;
+      // const formData = new FormData();
+      // formData.append("thumbnail", file);
+      // console.log(file);
+      // const upload$ = this.http.post("/api/thumbnail-upload", formData);
+      // upload$.subscribe();
+    }
+  }
+
 
   //open the modal keyboard
   openKeyboard(inputName: string, type: string, data: any, maxLength?: number) {
@@ -342,54 +398,6 @@ export class CreateArticleModalComponent implements OnInit {
           break;
       }
     });
-  }
-
-  onFileSelected(event) {
-
-    const file: File = event.target.files[0];
-
-    if (file) {
-      var reader = new FileReader();
-      reader.readAsDataURL(file)
-      reader.onload = (event: any) => {
-        this.url = event.target.result;
-        this.artigo.image = this.url;
-      }
-      // this.fileName = file.name;
-      // const formData = new FormData();
-      // formData.append("thumbnail", file);
-      // console.log(file);
-      // const upload$ = this.http.post("/api/thumbnail-upload", formData);
-      // upload$.subscribe();
-    }
-  }
-
-  categorySelect() {
-    this.getSubcategories();
-  }
-
-  subcategorySelect() {
-    this.artigo.id_category = this.subcategorySelected;
-  }
-
-  ivaSelect() {
-    this.artigo.iva = parseFloat(this.ivaSelected);
-  }
-
-  unitySelect() {
-    this.artigo.unity = this.unitySelected;
-
-    if (this.unitySelected == "peso") {
-      this.subUnitySelected = "kg";
-      this.artigo.sub_unity = this.subUnitySelected;
-    } else if (this.unitySelected == "volume") {
-      this.subUnitySelected = "litro";
-      this.artigo.sub_unity = this.subUnitySelected;
-    }
-  }
-
-  subunitySelect(){
-    this.artigo.sub_unity = this.subUnitySelected;
   }
 
 }

@@ -2,8 +2,10 @@
     <span *ngIf="!this.data.split">Total: {{this.data.value}}€</span>
     <span>Total: {{this.data.split[0]}} </span>
     <span>Insert: {{this.price}}€</span>
-    <span *ngIf="!this.data.split">Change: {{this.totalchange}} </span>
-    <span *ngIf="this.data.split">Change: {{this.splitchange}} </span>
+    <span *ngIf="!this.data.split">Difference: {{this.totalchange}} </span>
+    <span *ngIf="!this.data.split">Change: {{this.change}}</span>
+    <span *ngIf="this.data.split">Difference: {{this.splitchange}} </span>
+    <span *ngIf="this.data.split">Change: {{this.change}}</span>
 </div>
 <div class="first-row">
     <button (click)="addNumber(0.01)">0.01</button>

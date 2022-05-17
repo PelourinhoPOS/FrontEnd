@@ -19,6 +19,7 @@ export class MoneyDialogComponent implements OnInit {
   public price: number = 0;
   public totalchange: number = 0;
   public splitchange: number = 0;
+  public change: number = 0;
 
   onNoClick(): void {
 
@@ -36,6 +37,16 @@ export class MoneyDialogComponent implements OnInit {
 
     this.totalchange = round((this.price - this.data.value) * -1, 2);
     this.splitchange = round((this.price - this.data.split[0]) * -1, 2);
+
+    if (this.splitchange < 0) {
+      this.change = this.splitchange * -1;
+      this.splitchange = 0;
+    }
+
+    if (this.totalchange < 0) {
+      this.change = this.totalchange * -1;
+      this.totalchange = 0;
+    }
   }
 
   onOkClick() {
