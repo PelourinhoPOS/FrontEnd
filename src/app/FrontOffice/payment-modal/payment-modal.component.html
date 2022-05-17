@@ -26,7 +26,7 @@
         </div>
         <p>Total: {{this.total}}€</p>
         <div style="display: flex;">
-            <div class="methods">
+            <div class="methods" (click)="payment()">
                 <button>Money</button>
             </div>
             <div class="methods">
@@ -39,8 +39,10 @@
         <div class="splitColumn">
             <span class="toPay">To Pay:</span>
             <span class="toPay" id="val" *ngIf="!this.splited">{{this.eachtotal}}€</span>
-            <span class="toPay" id="val" *ngIf="this.splited && this.done.length > 0">{{this.splited[1]}} x
-                {{this.split}}€</span>
+            <span class="toPay" id="val"
+                *ngIf="this.splited && this.splited[1] > 0 && this.done.length > 0">{{this.splited[1]}} x
+                {{this.splited[0]}}€</span>
+            <span class="toPay" id="val" *ngIf="this.splited && this.splited[1] === 0 "> 0€</span>
             <span class="toPay" id="eur" *ngIf="this.done.length < 1"></span>
         </div>
     </div>

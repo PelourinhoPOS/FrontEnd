@@ -7,9 +7,11 @@ import { CreateClientModalComponent } from 'src/app/BackOffice/modules/clientes/
 import { SplitMoneyDialogComponent } from 'src/app/FrontOffice/split-money-dialog/split-money-dialog.component';
 import { ClientesService } from 'src/app/BackOffice/modules/clientes/clientes.service';
 import { ToastrService } from 'ngx-toastr';
+import { MoneyDialogComponent } from '../money-dialog/money-dialog.component';
 
 export interface DialogData {
   value: number;
+  split: number;
 }
 
 @Component({
@@ -84,6 +86,20 @@ export class PaymentModalComponent implements OnInit {
     }
   }
 
+  payment():void{
+    const dialogRef = this.dialog.open(MoneyDialogComponent,{
+      width: '700px',
+      height: '600px',
+      data: { 
+        value: this.eachtotal,
+        split: this.splited,
+       }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+    });
+  }
+
   changeClick1() {
     this.clickedIndexJ = -1;
   }
@@ -134,7 +150,6 @@ export class PaymentModalComponent implements OnInit {
       this.teste = data.find(x => x.id === this.id);
       this.teste.cart.forEach((item) => {
         this.todo.push(item);
-        console.log(this.todo);
         this.totalPrice();
       });
     })

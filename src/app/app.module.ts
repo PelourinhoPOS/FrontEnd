@@ -36,7 +36,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from 'src/environments/environment';
 import { CustomerDialogComponent } from './FrontOffice/customer-dialog/customer-dialog.component';
 import { SplitMoneyDialogComponent } from './FrontOffice/split-money-dialog/split-money-dialog.component';
-import { MatTableModule } from '@angular/material/table'
+import { MatTableModule } from '@angular/material/table';
+import { MoneyDialogComponent } from './FrontOffice/money-dialog/money-dialog.component'
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { MatTableModule } from '@angular/material/table'
     ChangeProductDialogComponent,
     PaymentModalComponent,
     CustomerDialogComponent,
-    SplitMoneyDialogComponent
+    SplitMoneyDialogComponent,
+    MoneyDialogComponent
   ],
   imports: [
     HttpClientModule,

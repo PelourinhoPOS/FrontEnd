@@ -17,27 +17,30 @@ export class SplitMoneyDialogComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<SplitMoneyDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
-    public person: number = 1;
-    public split;
+  public person: number = 1;
+  public split;
 
-    increase() {
-      this.person++;
-      if (this.person > this.person) {
-        this.person= this.person;
-      }
+  increase() {
+    this.person++;
+    if (this.person > this.person) {
+      this.person = this.person;
     }
-  
-    decrease() {
-      this.person--;
-      if (this.person < 1) {
-        this.person = 1;
-      }
-    }
+  }
 
-    splitMoney() {
-      this.split = this.data.value / this.person;
-      this.dialogRef.close([this.split, this.person]);
+  decrease() {
+    this.person--;
+    if (this.person < 1) {
+      this.person = 1;
     }
+  }
+
+  splitMoney() {
+    const round = (num, places) => {
+      return +parseFloat(num).toFixed(places);
+    };
+    this.split = round(this.data.value / this.person, 2);
+    this.dialogRef.close([this.split, this.person]);
+  }
 
   ngOnInit(): void {
   }
