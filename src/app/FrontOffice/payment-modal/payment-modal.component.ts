@@ -44,7 +44,7 @@ export class PaymentModalComponent implements OnInit {
   public splited;
   public split;
   public teste;
-  
+
   openDialog(): void {
     const dialogRef = this.dialog.open(CustomerDialogComponent, {
       width: '1300px',
@@ -86,18 +86,22 @@ export class PaymentModalComponent implements OnInit {
     }
   }
 
-  payment():void{
-    const dialogRef = this.dialog.open(MoneyDialogComponent,{
-      width: '700px',
-      height: '600px',
-      data: { 
-        value: this.eachtotal,
-        split: this.splited,
-       }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-    });
+  payment(): void {
+    if(this.done.length > 0) {
+      const dialogRef = this.dialog.open(MoneyDialogComponent, {
+        width: '700px',
+        height: '550px',
+        data: {
+          value: this.eachtotal,
+          split: this.splited,
+        }
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(result);
+      });
+    } else {
+      this.toastr.warning('No products to pay!');
+    }
   }
 
   changeClick1() {

@@ -5,18 +5,71 @@
 
 button {
     padding: 10px;
-    width: 100px;
-    height: 50px;
-    background-color: #eaece5;
+    width: 120px;
+    height: 55px;
     color: black;
+    background-color: white;
     font-weight: bold;
     font-size: 20px;
     border: none;
-    border-bottom: 1px solid rgb(207, 207, 207);
+    border: 1px solid rgb(207, 207, 207);
+    border-radius: 5px;
     margin: 10px;
     cursor: pointer;
+    border-bottom: 2px solid #1E0E38;;
 }
 
-button#noBorder {
+button#bottom{
+    width: 140px;
+    height: 50px;
+    background-color: orange;
     border: none;
+    font-size: 18px;
+    border-radius: 10px;
+}
+
+button#pay{
+    width: 140px;
+    height: 50px;
+    background-color: #1E0E38;
+    border: none;
+    font-size: 18px;
+    border-radius: 10px;
+    color: white;
+}
+
+.align{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #D7D0FF;
+}
+
+.top{
+    display: flex;
+    width: 100%;
+    font-family: Ubuntu;
+    font-size: 18px;
+    font-weight: 500;
+    justify-content: center;
+    margin: 20px 0px 20px 0px;
+}
+
+.totalBox{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 260px;
+    background-color: #2B303C;
+    color: white;
+    height: 45px;
+}
+
+.totalBox#change{
+    margin-left: 20px;
+    color: black;
+    background-color: white;
+    border: 1px solid #1E0E38;
 }

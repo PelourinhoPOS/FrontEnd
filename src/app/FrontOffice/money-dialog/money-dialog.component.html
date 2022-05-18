@@ -1,36 +1,43 @@
-<div style="display: flex; flex-direction: column;">
-    <span *ngIf="!this.data.split">Total: {{this.data.value}}€</span>
-    <span>Total: {{this.data.split[0]}} </span>
-    <span>Insert: {{this.price}}€</span>
-    <span *ngIf="!this.data.split">Difference: {{this.totalchange}} </span>
-    <span *ngIf="!this.data.split">Change: {{this.change}}</span>
-    <span *ngIf="this.data.split">Difference: {{this.splitchange}} </span>
-    <span *ngIf="this.data.split">Change: {{this.change}}</span>
+<div class="align">
+    <div class="top">
+        <div class="totalBox">
+            <span *ngIf="!this.data.split">Total: {{this.data.value}}€</span>
+            <span>Total: {{this.data.split[0]}}€</span>
+            <span>Insert: {{this.price}}€</span>
+        </div>
+        <div class="totalBox" id="change">
+            <span *ngIf="!this.data.split ">Missing: {{this.totalchange}}€</span>
+            <span *ngIf="!this.data.split">Change: {{this.changetotal}}€</span>
+            <span *ngIf="this.data.split">Missing: {{this.splitchange}}€</span>
+            <span *ngIf="this.data.split">Change: {{this.change}}€</span>
+        </div>
+    </div>
+    <div class="first-row">
+        <button (click)="addNumber(0.01)">0.01</button>
+        <button (click)="addNumber(0.02)">0.02</button>
+        <button (click)="addNumber(0.05)">0.05</button>
+        <button (click)="addNumber(0.10)">0.10</button>
+    </div>
+    <div class="second-row">
+        <button (click)="addNumber(0.20)">0.20</button>
+        <button (click)="addNumber(0.50)">0.50</button>
+        <button (click)="addNumber(1)">1</button>
+        <button (click)="addNumber(2)">2</button>
+    </div>
+    <div class="third-row">
+        <button (click)="addNumber(5)">5</button>
+        <button (click)="addNumber(10)">10</button>
+        <button (click)="addNumber(20)">20</button>
+        <button (click)="addNumber(50)">50</button>
+    </div>
+    <div class="fourth-row">
+        <button (click)="addNumber(100)">100</button>
+        <button (click)="addNumber(200)">200</button>
+        <button (click)="addNumber(500)">500</button>
+        <button (click)="reset()">C</button>
+    </div>
+    <div style="display:flex; margin-top: 10px;">
+        <button id="bottom" (click)="insertTotal()">Exact Amount</button>
+        <button id="pay" (click)="onNoClick()">Pay</button>
+    </div>
 </div>
-<div class="first-row">
-    <button (click)="addNumber(0.01)">0.01</button>
-    <button (click)="addNumber(0.02)">0.02</button>
-    <button (click)="addNumber(0.05)">0.05</button>
-</div>
-<div class="second-row">
-    <button (click)="addNumber(0.10)">0.10</button>
-    <button (click)="addNumber(0.20)">0.20</button>
-    <button (click)="addNumber(0.50)">0.50</button>
-</div>
-<div class="third-row">
-    <button (click)="addNumber(1)">1</button>
-    <button (click)="addNumber(2)">2</button>
-    <button (click)="addNumber(5)">5</button>
-</div>
-<div class="fourth-row">
-    <button id="noBorder" (click)="addNumber(10)">10</button>
-    <button id="noBorder" (click)="addNumber(20)">20</button>
-    <button id="noBorder" (click)="addNumber(50)">50</button>
-</div>
-<div class="fifth-row">
-    <button id="noBorder" (click)="addNumber(100)">100</button>
-    <button id="noBorder" (click)="addNumber(200)">200</button>
-    <button id="noBorder" (click)="addNumber(500)">500</button>
-</div>
-
-<button (click)="onNoClick()">Pay</button>
