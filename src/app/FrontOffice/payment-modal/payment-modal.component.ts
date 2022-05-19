@@ -8,6 +8,7 @@ import { SplitMoneyDialogComponent } from 'src/app/FrontOffice/split-money-dialo
 import { ClientesService } from 'src/app/BackOffice/modules/clientes/clientes.service';
 import { ToastrService } from 'ngx-toastr';
 import { MoneyDialogComponent } from '../money-dialog/money-dialog.component';
+import { Mesa } from 'src/app/BackOffice/models/mesa';
 
 export interface DialogData {
   value: number;
@@ -44,6 +45,8 @@ export class PaymentModalComponent implements OnInit {
   public splited;
   public split;
   public teste;
+  public result;
+  public iva;
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CustomerDialogComponent, {
@@ -87,7 +90,7 @@ export class PaymentModalComponent implements OnInit {
   }
 
   payment(): void {
-    if(this.done.length > 0) {
+    if (this.done.length > 0) {
       const dialogRef = this.dialog.open(MoneyDialogComponent, {
         width: '700px',
         height: '550px',
@@ -97,7 +100,21 @@ export class PaymentModalComponent implements OnInit {
         }
       });
       dialogRef.afterClosed().subscribe(result => {
-        console.log(result);
+        this.result = result;
+
+        if (this.result >= 0) {
+          this.refreshItems();
+          this.done = [];
+          this.eachtotal = 0;
+        }
+
+        if (this.result.length > 0) {
+          if (this.result[1] === 0) {
+            this.refreshItems();
+            this.done = [];
+            this.eachtotal = 0;
+          }
+        }
       });
     } else {
       this.toastr.warning('No products to pay!');
@@ -120,10 +137,20 @@ export class PaymentModalComponent implements OnInit {
     this.getId(this.productid);
     this.todo.filter((item) => {
       if (item.product.id === this.productid) {
-        this.done.push(item);
-        this.todo.splice(this.todo.indexOf(item), 1);
-        this.totalPrice();
-        this.eachPrice();
+        if (item.quantity > 0) {
+          item.quantity -=1;
+          this.done.push(item);
+          this.totalPrice();
+          this.eachPrice();
+        } else {
+          this.todo.splice(this.todo.indexOf(item), 1);
+          this.totalPrice();
+          this.eachPrice();
+        }
+        // this.done.push(item);
+        // this.todo.splice(this.todo.indexOf(item), 1);
+        // this.totalPrice();
+        // this.eachPrice();
       }
     });
     this.splited = null;
@@ -149,14 +176,25 @@ export class PaymentModalComponent implements OnInit {
   }
 
   getItems() {
-
     this.mesasService.getDataOffline().subscribe((data: any) => {
       this.teste = data.find(x => x.id === this.id);
       this.teste.cart.forEach((item) => {
+        this.iva = item.product.price * item.product.iva
+        this.iva = parseFloat(this.iva.toFixed(2));
         this.todo.push(item);
         this.totalPrice();
       });
     })
+  }
+
+  refreshItems() {
+
+    let mesa: Mesa = {
+      id: this.id,
+      cart: this.todo,
+    };
+
+    this.mesasService.update(mesa)
   }
 
   totalPrice() {

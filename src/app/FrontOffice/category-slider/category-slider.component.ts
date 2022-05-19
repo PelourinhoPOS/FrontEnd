@@ -20,31 +20,28 @@ export class CategorySliderComponent implements OnInit {
 
   constructor(private categoryService: CategoriesService, private artigosService: ArtigosService, private subcategoryService: SubcategoriesService) { }
 
-  ngOnInit(): void {
-    this.getCategories();
-  }
-
+  
   getCategoryItems(id) {
     this.artigosService.getDataOffline().subscribe(data => {
       this.categoryItems = data.filter(item => item.id_category == id);
       console.log(this.categoryItems);
     });
-
+    
     // db.collection('products')
     //   .doc({ category: name })
     //   .get()
     //   .then((categoryItems) => {
-    //     this.categoryItems = categoryItems;
-    //     console.log(this.categoryItems.name);
-    //   });
-  }
-
-  getCategories() {
-    this.categoryService.getDataOffline().subscribe(data => {
-      this.categories = data;
-    })
-  }
-
+      //     this.categoryItems = categoryItems;
+      //     console.log(this.categoryItems.name);
+      //   });
+    }
+    
+    getCategories() {
+      this.categoryService.getDataOffline().subscribe(data => {
+        this.categories = data;
+      })
+    }
+    
   teste(id: number): number {
     return id;
   }
@@ -52,7 +49,7 @@ export class CategorySliderComponent implements OnInit {
   selectCategory(id: number) {
     let categoryData = document.getElementById('card ' + id);
     let oldCategoryData = document.getElementById('card ' + this.selectedID);
-
+    
     if (id != this.selectedID) {
       //console.log("id " + id + " selecionado")
       if (categoryData) {
@@ -66,4 +63,9 @@ export class CategorySliderComponent implements OnInit {
     }
     this.selectedID = id;
   }
+
+  ngOnInit(): void {
+    this.getCategories();
+  }
+  
 }

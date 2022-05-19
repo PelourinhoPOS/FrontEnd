@@ -18,8 +18,9 @@
                 [ngClass]="{'active': clickedIndex == i }" (click)="clickedIndex = i; changeClick1()"
                 (click)="getId(items.product.id)">
                 <span>{{items.product.name}}</span>
-                <span>{{items.product.price}}</span>
+                <span>{{items.product.price}}€</span>
                 <span>{{items.product.iva * 100}}%</span>
+                <span>{{this.iva}}€</span>
                 <span>{{items.product.unity_value }}{{items.product.sub_unity}}</span>
                 <span>{{items.quantity}}</span>
             </div>
@@ -38,12 +39,12 @@
         </div>
         <div class="splitColumn">
             <span class="toPay">To Pay:</span>
-            <span class="toPay" id="val" *ngIf="!this.splited">{{this.eachtotal}}€</span>
+            <span class="toPay" id="val" *ngIf="!this.splited && this.result != number">{{this.eachtotal}}€</span>
             <span class="toPay" id="val"
                 *ngIf="this.splited && this.splited[1] > 0 && this.done.length > 0">{{this.splited[1]}} x
                 {{this.splited[0]}}€</span>
             <span class="toPay" id="val" *ngIf="this.splited && this.splited[1] === 0 "> 0€</span>
-            <span class="toPay" id="eur" *ngIf="this.done.length < 1"></span>
+            <span class="toPay" id="val" *ngIf="this.result >= 0">{{this.result}}€</span>
         </div>
     </div>
     <div class="margins">

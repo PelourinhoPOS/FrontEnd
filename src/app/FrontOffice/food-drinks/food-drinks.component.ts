@@ -130,7 +130,7 @@ export class FoodDrinksComponent implements OnInit {
       (data => {
         product = data
 
-        if (!this.productarray.includes(id)) {
+        if (!this.productarray.includes(id) && this.boardId) {
           this.cart.push({ product: product[0], quantity: 1 });
           this.totalPrice();
         } else {

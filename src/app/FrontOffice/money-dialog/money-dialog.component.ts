@@ -22,6 +22,7 @@ export class MoneyDialogComponent implements OnInit {
   public splitchange: number = 0;
   public change: number = 0;
   public changetotal: number = 0;
+  public moneyMissing = false;
 
   onNoClick(): void {
 
@@ -29,14 +30,29 @@ export class MoneyDialogComponent implements OnInit {
     //   this.data.split[0] = 0;
     // } else this.data.split[1] = this.data.split[1] - 1;
 
-    if (this.data.value <= this.price) {
-      this.dialogRef.close();
-    } else if (this.data.split[0] <= this.price) {
-      this.data.split[1] = this.data.split[1] - 1;
-      this.dialogRef.close();
+    if (this.data.split === null && this.data.value <= this.price) {
+      this.moneyMissing = false;
+      this.dialogRef.close(this.data.value = 0);
+      this.toastr.success('Payment successful');
     } else {
+      this.moneyMissing = true;
+    }
+
+    if (this.data.split !== null) {
+      if (this.data.split[0] <= this.price) {
+        this.data.split[1] = this.data.split[1] - 1;
+        this.dialogRef.close([this.data.value, this.data.split[1]]);
+        this.moneyMissing = false;
+        this.toastr.success('Payment successful');
+      } else if (this.data.split[0] <= this.price) {
+        this.moneyMissing = true;
+      }
+    }
+
+    if (this.moneyMissing) {
       this.toastr.warning('There is money missing!');
     }
+
   }
 
   getChange() {
@@ -45,26 +61,27 @@ export class MoneyDialogComponent implements OnInit {
     };
 
     this.totalchange = round((this.price - this.data.value) * -1, 2);
-    this.splitchange = round((this.price - this.data.split[0]) * -1, 2);
+
+    if (this.data.split) {
+      this.splitchange = round((this.price - this.data.split[0]) * -1, 2);
+    }
 
     if (!this.data.split && this.totalchange < 0) {
-      alert('Não entra aqui');
-      // this.changetotal = this.totalchange * -1;
-      // console.log(this.changetotal);
-      // this.totalchange = 0;
-      // console.log(this.totalchange);
+      this.changetotal = this.totalchange * -1;
+      this.totalchange = 0;
     }
 
     if (this.data.split && this.splitchange < 0) {
+      this.splitchange = round((this.price - this.data.split[0]) * -1, 2);
       this.change = this.splitchange * -1;
       this.splitchange = 0;
     }
-
-
   }
 
   addNumber(nbr: number) {
     this.price += nbr;
+    this.price = parseFloat(this.price.toFixed(2));
+
     this.getChange();
   }
 
@@ -73,6 +90,7 @@ export class MoneyDialogComponent implements OnInit {
     this.totalchange = 0;
     this.splitchange = 0;
     this.change = 0;
+    this.changetotal = 0;
   }
 
   insertTotal() {
