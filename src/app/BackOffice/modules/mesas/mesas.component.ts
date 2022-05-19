@@ -32,7 +32,7 @@ export class MesasComponent implements OnInit, AfterViewInit {
 
   showProgressBar = false;
 
-  displayedColumns: string[] = ['name', 'capacity'];
+  displayedColumns: string[] = ['name', 'capacity', 'number', 'type'];
   dataSource = new MatTableDataSource<Mesa>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -43,6 +43,12 @@ export class MesasComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.listLocalData();
+
+    this.subscriptionData = this.mesasService.refreshData.subscribe(() => {
+      // this.listAPIdata();
+      this.listLocalData();
+      // this.listAllData();
+    });
   }
 
   //register data in API or local storage
@@ -191,41 +197,11 @@ export class MesasComponent implements OnInit, AfterViewInit {
   }
 
   //when component is closed, unsubscribe from the observable to avoid memory leaks
-  // ngOnDestroy(): void {
-  //   this.subscriptionData.unsubscribe();
-  // }
+  ngOnDestroy(): void {
+    this.subscriptionData.unsubscribe();
+  }
 
 }
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
-  { position: 11, name: 'Sodium', weight: 22.9897, symbol: 'Na' },
-  { position: 12, name: 'Magnesium', weight: 24.305, symbol: 'Mg' },
-  { position: 13, name: 'Aluminum', weight: 26.9815, symbol: 'Al' },
-  { position: 14, name: 'Silicon', weight: 28.0855, symbol: 'Si' },
-  { position: 15, name: 'Phosphorus', weight: 30.9738, symbol: 'P' },
-  { position: 16, name: 'Sulfur', weight: 32.065, symbol: 'S' },
-  { position: 17, name: 'Chlorine', weight: 35.453, symbol: 'Cl' },
-  { position: 18, name: 'Argon', weight: 39.948, symbol: 'Ar' },
-  { position: 19, name: 'Potassium', weight: 39.0983, symbol: 'K' },
-  { position: 20, name: 'Calcium', weight: 40.078, symbol: 'Ca' },
-];
 
 /////////////////////////// // CREATE EMPLOYEE MODAL COMPONENT // /////////////////////////////////////////////
 
@@ -245,7 +221,7 @@ export class CreateBoardModalComponent implements OnInit {
 
   fileName = '';
   url = './assets/images/user.png';
-  levelSelected = 'Empregado';
+  typeSelected = 'square';
 
   ngOnInit(): void {
     //get the data from client and set it in the form
@@ -253,6 +229,9 @@ export class CreateBoardModalComponent implements OnInit {
       this.update = true; //set update to true, to know if is update or create
       this.mesa = this.data.values; //set the data in the form
       this.fileName = 'Alterar imagem'; //set the file name
+      this.typeSelected = this.mesa.type; //set the type
+    } else {
+      this.typeSelect(); //set the default type
     }
 
   }
@@ -301,5 +280,9 @@ export class CreateBoardModalComponent implements OnInit {
           break;
       }
     });
+  }
+
+  typeSelect(){
+    this.mesa.type = this.typeSelected;
   }
 }

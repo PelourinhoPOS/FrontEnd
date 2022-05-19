@@ -29,11 +29,13 @@ export class MoneyDialogComponent implements OnInit {
     //   this.data.split[0] = 0;
     // } else this.data.split[1] = this.data.split[1] - 1;
 
-    if (this.data.split[0] === this.price && this.data.split[1] != 0) {
-      this.data.split[1] = this.data.split[1] - 1
+    if (this.data.value <= this.price) {
+      this.dialogRef.close();
+    } else if (this.data.split[0] <= this.price) {
+      this.data.split[1] = this.data.split[1] - 1;
       this.dialogRef.close();
     } else {
-      this.toastr. warning('There is money missing!');
+      this.toastr.warning('There is money missing!');
     }
   }
 
@@ -45,20 +47,24 @@ export class MoneyDialogComponent implements OnInit {
     this.totalchange = round((this.price - this.data.value) * -1, 2);
     this.splitchange = round((this.price - this.data.split[0]) * -1, 2);
 
-    if (this.splitchange < 0) {
+    if (!this.data.split && this.totalchange < 0) {
+      alert('Não entra aqui');
+      // this.changetotal = this.totalchange * -1;
+      // console.log(this.changetotal);
+      // this.totalchange = 0;
+      // console.log(this.totalchange);
+    }
+
+    if (this.data.split && this.splitchange < 0) {
       this.change = this.splitchange * -1;
-      console.log(this.change);
       this.splitchange = 0;
     }
 
-    if (this.totalchange < 0) {
-      this.changetotal = this.totalchange * -1;
-      this.totalchange = 0;
-    }
+
   }
 
   addNumber(nbr: number) {
-    this.price += nbr
+    this.price += nbr;
     this.getChange();
   }
 
@@ -70,7 +76,15 @@ export class MoneyDialogComponent implements OnInit {
   }
 
   insertTotal() {
-    this.price = this.data.split[0];
+    if (this.data.split) {
+      this.price = this.data.split[0];
+      this.change = 0;
+      this.splitchange = 0;
+    } else {
+      this.price = this.data.value;
+      this.totalchange = 0;
+      this.changetotal = 0;
+    }
   }
 
   ngOnInit(): void {

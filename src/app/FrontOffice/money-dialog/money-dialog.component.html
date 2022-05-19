@@ -2,11 +2,11 @@
     <div class="top">
         <div class="totalBox">
             <span *ngIf="!this.data.split">Total: {{this.data.value}}€</span>
-            <span>Total: {{this.data.split[0]}}€</span>
+            <span *ngIf="this.data.split">Total: {{this.data.split[0]}}€</span>
             <span>Insert: {{this.price}}€</span>
         </div>
         <div class="totalBox" id="change">
-            <span *ngIf="!this.data.split ">Missing: {{this.totalchange}}€</span>
+            <span *ngIf="!this.data.split">Missing: {{this.totalchange}}€</span>
             <span *ngIf="!this.data.split">Change: {{this.changetotal}}€</span>
             <span *ngIf="this.data.split">Missing: {{this.splitchange}}€</span>
             <span *ngIf="this.data.split">Change: {{this.change}}€</span>

@@ -29,6 +29,11 @@ export class BoardComponent implements OnInit {
 
   public subscriptionData!: Subscription; //subscription to refresh data
 
+  dragPosition = {
+    x: 0,
+    y: 0
+  }
+
   constructor(public dialog: MatDialog, private mesasService: MesasService, public authService: authenticationService, public cookieService: CookieService) { }
 
   ngOnInit(): void {
@@ -52,51 +57,62 @@ export class BoardComponent implements OnInit {
       this.boardData = data.find(x => x.id == id);
 
 
-    this.dialog.open(ChangeBoardDialogComponent, {
-      width: '540px',
-      height: '480px',
-      data: {
-        id: this.boardData.id,
-        name: this.boardData.name,
-        capacity: this.boardData.capacity,
-        number: this.boardData.number,
-        occupy: this.boardData.occupy,
-      }
-    });
-  })
+      this.dialog.open(ChangeBoardDialogComponent, {
+        width: '540px',
+        height: '480px',
+        data: {
+          id: this.boardData.id,
+          name: this.boardData.name,
+          capacity: this.boardData.capacity,
+          number: this.boardData.number,
+          occupy: this.boardData.occupy,
+        }
+      });
+    })
+  }
+
+  getPosition(el) {
+    let x = 0;
+    let y = 0;
+    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+      x += el.offsetLeft - el.scrollLeft;
+      y += el.offsetTop - el.scrollTop;
+      el = el.offsetParent;
+    }
+    return { top: y, left: x };
   }
 
   onDragEnded(event, id) {
-    this.position = event.source.getRootElement().getBoundingClientRect();
+
+    let element = event.source.getRootElement();
+    let boundingClientRect = element.getBoundingClientRect();
+    let parentPosition = this.getPosition(element);
 
     let position: any = {
       id: id,
-      bottom: this.position.bottom,
-      height: this.position.height,
-      left: this.position.left,
-      right: this.position.right,
-      top: this.position.top,
-      width: this.position.width,
-      x: this.position.x,
-      y: this.position.y,
+      dragPosition: {
+        x: (boundingClientRect.x - parentPosition.left),
+        y: (boundingClientRect.y - parentPosition.top),
+      }
     }
 
-    this.mesasService.updateDataOffline(position);
+    // this.position = event.source.getRootElement().getBoundingClientRect();
 
-    
-    // db.collection('boards').doc({ id: id }).update({
-    //   position: {
-    //     bottom: this.position.bottom,
-    //     height: this.position.height,
-    //     left: this.position.left,
-    //     right: this.position.right,
-    //     top: this.position.top,
-    //     width: this.position.width,
-    //     x: this.position.x,
+    // let position: any = {
+    //   id: id,
+    //   bottom: this.position.bottom,
+    //   height: this.position.height,
+    //   left: this.position.left,
+    //   right: this.position.right,
+    //   top: this.position.top,
+    //   width: this.position.width,
+    //   dragPosition: {
+    //     x: this.position.x-210,
     //     y: this.position.y,
     //   }
-    // })
-    // this.p
+    // }
+
+    this.mesasService.updateDataOffline(position);
   }
 
   getBoards() {
@@ -110,7 +126,7 @@ export class BoardComponent implements OnInit {
     this.boards.forEach(board => {
       this.mesasService.deleteDataOffline(board);
     });
-    
+
     //   db.collection('boards').delete().then(() => {
     //     window.location.reload();
     //   })

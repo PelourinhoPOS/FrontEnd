@@ -10,10 +10,9 @@
     display: flex;
     width: 80%;
     margin-left: 10%;
-    background-image: url('https://cdn.mooble.com/socialcontents-projectimages/66711a12-2b10-44a0-9711-be4ef4a77cbd4BE4271E14BB11E51F8C6E56FD7BB018.jpg');
-    height: 100vh;
     align-items: center;
     justify-content: center;
+    background-repeat: no-repeat;
 }
 
 .example-box {
@@ -135,10 +134,13 @@
 }
 
 .example-boundary {
-    width: 75%;
-    height: 75%;
+    width: 1000px;
+    height: 600px;
     border: dotted #ccc 1px;
     margin-bottom: 20px;
+    background-image: url('../../../assets/images/RoomRestaurant.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .dbButtons {
