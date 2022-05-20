@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { KeyboardDialogComponent } from '../keyboard-dialog/keyboard-dialog.component';
 import { ActivatedRoute } from '@angular/router';
@@ -8,14 +8,21 @@ import { authenticationService } from '../authentication-dialog/authentication-d
 import { EmpregadosService } from 'src/app/BackOffice/modules/empregados/empregados.service';
 import { ArtigosService } from 'src/app/BackOffice/modules/artigos/artigos.service';
 import { MesasService } from 'src/app/BackOffice/modules/mesas/mesas.service';
-import { Artigo } from 'src/app/BackOffice/models/artigo';
 import { Mesa } from 'src/app/BackOffice/models/mesa';
-import { Subscription } from 'rxjs';
+import { Subscription, map } from 'rxjs';
+import SwiperCore, { FreeMode, Pagination } from 'swiper';
+import { Artigo } from 'src/app/BackOffice/models/artigo';
+import { CategoriesService } from 'src/app/BackOffice/modules/categories/categories.service';
+
+import { SubcategoriesService } from 'src/app/BackOffice/modules/categories/subcategories.service';
+
+SwiperCore.use([FreeMode, Pagination]);
 
 @Component({
   selector: 'app-food-drinks',
   templateUrl: './food-drinks.component.html',
   styleUrls: ['./food-drinks.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class FoodDrinksComponent implements OnInit {
   public item: string;
@@ -34,6 +41,12 @@ export class FoodDrinksComponent implements OnInit {
   public productarray: any = [];
   public quantity: number = 0;
   public ivaround;
+  public selectedID: number = 0; //guarda o id do utilizador selecionado
+  public id: number = 0;
+  public categories = [];
+  public categoryItems;
+  public subCategories;
+  public subcategoryItems;
 
   constructor(
     private empregadosService: EmpregadosService,
@@ -42,7 +55,9 @@ export class FoodDrinksComponent implements OnInit {
     public dialog: MatDialog,
     private route: ActivatedRoute,
     private cookieService: CookieService,
-    private authService: authenticationService
+    private authService: authenticationService,
+    private categoryService: CategoriesService,
+    private subcategoryService: SubcategoriesService
   ) { }
 
   openDialog(): void {
@@ -114,7 +129,7 @@ export class FoodDrinksComponent implements OnInit {
       data.forEach((board) => {
         this.productId = data.find(x => x.id == this.boardId)
 
-        board.cart.forEach((id) => {
+        board.cart?.forEach((id) => {
           this.productarray.push(id.product.id);
         });
 
@@ -130,7 +145,7 @@ export class FoodDrinksComponent implements OnInit {
       (data => {
         product = data
 
-        if (!this.productarray.includes(id) && this.boardId) {
+        if (!this.productarray.includes(id)) {
           this.cart.push({ product: product[0], quantity: 1 });
           this.totalPrice();
         } else {
@@ -195,9 +210,88 @@ export class FoodDrinksComponent implements OnInit {
     this.time = this.authService.getTime();
   }
 
+  getSubCategory(id) {
+    this.subcategoryService.getDataOffline().pipe(
+      map(data => data.filter(item => item.id_category == id)))
+      .subscribe(data => {
+        this.subCategories = data;
+      })
+  }
+
+  getSubCategoryItems(id) {
+    this.artigosService.getDataOffline().pipe(
+      map(data => data.filter(item => item.id_subcategory == id)))
+      .subscribe(data => {
+        this.categoryItems = data;
+      });
+  }
+
+  getCategoryItems(id) {
+    this.artigosService.getDataOffline().subscribe(data => {
+      this.categoryItems = data.filter(item => item.id_category == id);
+    });
+  }
+
+  getCategories() {
+    this.categoryService.getDataOffline().subscribe(data => {
+      this.categories = data;
+    })
+  }
+
+  teste(id: number): number {
+    return id;
+  }
+
+  selectCategory(id: number) {
+    let categoryData = document.getElementById('card ' + id);
+    let oldCategoryData = document.getElementById('card ' + this.selectedID);
+
+    if (id != this.selectedID) {
+      //console.log("id " + id + " selecionado")
+      if (categoryData) {
+        categoryData.style.backgroundColor = '#f7e083';
+        categoryData.style.width = '95%';
+        categoryData.style.height = '95%';
+        categoryData.style.borderRadius = '15px';
+        categoryData.style.display = 'flex';
+        categoryData.style.flexDirection = 'column';
+        categoryData.style.justifyContent = 'center';
+        categoryData.style.alignItems = 'center';
+      }
+      if (oldCategoryData) {
+        oldCategoryData.style.backgroundColor = '';
+      }
+    }
+    this.selectedID = id;
+  }
+
+  selectSubCategory(id: number) {
+
+    let subcategoryData = document.getElementById('cardSub ' + id);
+    let oldSubcategoryData = document.getElementById('cardSub ' + this.id);
+
+    if (id != this.id) {
+      if (subcategoryData) {
+        subcategoryData.style.backgroundColor = '#f7e083';
+        subcategoryData.style.width = '95%';
+        subcategoryData.style.height = '95%';
+        subcategoryData.style.borderRadius = '15px';
+        subcategoryData.style.display = 'flex';
+        subcategoryData.style.flexDirection = 'column';
+        subcategoryData.style.justifyContent = 'center';
+        subcategoryData.style.alignItems = 'center';
+      }
+      if (oldSubcategoryData) {
+        oldSubcategoryData.style.backgroundColor = '';
+      }
+    }
+    this.id = id;
+  }
+
   ngOnInit(): void {
     let id = parseInt(this.route.snapshot.paramMap.get('id'));
     this.boardId = id;
+    this.getCategories();
     this.getProductsId();
     //this.addNewProduct();
     this.getProducts();

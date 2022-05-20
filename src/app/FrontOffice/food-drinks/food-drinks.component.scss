@@ -73,7 +73,7 @@ mat-grid-tile {
     transition: 0s;
 }
 
-.mat-grid-list {
+.mat-grid-list#grid {
     margin: 40px 0 40px 20px;
     width: 100%;
 }
@@ -146,7 +146,7 @@ span {
     background-color: #f7f7f7;
 }
 
-.profile {
+.profileEmp {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -254,4 +254,53 @@ button#pay {
 .x {
     margin-left: -15px;
     margin-right: 5px;
+}
+
+@import "~swiper/css";
+@import "~swiper/css/free-mode";
+@import "~swiper/css/pagination";
+
+.swiper {
+    margin-left: 30px;
+    width: 1140px;
+    height: 110px;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    /* Center slide text vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.swiper-slide img {
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px
+}
+
+.swiper-pagination-bullet {
+    display: none;
+}
+
+.categoryName {
+    font-weight: bold;
+    font-family: Ubuntu;
+    margin: 0 0 5px 0;
+    font-size: 16px;
 }

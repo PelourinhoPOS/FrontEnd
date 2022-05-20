@@ -17,16 +17,16 @@
       </div>
     </div>
     <div class="users">
-      <mat-grid-list cols="4" rowHeight="5:6">
-        <mat-grid-tile *ngFor="let user of user; index as i">
+      <mat-grid-list id="users" cols="4" rowHeight="5:6">
+        <mat-grid-tile id="users" *ngFor="let user of user; index as i">
           <div
-            class="dialogBt"
+            class="dialogButt"
             mat-raised-button
             (click)="openDialog(user.name, user.function, user.avatar, user.id)"
           >
-            <div class="profileItens">
-              <img class="avatar" src="{{ user.avatar }}" alt="" />
-              <p class="name">{{ user.name }}</p>
+            <div class="profileCard">
+              <img class="avatarStart" src="{{ user.avatar }}" alt="" />
+              <p class="nameStart">{{ user.name }}</p>
             </div>
           </div>
         </mat-grid-tile>

@@ -12,10 +12,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { FoodDrinksComponent } from './FrontOffice/food-drinks/food-drinks.component';
 import { SwiperModule } from 'swiper/angular';
-import { CategorySliderComponent } from './FrontOffice/category-slider/category-slider.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { DrawerComponent } from './FrontOffice/drawer/drawer.component';
 import { BoardComponent } from './FrontOffice/board/board.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -45,8 +43,6 @@ import { MoneyDialogComponent } from './FrontOffice/money-dialog/money-dialog.co
     AuthenticationComponent,
     AuthenticationDialogComponent,
     FoodDrinksComponent,
-    CategorySliderComponent,
-    DrawerComponent,
     BoardComponent,
     KeyboardDialogComponent,
     BoardDialogComponent,

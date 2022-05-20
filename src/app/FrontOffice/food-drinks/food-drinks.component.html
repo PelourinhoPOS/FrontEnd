@@ -1,10 +1,10 @@
 <div class="flex">
   <div class="height" id="reload">
-    <div class="profile">
-      <img class="avatar" src="{{ this.userData.avatar }}" alt="" />
+    <div class="profileEmp">
+      <img class="avatar" src="{{ this.userData?.avatar }}" alt="avatar" />
       <div class="userActivity">
-        <span class="username" id="board">Board #{{ this.board.number }}</span>
-        <span class="username">{{ this.userData.name }}</span>
+        <span class="username" id="board">Board #{{ this.board?.number }}</span>
+        <span class="username">{{ this.userData?.name }}</span>
         <span>{{ this.time }}</span>
       </div>
       <mat-icon class="iconBack" routerLink="/board">keyboard_backspace</mat-icon>
@@ -44,10 +44,32 @@
         <mat-icon class="searchIcon">search</mat-icon>
       </div>
     </div>
-    <app-category-slider></app-category-slider>
+
+    <swiper [slidesPerView]="8" [spaceBetween]="30" [freeMode]="true" [pagination]="{
+      clickable: true
+    }">
+      <ng-template swiperSlide *ngFor="let cat of categories; index as i" class="test">
+        <div id="card {{cat.id}}" (click)="getCategoryItems(cat.id); selectCategory(cat.id); getSubCategory(cat.id)">
+          <img id="image {{cat.id}}" src="{{cat.image}}" alt="">
+          <p class="categoryName">{{cat.name}}</p>
+        </div>
+      </ng-template>
+    </swiper>
+
+    <swiper [slidesPerView]="8" [spaceBetween]="30" [freeMode]="true" [pagination]="{clickable: true}"
+      style="margin-top: 20px; margin-left: 50px; margin-bottom: -15px;">
+      <ng-template swiperSlide *ngFor="let sub of subCategories; index as i">
+        <div id="cardSub {{sub.id}}" (click)="getSubCategoryItems(sub.id); selectSubCategory(sub.id)">
+          <img id="image {{sub.id}}" src="{{sub.image}}" alt="">
+          <p class="categoryName">{{sub.name}}</p>
+        </div>
+      </ng-template>
+    </swiper>
+
+
     <div class="alignGrid">
       <mat-grid-list cols="5" rowHeight="210px" gutterSize="40px">
-        <mat-grid-tile *ngFor="let prod of products">
+        <mat-grid-tile *ngFor="let prod of categoryItems">
           <div class="card" id="{{ prod.id }}" (click)="addProduct(prod.id); getProductsId()">
             <img class="productImg" src="{{ prod.image }}" alt="" />
             <span class="productName">{{ prod.name }}</span>
