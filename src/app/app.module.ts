@@ -35,7 +35,8 @@ import { environment } from 'src/environments/environment';
 import { CustomerDialogComponent } from './FrontOffice/customer-dialog/customer-dialog.component';
 import { SplitMoneyDialogComponent } from './FrontOffice/split-money-dialog/split-money-dialog.component';
 import { MatTableModule } from '@angular/material/table';
-import { MoneyDialogComponent } from './FrontOffice/money-dialog/money-dialog.component'
+import { MoneyDialogComponent } from './FrontOffice/money-dialog/money-dialog.component';
+import { LongPressDirective } from './FrontOffice/board/long-press.directive';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { MoneyDialogComponent } from './FrontOffice/money-dialog/money-dialog.co
     PaymentModalComponent,
     CustomerDialogComponent,
     SplitMoneyDialogComponent,
-    MoneyDialogComponent
+    MoneyDialogComponent,
+    LongPressDirective 
   ],
   imports: [
     HttpClientModule,

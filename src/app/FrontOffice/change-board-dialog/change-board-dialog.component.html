@@ -1,9 +1,3 @@
-<div class="deleteData" (click)="deleteBoard(data.id)">
-    <button mat-icon-button color="warn">
-        <mat-icon>delete</mat-icon>
-    </button>
-</div>
-
 <form [formGroup]="Form" (ngSubmit)="updateBoard(data.id)">
     <div class="boardItens">
         <label id="title" for="boardName">Reserve Name</label>
@@ -24,8 +18,3 @@
         </div>
     </div>
 </form>
-
-<button (click)="increaseOccupy()">{{this.data.occupy}}</button>
-<button (click)="decreaseOccupy()">-</button>
-
-<button (click)="onSelect()">Add Itens</button>

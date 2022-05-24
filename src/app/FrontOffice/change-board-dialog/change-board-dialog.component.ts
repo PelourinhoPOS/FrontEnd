@@ -12,7 +12,6 @@ export interface DialogData {
   name: string,
   capacity: number,
   number: number,
-  occupy: number,
 }
 
 @Component({
@@ -32,7 +31,6 @@ export class ChangeBoardDialogComponent implements OnInit {
   })
 
   ngOnInit(): void {
-    console.log(this.data);
   }
 
 
@@ -43,17 +41,7 @@ export class ChangeBoardDialogComponent implements OnInit {
       name: this.data.name,
       capacity: this.data.capacity,
       number: this.data.number,
-      occupy: this.data.occupy
     }
-
-  if(mesa.capacity >= mesa.occupy){
-
-    this.mesaService.updateDataOffline(mesa);
-    this.onNoClick();
-  }else{
-    mesa.occupy = mesa.capacity;
-    this.mesaService.updateDataOffline(mesa);
-    this.onNoClick();
   }
 
     // db.collection('boards').doc({ id: this.data.id }).update({
@@ -64,24 +52,6 @@ export class ChangeBoardDialogComponent implements OnInit {
     // }).then(() => {
     //   window.location.reload();
     // })
-  }
-
-  deleteBoard(id) {
-    let mesa: Mesa = {
-      id: id,
-      name: '',
-      capacity: 0,
-      number: 0,
-      occupy: 0
-    };
-
-    this.mesaService.deleteDataOffline(mesa);
-
-    this.onNoClick();
-    // db.collection('boards').doc({ id: this.data.id }).delete().then(() => {
-    //   window.location.reload();
-    // })
-  }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -98,20 +68,6 @@ export class ChangeBoardDialogComponent implements OnInit {
     this.data.capacity -= 2;
     if (this.data.capacity < 2) {
       this.data.capacity = 2;
-    }
-  }
-
-  increaseOccupy() {
-    this.data.occupy++;
-    if (this.data.occupy > this.data.capacity) {
-      this.data.occupy = this.data.capacity;
-    }
-  }
-
-  decreaseOccupy() {
-    this.data.occupy--;
-    if (this.data.occupy < 0) {
-      this.data.occupy = 0;
     }
   }
 

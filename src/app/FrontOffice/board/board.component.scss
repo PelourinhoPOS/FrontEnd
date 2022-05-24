@@ -18,7 +18,7 @@
 .example-box {
     border: 2px solid gray;
     resize: both;
-    overflow: auto;
+    overflow: none;
     max-width: 100%;
     min-width: 170px;
     max-height: 80px;
@@ -71,7 +71,7 @@
     font-family: Ubuntu;
     border-radius: 100%;
     resize: both;
-    overflow: auto;
+    overflow: none;
     max-width: 100%;
     min-width: 170px;
     min-height: 85px;
@@ -141,25 +141,4 @@
     background-image: url('../../../assets/images/RoomRestaurant.jpg');
     background-size: cover;
     background-repeat: no-repeat;
-}
-
-.dbButtons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: absolute;
-    top: 10%;
-    right: 5%;
-}
-
-.example-button-container {
-    display: flex;
-    align-items: center;
-}
-
-
-.txt {
-    font-family: Ubuntu;
-    font-weight: bold;
-    margin-left: 8px;
 }
