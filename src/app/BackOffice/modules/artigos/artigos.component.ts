@@ -181,8 +181,8 @@ export class ArtigosComponent implements OnInit {
   openUpdateModal(data: any) {
     if (data) {
       const dialogRef = this.dialog.open(CreateArticleModalComponent, {
-        height: '690px',
-        width: '770px',
+        height: '710px',
+        width: '870px',
         data: { values: data, update: true }
       });
       dialogRef.afterClosed().subscribe(cliente => {
@@ -338,7 +338,11 @@ export class CreateArticleModalComponent implements OnInit {
     } else if (this.unitySelected == "volume") {
       this.subUnitySelected = "litro";
       this.artigo.sub_unity = this.subUnitySelected;
+    } else if (this.unitySelected == "unidade") {
+      this.subUnitySelected = "uni";
+      this.artigo.sub_unity = this.subUnitySelected;
     }
+
   }
 
   subunitySelect() {
@@ -357,7 +361,8 @@ export class CreateArticleModalComponent implements OnInit {
         this.url = event.target.result;
         this.artigo.image = this.url;
       }
-      // this.fileName = file.name;
+
+      this.fileName = file.name;
       // const formData = new FormData();
       // formData.append("thumbnail", file);
       // console.log(file);
@@ -393,9 +398,37 @@ export class CreateArticleModalComponent implements OnInit {
         case 'price':
           this.artigo.price = result[0];
           break;
-        case 'iva':
-          this.artigo.iva = result[0];
+        case 'description':
+          this.artigo.description = result[0];
           break;
+        case 'stock':
+          this.artigo.stock = result[0];
+          break;
+        case 'price':
+          this.artigo.price = result[0];
+          break;
+        case 'pvp1':
+          this.artigo.pvp1 = result[0];
+          break;
+        case 'pvp2':
+          this.artigo.pvp2 = result[0];
+          break;
+        case 'pvp3':
+          this.artigo.pvp3 = result[0];
+          break;
+        case 'pvp4':
+          this.artigo.pvp4 = result[0];
+          break;
+        case 'pvp5':
+          this.artigo.pvp5 = result[0];
+          break;
+        case 'pvp6':
+          this.artigo.pvp6 = result[0];
+          break;
+        // case 'unity_value':
+        //   this.artigo.unity_value = result[0];
+        //   break;
+
       }
     });
   }

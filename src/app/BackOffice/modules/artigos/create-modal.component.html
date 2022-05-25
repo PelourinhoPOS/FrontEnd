@@ -20,7 +20,7 @@
                 </div>
             </td>
             <td class="dataTable">
-                <mat-tab-group color="warn">
+                <mat-tab-group color="warn" animationDuration="170ms">
                     <mat-tab label="Dados Gerais">
                         <table class="dataTable">
                             <td>
@@ -33,8 +33,8 @@
 
                                 <mat-form-field class="example-full-width" appearance="fill">
                                     <mat-label>Descrição</mat-label>
-                                    <textarea matInput placeholder="Ex. Artigo de origem nacional"
-                                        [(ngModel)]="artigo.description"
+                                    <textarea matInput (click)="openKeyboard('description', 'text', artigo.description)"
+                                        placeholder="Ex. Artigo de origem nacional" [(ngModel)]="artigo.description"
                                         [ngModelOptions]="{standalone: true}"></textarea>
                                 </mat-form-field>
 
@@ -82,7 +82,7 @@
                         </table>
                     </mat-tab>
 
-                    <mat-tab label="Preços e Quantidades">
+                    <mat-tab label="Preços (€)">
                         <table class="dataTable">
                             <tr>
                                 <td>
@@ -90,78 +90,150 @@
                                     <mat-form-field class="example-full-width" appearance="fill">
                                         <mat-label>Preço</mat-label>
                                         <input matInput type="number"
-                                            (click)="openKeyboard('price', 'number', artigo.price, 9)" #telefone
-                                            placeholder="Ex. 2715443890" [(ngModel)]="artigo.price"
+                                            (click)="openKeyboard('price', 'number', artigo.price, 9)"
+                                            placeholder="Ex. 1.90" [(ngModel)]="artigo.price"
                                             [ngModelOptions]="{standalone: true}">
                                     </mat-form-field>
-
-                                    <mat-form-field class="example-full-width" appearance="fill">
-                                        <mat-label>Unidade de medida</mat-label>
-                                        <mat-select [(value)]="unitySelected" (selectionChange)="unitySelect()">
-                                            <mat-option value="peso"> Peso </mat-option>
-                                            <mat-option value="volume"> Volume </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-
+                                    
                                     <table class="dataTable">
                                         <tr>
                                             <td>
                                                 <mat-form-field class="example-full-width" appearance="fill">
-                                                    <mat-label>Valor</mat-label>
+                                                    <mat-label>PVP 1</mat-label>
                                                     <input matInput type="number"
-                                                        (click)="openKeyboard('price', 'number', artigo.unity_value, 9)"
-                                                        #telefone placeholder="Ex. 13" [(ngModel)]="artigo.unity_value"
+                                                        (click)="openKeyboard('pvp1', 'number', artigo.pvp1, 9)"
+                                                        placeholder="Ex. 1.90" [(ngModel)]="artigo.pvp1"
                                                         [ngModelOptions]="{standalone: true}">
                                                 </mat-form-field>
                                             </td>
                                             <td>
                                                 <mat-form-field class="example-full-width" appearance="fill">
-                                                    <mat-label>Subunidade medida</mat-label>
-                                                    <mat-select [(value)]="subUnitySelected"
-                                                        (selectionChange)="subunitySelect()">
-
-                                                        <ng-container *ngIf="unitySelected == 'peso'">
-                                                            <mat-option value="kg"> Kilograma (Kg) </mat-option>
-                                                            <mat-option value="g"> Grama (g) </mat-option>
-                                                        </ng-container>
-
-                                                        <ng-container *ngIf="unitySelected == 'volume'">
-                                                            <mat-option value="litro"> Litro (L) </mat-option>
-                                                            <mat-option value="cl"> Centilitro (Cl) </mat-option>
-                                                        </ng-container>
-
-                                                    </mat-select>
+                                                    <mat-label>PVP 2</mat-label>
+                                                    <input matInput type="number"
+                                                        (click)="openKeyboard('pvp2', 'number', artigo.pvp2, 9)"
+                                                        placeholder="Ex. 1.90" [(ngModel)]="artigo.pvp2"
+                                                        [ngModelOptions]="{standalone: true}">
                                                 </mat-form-field>
                                             </td>
                                         </tr>
-                                        
+                                        <tr>
+                                            <td>
+                                                <mat-form-field class="example-full-width" appearance="fill">
+                                                    <mat-label>PVP 3</mat-label>
+                                                    <input matInput type="number"
+                                                        (click)="openKeyboard('pvp3', 'number', artigo.pvp3, 9)"
+                                                        placeholder="Ex. 1.90" [(ngModel)]="artigo.pvp3"
+                                                        [ngModelOptions]="{standalone: true}">
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field class="example-full-width" appearance="fill">
+                                                    <mat-label>PVP 4</mat-label>
+                                                    <input matInput type="number"
+                                                        (click)="openKeyboard('pvp4', 'number', artigo.pvp4, 9)"
+                                                        placeholder="Ex. 1.90" [(ngModel)]="artigo.pvp4"
+                                                        [ngModelOptions]="{standalone: true}">
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <mat-form-field class="example-full-width" appearance="fill">
+                                                    <mat-label>PVP 5</mat-label>
+                                                    <input matInput type="number"
+                                                        (click)="openKeyboard('pvp5', 'number', artigo.pvp5, 9)"
+                                                        placeholder="Ex. 1.90" [(ngModel)]="artigo.pvp5"
+                                                        [ngModelOptions]="{standalone: true}">
+                                                </mat-form-field>
+                                            </td>
+                                            <td>
+                                                <mat-form-field class="example-full-width" appearance="fill">
+                                                    <mat-label>PVP 6</mat-label>
+                                                    <input matInput type="number"
+                                                        (click)="openKeyboard('pvp6', 'number', artigo.pvp6, 9)"
+                                                        placeholder="Ex. 1.90" [(ngModel)]="artigo.pvp6"
+                                                        [ngModelOptions]="{standalone: true}">
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
                                     </table>
                                 </td>
                             </tr>
+                        </table>
+                    </mat-tab>
+                    <mat-tab label="Quantidades">
+                        <table class="dataTable">
                             <tr>
                                 <td>
-                                    <mat-dialog-actions align="end" style="margin-bottom: 30px;">
-                                        <button mat-stroked-button class="dialog-btn"
-                                            [mat-dialog-close]="false">Cancelar</button>
+                                    <br>
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Stock</mat-label>
+                                        <input matInput type="number"
+                                            (click)="openKeyboard('stock', 'number', artigo.stock, 9)"
+                                            placeholder="Ex. 12" [(ngModel)]="artigo.stock"
+                                            [ngModelOptions]="{standalone: true}">
+                                    </mat-form-field>
 
-                                        <ng-container *ngIf="update; else elseBlockButton">
-                                            <button mat-stroked-button color="warn" class="dialog-btn"
-                                                [mat-dialog-close]="artigo"
-                                                cdkFocusInitial>Atualizar</button>
-                                        </ng-container>
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Unidade</mat-label>
+                                        <mat-select [(value)]="unitySelected" (selectionChange)="unitySelect()">
+                                            <mat-option value="peso"> Peso </mat-option>
+                                            <mat-option value="volume"> Volume </mat-option>
+                                            <mat-option value="unidade"> Unidade </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
 
-                                        <ng-template #elseBlockButton>
-                                            <button mat-stroked-button color="warn" class="dialog-btn"
-                                                [mat-dialog-close]="artigo"
-                                                cdkFocusInitial>Registar</button>
-                                        </ng-template>
+                                    <ng-container *ngIf="unitySelected!='unidade'">
+                                        <table class="dataTable">
+                                            <tr>
+                                                <td>
+                                                    <mat-form-field class="example-full-width" appearance="fill">
+                                                        <mat-label>Subunidade</mat-label>
+                                                        <mat-select [(value)]="subUnitySelected"
+                                                            (selectionChange)="subunitySelect()">
 
-                                    </mat-dialog-actions>
+                                                            <ng-container *ngIf="unitySelected == 'peso'">
+                                                                <mat-option value="kg"> Kilograma (kg) </mat-option>
+                                                                <mat-option value="g"> Grama (g) </mat-option>
+                                                            </ng-container>
+
+                                                            <ng-container *ngIf="unitySelected == 'volume'">
+                                                                <mat-option value="litro"> Litro (L) </mat-option>
+                                                                <mat-option value="cl"> Centilitro (Cl) </mat-option>
+                                                            </ng-container>
+
+                                                            <ng-container *ngIf="unitySelected == 'unidade'">
+                                                                <mat-option value="uni"> Unidade (Uni) </mat-option>
+                                                            </ng-container>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </ng-container>
                                 </td>
                             </tr>
                         </table>
                     </mat-tab>
                 </mat-tab-group>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <mat-dialog-actions align="end">
+                    <button mat-stroked-button class="dialog-btn" [mat-dialog-close]="false">Cancelar</button>
+
+                    <ng-container *ngIf="update; else elseBlockButton">
+                        <button mat-stroked-button color="warn" class="dialog-btn" [mat-dialog-close]="artigo"
+                            cdkFocusInitial>Atualizar</button>
+                    </ng-container>
+
+                    <ng-template #elseBlockButton>
+                        <button mat-stroked-button color="warn" class="dialog-btn" [mat-dialog-close]="artigo"
+                            cdkFocusInitial>Registar</button>
+                    </ng-template>
+
+                </mat-dialog-actions>
             </td>
         </tr>
     </table>

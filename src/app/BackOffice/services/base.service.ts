@@ -65,6 +65,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
       artigo: 'id',
       categories: 'id',
       subcategories: 'id, id_category',
+      paymentMethods: 'id',
     });
     this.table = this.db.table(this.nomeTabela);
   }
@@ -184,7 +185,6 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
             this.toastr.info(this.dataName + ' guardado localmente', 'Aviso');
 
           } else if (method === 'update') {
-
             await this.table.update(data.id, data);
             this.refreshData.next();
             this.toastr.info(this.dataName + ' atualizado localmente', 'Aviso');

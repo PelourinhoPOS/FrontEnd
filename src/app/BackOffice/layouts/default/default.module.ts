@@ -27,6 +27,11 @@ import { CategoriesComponent, CreateCategorieModalComponent, CreateSubCategorieM
 
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { CookieService } from 'ngx-cookie-service';
+import { BoardComponent } from '../../modules/mesas/board.component';
+
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CreatePaymentMethodsComponent, PaymentMethodsComponent } from '../../modules/payment-methods/payment-methods.component';
+import { PaymentMethodsService } from '../../modules/payment-methods/payment-methods.service';
 
 @NgModule({
   declarations: [
@@ -43,6 +48,9 @@ import { CookieService } from 'ngx-cookie-service';
     CreateCategorieModalComponent,
     CreateBoardModalComponent,
     CreateSubCategorieModalComponent,
+    BoardComponent,
+    PaymentMethodsComponent,
+    CreatePaymentMethodsComponent
   ],
   imports: [
     CommonModule,
@@ -60,8 +68,9 @@ import { CookieService } from 'ngx-cookie-service';
     MatSelectModule,
     MatDialogModule,
     MatProgressBarModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    DragDropModule
   ],
-  providers: [CookieService ,OnlineOfflineService],
+  providers: [CookieService, OnlineOfflineService, PaymentMethodsService],
 })
 export class DefaultModule { }

@@ -42,6 +42,8 @@ export class ChangeBoardDialogComponent implements OnInit {
       capacity: this.data.capacity,
       number: this.data.number,
     }
+    this.mesaService.update(mesa)
+    this.onNoClick();
   }
 
     // db.collection('boards').doc({ id: this.data.id }).update({

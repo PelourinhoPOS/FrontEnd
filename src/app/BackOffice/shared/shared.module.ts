@@ -26,7 +26,7 @@ import { CookieService } from 'ngx-cookie-service';
     FooterComponent,
     AreaComponent,
     VirtualKeyboardComponent,
-    DeleteModalComponent
+    DeleteModalComponent, 
   ],
   imports: [
     CommonModule,

@@ -10,8 +10,8 @@
     margin-top: -12px;
 }
 
-// .table-form{
-//     width: 100%;
+// .table-form {
+//     width: 145%;
 // }
 
 // img {
@@ -21,39 +21,45 @@
 //     padding: 5px;
 // }
 
-.preview-avatar{
-    width: 245px;
-    height: 245px;
+.preview-avatar {
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     padding: 5px;
 }
 
-.preview{
+.preview {
     width: 45px;
     height: 45px;
     border-radius: 50%;
     padding: 5px;
 }
 
-.file-upload{
+.file-upload {
     align-items: center;
     display: flex;
     justify-content: center;
 }
 
-.input-text{
+.input-text {
     padding: 5px;
+}
+
+.category-form {
+    display: flex;
+    justify-content: center;
+}
+
+.mat-tab-group {
+    margin-bottom: 48px;
 }
 
 .disablePaginator{
     display: none;
 }
 
-mat-tab-group {
-    height: 500px;
+.example-form{
+    display: flex;
+    justify-content: center;
 }
 
-textarea {
-    max-width: 100%; 
-    max-height: 65px;
-}

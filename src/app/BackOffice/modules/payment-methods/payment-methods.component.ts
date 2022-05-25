@@ -1,74 +1,68 @@
-import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
-import { combineLatest, map, Observable, of, Subscription } from 'rxjs';
-import { Mesa } from '../../models/mesa';
-import { OnlineOfflineService } from '../../services/online-offline.service';
+import { combineLatest, map, Observable, of, Subscription } from 'rxjs'
+import { PaymentMethod } from '../../models/paymentMethods';
 import { DeleteModalComponent } from '../../shared/components/delete-modal/delete-modal.component';
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
-import { MesasService } from './mesas.service';
+import { PaymentMethodsService } from './payment-methods.service';
 
 @Component({
-  selector: 'app-mesas',
-  templateUrl: './mesas.component.html',
-  styleUrls: ['./mesas.component.scss']
+  selector: 'app-payment-methods',
+  templateUrl: './payment-methods.component.html',
+  styleUrls: ['./payment-methods.component.scss']
 })
-export class MesasComponent implements OnInit, AfterViewInit {
+export class PaymentMethodsComponent implements OnInit {
 
-  constructor(public dialog: MatDialog, private mesasService: MesasService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService) { }
-
-  public mesas!: Observable<Mesa[]>; //save the employees returned from the API
-  public mesasOff!: Observable<Mesa[]>; //save the employees returned from the local storage
-  public allmesasData!: Observable<Mesa[]>; //save all employees from API and local storage
+  constructor(private paymentMethodService: PaymentMethodsService, public dialog: MatDialog, private toastr: ToastrService) { }
+  
+  public methods!: Observable<PaymentMethod[]>; //save the clients returned from the API
+  public methodsOff!: Observable<PaymentMethod[]>; //save the clients returned from the local storage
+  public allMethodsData!: Observable<PaymentMethod[]>; //save all clients from API and local storage
 
   public subscriptionData!: Subscription; //subscription to refresh data
   public dataRow: any; //save data os selected row of table
 
   selectedRowIndex = -1; //save the selected index from the table
 
+  displayedColumnsPaymentMethods: string[] = ['image', 'name', 'description',]; //declare the columns of the payment methods table
   orderBy = 'name'; //save the order by selected
+
+  public tabIndex = 0 //save the index of the tab
 
   showProgressBar = false;
 
-  displayedColumns: string[] = ['name', 'capacity', 'number', 'type'];
-  dataSource = new MatTableDataSource<Mesa>();
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  dataSourcePaymentMethods = new MatTableDataSource<PaymentMethod>();
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+    this.dataSourcePaymentMethods.paginator = this.paginator;
   }
 
   ngOnInit(): void {
-    this.listLocalData();
 
-    this.subscriptionData = this.mesasService.refreshData.subscribe(() => {
-      // this.listAPIdata();
-      this.listLocalData();
-      // this.listAllData();
-    });
   }
 
   //register data in API or local storage
-  async register(mesa: Mesa) {
-    await this.mesasService.register(mesa);
+  async register(method: PaymentMethod) {
+    await this.paymentMethodService.register(method);
   }
 
   //update data in API or local storage
-  async update(mesa: Mesa) {
-    await this.mesasService.update(mesa);
+  async update(method: PaymentMethod) {
+    await this.paymentMethodService.update(method);
   }
 
-  //function to delete a employee
-  async delete(empregado: Mesa) {
-    await this.mesasService.delete(empregado);
+  async delete(method: PaymentMethod) {
+    await this.paymentMethodService.delete(method);
   }
 
   //search data from API
   listAPIdata(): void {
-    this.mesas = this.mesasService.list();
+    this.methods = this.paymentMethodService.list();
   }
 
   //search data from local storage
@@ -76,20 +70,25 @@ export class MesasComponent implements OnInit, AfterViewInit {
 
     this.showProgressBar = true;
 
-    this.mesasOff = this.mesasService.getDataOffline().pipe(
-      map(arr => arr.sort((a, b) => b.id - a.id))
-    );
+    this.paymentMethodService.getDataOffline().pipe(
+      map(arr => arr.sort((a, b) => a.name.localeCompare(b.name)))
+    ).subscribe(data => {
+      this.methodsOff = of(data);
+      this.dataSourcePaymentMethods.data = data
+    });
 
-    this.mesasService.getDataOffline().pipe(
+    this.paymentMethodService.getDataOffline().pipe(
       map(arr => arr.sort((a, b) => b.id - a.id))
     ).subscribe(data => {
-      this.mesasOff = of(data);
-      this.dataSource.data = data
+
+      this.methodsOff = of(data);
+      this.dataSourcePaymentMethods.data = data
+
     });
 
     setInterval(() => {
       this.showProgressBar = false;
-    }, 1300);
+    }, 1300); //wait 1,30 seconds to show progress bar
 
   }
 
@@ -98,45 +97,39 @@ export class MesasComponent implements OnInit, AfterViewInit {
 
     switch (this.orderBy) { //order by
       case 'name'://order by name
-        this.allmesasData = combineLatest(this.mesas, this.mesasOff).pipe(
+        this.allMethodsData = combineLatest(this.methods, this.methodsOff).pipe(
           map(([a, b]) => a.concat(b))
         ).pipe(
           map(arr => arr.sort((a, b) => a.name.localeCompare(b.name)))
         );
         break;
 
-      // case 'localidade'://order by localidade
-      //   this.allEmpregadosData = combineLatest(this.empregados, this.empregadosOff).pipe(
-      //     map(([a, b]) => a.concat(b))
-      //   ).pipe(
-      //     map(arr => arr.sort((a, b) => a.county.localeCompare(b.county)))
-      //   );
-      //   break;
-
       case 'id'://order by id
-        this.allmesasData = combineLatest(this.mesas, this.mesasOff).pipe(
+        this.allMethodsData = combineLatest(this.methods, this.methodsOff).pipe(
           map(([a, b]) => a.concat(b))
-        )
+        );
         break;
     }
   }
 
   //function to sinchronize data from local storage to API
   synchronizeData() {
-    this.mesasService.sendDatatoAPI();
+    this.paymentMethodService.sendDatatoAPI();
   }
 
   //function that opens the create client modal
   openCreateModal() {
+
     this.unselectRow();
-    const dialogRef = this.dialog.open(CreateBoardModalComponent, {
+
+    const dialogRef = this.dialog.open(CreatePaymentMethodsComponent, {
       height: '690px',
       width: '770px',
     });
-    dialogRef.afterClosed().subscribe(empregado => {
-      //console.log(empregado)
-      if (empregado) {
-        this.register(empregado);
+    dialogRef.afterClosed().subscribe(category => {
+      //console.log(category)
+      if (category) {
+        this.paymentMethodService.register(category);
       }
     });
   }
@@ -144,17 +137,19 @@ export class MesasComponent implements OnInit, AfterViewInit {
   //function that opens the update client modal
   openUpdateModal(data: any) {
     if (data) {
-      const dialogRef = this.dialog.open(CreateBoardModalComponent, {
+
+      const dialogRef = this.dialog.open(CreatePaymentMethodsComponent, {
         height: '690px',
         width: '770px',
         data: { values: data, update: true }
       });
-      dialogRef.afterClosed().subscribe(data => {
-        // console.log(data)
-        if (data) {
-          this.update(data);
+      dialogRef.afterClosed().subscribe(category => {
+        // console.log(category)
+        if (category) {
+          this.paymentMethodService.update(category);
         }
       });
+
     } else {
       this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
     }
@@ -171,9 +166,8 @@ export class MesasComponent implements OnInit, AfterViewInit {
       dialogRef.afterClosed().subscribe(data => {
         // console.log(data)
         if (data) {
-          this.delete(data);
+          this.paymentMethodService.delete(data);
         }
-        this.dataRow = null;
       });
     } else {
       this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
@@ -186,78 +180,49 @@ export class MesasComponent implements OnInit, AfterViewInit {
     this.dataRow = row;
   }
 
-  //function event to change the order by
-  onOptionsSelected() {
-    this.listAllData();
-  }
-
   //function to unselect the selected row
   unselectRow() {
     this.selectedRowIndex = -1;
     this.dataRow = null;
   }
 
+  onOptionsSelected() {
+    this.listAllData();
+  }
+
   //when component is closed, unsubscribe from the observable to avoid memory leaks
   ngOnDestroy(): void {
-    this.subscriptionData.unsubscribe();
+    //this.subscriptionData.unsubscribe();
   }
 
 }
 
-/////////////////////////// // CREATE EMPLOYEE MODAL COMPONENT // /////////////////////////////////////////////
+/////////////////////////////////////////////// CREATE MODAL ///////////////////////////////////////////////
 
 @Component({
-  selector: 'create-new-employee',
+  selector: 'app-create-payment-methods',
   templateUrl: './create-modal.component.html',
-  styleUrls: ['./mesas.component.scss']
+  styleUrls: ['./payment-methods.component.scss']
 })
-
-export class CreateBoardModalComponent implements OnInit {
+export class CreatePaymentMethodsComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog) { }
 
-  public mesa: Mesa = new Mesa(); //save the client data
+  public paymentMethod: PaymentMethod = new PaymentMethod(); //save the client data
   public dialogRef: any; //save the dialog reference
   public update: boolean = false; //save if is update or create
 
   fileName = '';
   url = './assets/images/user.png';
-  typeSelected = 'square';
+  categorySelected = '1';
 
   ngOnInit(): void {
     //get the data from client and set it in the form
     if (this.data) {
       this.update = true; //set update to true, to know if is update or create
-      this.mesa = this.data.values; //set the data in the form
+      this.paymentMethod = this.data.values; //set the data in the form
       this.fileName = 'Alterar imagem'; //set the file name
-      this.typeSelected = this.mesa.type; //set the type
-    } else {
-      this.typeSelect(); //set the default type
-      this.mesa.dragPosition = {
-        x: 391.91253662109375,
-        y: -0.8000030
-      }; //set the default drag position
-      this.mesa.occupy = 0; //set the default occupy
-    }
-
-  }
-
-  onFileSelected(event) {
-
-    const file: File = event.target.files[0];
-
-    if (file) {
-      var reader = new FileReader();
-      reader.readAsDataURL(file)
-      reader.onload = (event: any) => {
-        this.url = event.target.result;
-      }
-      // this.fileName = file.name;
-      // const formData = new FormData();
-      // formData.append("thumbnail", file);
-      // console.log(file);
-      // const upload$ = this.http.post("/api/thumbnail-upload", formData);
-      // upload$.subscribe();
+      this.url = this.paymentMethod.image; //set the photo in the form
     }
   }
 
@@ -282,13 +247,28 @@ export class CreateBoardModalComponent implements OnInit {
       //switch to know which input is changed
       switch (result[1][0]) {
         case 'name':
-          this.mesa.name = result[0];
-          break;
+          this.paymentMethod.name = result[0];
       }
     });
   }
 
-  typeSelect() {
-    this.mesa.type = this.typeSelected;
+  onFileSelected(event) {
+
+    const file: File = event.target.files[0];
+
+    if (file) {
+      var reader = new FileReader();
+      reader.readAsDataURL(file)
+      reader.onload = (event: any) => {
+        this.url = event.target.result;
+        this.paymentMethod.image = this.url;
+      }
+      // this.fileName = file.name;
+      // const formData = new FormData();
+      // formData.append("thumbnail", file);
+      // console.log(file);
+      // const upload$ = this.http.post("/api/thumbnail-upload", formData);
+      // upload$.subscribe();
+    }
   }
 }

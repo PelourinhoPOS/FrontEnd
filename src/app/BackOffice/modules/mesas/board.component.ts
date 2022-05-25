@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { BoardDialogComponent } from '../board-dialog/board-dialog.component';
-import { ChangeBoardDialogComponent } from '../change-board-dialog/change-board-dialog.component';
 import { MesasService } from 'src/app/BackOffice/modules/mesas/mesas.service';
-import { authenticationService } from '../authentication-dialog/authentication-dialog.service';
 import { CookieService } from 'ngx-cookie-service';
-import { Router } from '@angular/router';
+import { BoardDialogComponent } from 'src/app/FrontOffice/board-dialog/board-dialog.component';
+import { ChangeBoardDialogComponent } from 'src/app/FrontOffice/change-board-dialog/change-board-dialog.component';
 
 export interface DialogData {
   id: string,
@@ -35,9 +33,16 @@ export class BoardComponent implements OnInit {
     y: 0
   }
 
-  constructor(public dialog: MatDialog, private mesasService: MesasService, public authService: authenticationService,
-    public cookieService: CookieService, private router: Router,) { }
+  constructor(public dialog: MatDialog, private mesasService: MesasService, public cookieService: CookieService) { }
 
+  ngOnInit(): void {
+    this.getBoards();
+    this.subscriptionData = this.mesasService.refreshData.subscribe(() => {
+      // this.listAPIdata();
+      this.getBoards();
+      // this.listAllData();
+    });
+  }
 
   openDialog() {
     this.dialog.open(BoardDialogComponent, {
@@ -53,7 +58,7 @@ export class BoardComponent implements OnInit {
 
       this.dialog.open(ChangeBoardDialogComponent, {
         width: '540px',
-        height: '440px',
+        height: '480px',
         data: {
           id: this.boardData.id,
           name: this.boardData.name,
@@ -89,6 +94,7 @@ export class BoardComponent implements OnInit {
         y: (boundingClientRect.y - parentPosition.top),
       }
     }
+
     // this.position = event.source.getRootElement().getBoundingClientRect();
 
     // let position: any = {
@@ -108,34 +114,31 @@ export class BoardComponent implements OnInit {
     this.mesasService.updateDataOffline(position);
   }
 
-  onPress(id) {
-    this.router.navigate(['/food&drinks', id]);
-    this.cookieService.set('boardId', id);
-  }
-
-  logout() {
-    this.authService.stopWatch();
-    this.cookieService.delete('userId');
-    this.cookieService.delete('role');
-  }
-
   getBoards() {
     this.mesasService.getDataOffline().subscribe(data => {
       this.boards = data
+      console.log (data);
     })
+  }
+
+  deleteCollection() {
+
+    this.boards.forEach(board => {
+      this.mesasService.deleteDataOffline(board);
+    });
+
+    //   db.collection('boards').delete().then(() => {
+    //     window.location.reload();
+    //   })
+  }
+
+  logout() {
+    this.cookieService.delete('userId');
+    this.cookieService.delete('role');
   }
 
   ngOnDestroy(): void {
     this.subscriptionData.unsubscribe();
   }
-
-  ngOnInit(): void {
-    this.getBoards();
-    this.subscriptionData = this.mesasService.refreshData.subscribe(() => {
-      // this.listAPIdata();
-      this.getBoards();
-      // this.listAllData();
-    });
-  }
-
+  
 }

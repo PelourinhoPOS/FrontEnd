@@ -17,8 +17,7 @@
 
 .example-box {
     border: 2px solid gray;
-    resize: both;
-    overflow: none;
+    overflow: hidden;
     max-width: 100%;
     min-width: 170px;
     max-height: 80px;
@@ -38,7 +37,7 @@
     padding: 10px;
     font-weight: bold;
     font-family: Ubuntu;
-    background-image: url('../../../assets/images/txt_boards.jpg');
+    background-image: url('../../../../assets/images/txt_boards.jpg');
     transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
         0 2px 2px 0 rgba(0, 0, 0, 0.14),
@@ -70,8 +69,7 @@
     font-weight: bold;
     font-family: Ubuntu;
     border-radius: 100%;
-    resize: both;
-    overflow: none;
+    overflow: hidden;
     max-width: 100%;
     min-width: 170px;
     min-height: 85px;
@@ -89,11 +87,12 @@
     z-index: 1;
     box-sizing: border-box;
     padding: 10px;
-    background-image: url('../../../assets/images/txt_boards.jpg');
+    background-image: url('../../../../assets/images/txt_boards.jpg');
     transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
         0 2px 2px 0 rgba(0, 0, 0, 0.14),
         0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    transform: rotate(10deg);
 }
 
 .example-round#two {
@@ -138,7 +137,7 @@
     height: 600px;
     border: dotted #ccc 1px;
     margin-bottom: 20px;
-    background-image: url('../../../assets/images/RoomRestaurant.jpg');
+    background-image: url('../../../../assets/images/RoomRestaurant.jpg');
     background-size: cover;
     background-repeat: no-repeat;
 }

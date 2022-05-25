@@ -3,6 +3,14 @@
         <br>
         <div class="allBoards">
             <div class="example-boundary">
+                <div class="dbButtons">
+                    <div class="example-button-container">
+                        <button mat-mini-fab color="primary" routerLink="/" (click)="logout()">
+                            <mat-icon>arrow_back</mat-icon>
+                        </button>
+                        <p class="txt">Change User</p>
+                    </div>
+                </div>
                 <div longPress (mouseLongPress)="onPress(b.id)" (dblclick)="openUpdateDialog(b.id)"
                     *ngFor="let b of boards;">
                     <div *ngIf="b.capacity === 4 && b.type==='round'" class="example-round"

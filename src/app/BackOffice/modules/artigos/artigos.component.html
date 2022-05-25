@@ -78,7 +78,7 @@
                 </ng-container>
     
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row (click)="onRowClicked(row)" *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'highlight': selectedRowIndex == row.id}"></tr>
+                <tr mat-row (click)="onRowClicked(row)" (dblclick)="openUpdateModal(dataRow)" *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'highlight': selectedRowIndex == row.id}"></tr>
             </table>
         </ng-template>
 

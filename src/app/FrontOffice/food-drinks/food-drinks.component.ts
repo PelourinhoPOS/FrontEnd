@@ -11,7 +11,6 @@ import { MesasService } from 'src/app/BackOffice/modules/mesas/mesas.service';
 import { Mesa } from 'src/app/BackOffice/models/mesa';
 import { Subscription, map } from 'rxjs';
 import SwiperCore, { FreeMode, Pagination } from 'swiper';
-import { Artigo } from 'src/app/BackOffice/models/artigo';
 import { CategoriesService } from 'src/app/BackOffice/modules/categories/categories.service';
 
 import { SubcategoriesService } from 'src/app/BackOffice/modules/categories/subcategories.service';
@@ -223,12 +222,14 @@ export class FoodDrinksComponent implements OnInit {
       map(data => data.filter(item => item.id_subcategory == id)))
       .subscribe(data => {
         this.categoryItems = data;
+        console.log(this.categoryItems);
       });
   }
 
   getCategoryItems(id) {
     this.artigosService.getDataOffline().subscribe(data => {
       this.categoryItems = data.filter(item => item.id_category == id);
+      console.log(this.categoryItems);
     });
   }
 

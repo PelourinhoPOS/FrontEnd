@@ -67,7 +67,7 @@
                         </ng-container>
 
                         <tr mat-header-row *matHeaderRowDef="displayedColumnsCategory"></tr>
-                        <tr mat-row (click)="onRowClicked(row)" *matRowDef="let row; columns: displayedColumnsCategory;"
+                        <tr mat-row (click)="onRowClicked(row)" (dbclick)="openUpdateModal(dataRow)" *matRowDef="let row; columns: displayedColumnsCategory;"
                             [ngClass]="{'highlight': selectedRowIndex == row.id}"></tr>
                     </table>
                 </ng-template>
@@ -124,7 +124,7 @@
                         </ng-container>
 
                         <tr mat-header-row *matHeaderRowDef="displayedColumnsSubCategory"></tr>
-                        <tr mat-row (click)="onRowClicked(row)" *matRowDef="let row; columns: displayedColumnsSubCategory;"
+                        <tr mat-row (click)="onRowClicked(row)" (dbclick)="openUpdateModal(dataRow)" *matRowDef="let row; columns: displayedColumnsSubCategory;"
                             [ngClass]="{'highlight': selectedRowIndex == row.id}"></tr>
                     </table>
                 </ng-template>

@@ -1,0 +1,19 @@
+<div class="fixedHeader">
+    <button mat-raised-button class="btnOptions" (click)="openCreateModal()">Novo</button>
+    <button mat-raised-button class="btnOptions" (click)="openUpdateModal(dataRow)">Atualizar</button>
+    <button mat-raised-button class="btnOptions" (click)="openDeleteModal(dataRow)">Eliminar</button>
+
+    <div class="orderList">
+        <mat-form-field appearance="fill">
+            <mat-label>Ordenar por:</mat-label>
+            <mat-select [(value)]="orderBy" (selectionChange)="onOptionsSelected()">
+                <mat-option value="id">ID</mat-option>
+                <mat-option value="name">Nome</mat-option>
+                <mat-option value="localidade">Localidade</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</div>
+<div class="containerDefault">
+    
+</div>
