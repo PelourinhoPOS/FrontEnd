@@ -46,6 +46,8 @@ export class FoodDrinksComponent implements OnInit {
   public categoryItems;
   public subCategories;
   public subcategoryItems;
+  public length: number = 0;
+  public changedprice;
 
   constructor(
     private empregadosService: EmpregadosService,
@@ -83,7 +85,25 @@ export class FoodDrinksComponent implements OnInit {
   }
 
   openProductDialog(id) {
-    this.dialog.open(ChangeProductDialogComponent);
+    const dialogRef = this.dialog.open(ChangeProductDialogComponent, {
+      width: '750px',
+      height: '550px',
+      data: {
+        id: id,
+        cart: this.cart,
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.cart.forEach(element => {
+        if (result == null) {
+          element.product.price = element.product.price;
+        } else if (element.product.id == id) {
+          element.product.price = result;
+          this.changedprice = result;
+        }
+      });
+      this.totalPrice();
+    });
   }
 
   // public artigo: Artigo = {
@@ -104,6 +124,7 @@ export class FoodDrinksComponent implements OnInit {
   getProducts() {
     this.artigosService.getDataOffline().subscribe((data) => {
       this.products = data;
+      this.categoryItems = data;
     });
   }
 
@@ -214,6 +235,7 @@ export class FoodDrinksComponent implements OnInit {
       map(data => data.filter(item => item.id_category == id)))
       .subscribe(data => {
         this.subCategories = data;
+        this.length = this.subCategories.length;
       })
   }
 
@@ -222,14 +244,12 @@ export class FoodDrinksComponent implements OnInit {
       map(data => data.filter(item => item.id_subcategory == id)))
       .subscribe(data => {
         this.categoryItems = data;
-        console.log(this.categoryItems);
       });
   }
 
   getCategoryItems(id) {
     this.artigosService.getDataOffline().subscribe(data => {
       this.categoryItems = data.filter(item => item.id_category == id);
-      console.log(this.categoryItems);
     });
   }
 
@@ -244,23 +264,27 @@ export class FoodDrinksComponent implements OnInit {
   }
 
   selectCategory(id: number) {
+    this.id = 0;
+
     let categoryData = document.getElementById('card ' + id);
     let oldCategoryData = document.getElementById('card ' + this.selectedID);
 
     if (id != this.selectedID) {
-      //console.log("id " + id + " selecionado")
+      // console.log("id " + id + " selecionado")
       if (categoryData) {
         categoryData.style.backgroundColor = '#f7e083';
-        categoryData.style.width = '95%';
-        categoryData.style.height = '95%';
+        categoryData.style.width = '90%';
+        categoryData.style.height = '90%';
         categoryData.style.borderRadius = '15px';
         categoryData.style.display = 'flex';
         categoryData.style.flexDirection = 'column';
         categoryData.style.justifyContent = 'center';
         categoryData.style.alignItems = 'center';
+        categoryData.style.border = '3px solid orange';
       }
       if (oldCategoryData) {
-        oldCategoryData.style.backgroundColor = '';
+        oldCategoryData.style.backgroundColor = 'white';
+        oldCategoryData.style.border = 'none';
       }
     }
     this.selectedID = id;
@@ -272,18 +296,28 @@ export class FoodDrinksComponent implements OnInit {
     let oldSubcategoryData = document.getElementById('cardSub ' + this.id);
 
     if (id != this.id) {
+      console.log(this.id)
       if (subcategoryData) {
         subcategoryData.style.backgroundColor = '#f7e083';
-        subcategoryData.style.width = '95%';
-        subcategoryData.style.height = '95%';
+        subcategoryData.style.width = '90%';
+        subcategoryData.style.height = '90%';
         subcategoryData.style.borderRadius = '15px';
         subcategoryData.style.display = 'flex';
         subcategoryData.style.flexDirection = 'column';
         subcategoryData.style.justifyContent = 'center';
         subcategoryData.style.alignItems = 'center';
       }
+
       if (oldSubcategoryData) {
         oldSubcategoryData.style.backgroundColor = '';
+        oldSubcategoryData.style.display = 'flex';
+        oldSubcategoryData.style.flexDirection = 'column';
+        oldSubcategoryData.style.alignItems = 'center';
+        oldSubcategoryData.style.justifyContent = 'center';
+        oldSubcategoryData.style.width = '90%';
+        oldSubcategoryData.style.height = '90%';
+        oldSubcategoryData.style.border = '3px solid orange';
+        oldSubcategoryData.style.borderRadius = '15px';
       }
     }
     this.id = id;
@@ -297,6 +331,7 @@ export class FoodDrinksComponent implements OnInit {
     //this.addNewProduct();
     this.getProducts();
     this.getBoard();
+    this.selectCategory(0);
     this.getCookies();
     this.getAuthTime();
     this.subscriptionData = this.authService.refreshData.subscribe(() => {

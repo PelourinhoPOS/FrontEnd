@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { Mesa } from 'src/app/BackOffice/models/mesa';
 import { MesasService } from 'src/app/BackOffice/modules/mesas/mesas.service';
-import { ToastrService } from 'ngx-toastr';
 
 export interface DialogData {
   id: string,
@@ -23,20 +22,17 @@ export class ChangeBoardDialogComponent implements OnInit {
 
   constructor(public mesaService: MesasService, public dialogRef: MatDialogRef<ChangeBoardDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData, private fb: FormBuilder, private router: Router,
-    private cookieService: CookieService, private toastr: ToastrService) { }
+    private cookieService: CookieService) { }
 
   Form = this.fb.group({
     name: new FormControl('', [Validators.required]),
     number: new FormControl('', [Validators.required]),
   })
 
-  ngOnInit(): void {
-  }
-
 
 
   updateBoard(id) {
-    let mesa : Mesa = {
+    let mesa: Mesa = {
       id: this.data.id,
       name: this.data.name,
       capacity: this.data.capacity,
@@ -46,14 +42,14 @@ export class ChangeBoardDialogComponent implements OnInit {
     this.onNoClick();
   }
 
-    // db.collection('boards').doc({ id: this.data.id }).update({
-    //   name: this.data.name,
-    //   number: this.data.number,
-    //   capacity: this.data.capacity,
-    //   occupy: this.data.occupy,
-    // }).then(() => {
-    //   window.location.reload();
-    // })
+  // db.collection('boards').doc({ id: this.data.id }).update({
+  //   name: this.data.name,
+  //   number: this.data.number,
+  //   capacity: this.data.capacity,
+  //   occupy: this.data.occupy,
+  // }).then(() => {
+  //   window.location.reload();
+  // })
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -79,9 +75,6 @@ export class ChangeBoardDialogComponent implements OnInit {
     this.onNoClick();
   }
 
-  // Verify if it sends the id
-  // print() {
-  //   console.log(this.data.id)
-  // }
-
+  ngOnInit(): void {
+  }
 }

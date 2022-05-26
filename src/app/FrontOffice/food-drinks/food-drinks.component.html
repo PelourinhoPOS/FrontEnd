@@ -36,42 +36,48 @@
     </ng-template>
   </div>
   <div class="alignSlider">
-    <div class="flexSearch">
+    <mat-icon class="mat" (click)="openDialog();">search</mat-icon>
+    <!-- <div class="flexSearch">
       <p class="category">Choose Category</p>
       <div class="searchBar">
         <input (click)="openDialog();" matInput [(ngModel)]="item" class="searchField" type="text" id="searchBar"
           placeholder="Press here to search category or itens..." />
-        <mat-icon class="searchIcon">search</mat-icon>
       </div>
-    </div>
+    </div> -->
 
     <swiper [slidesPerView]="8" [spaceBetween]="30" [freeMode]="true" [pagination]="{
       clickable: true
     }">
-      <ng-template swiperSlide *ngFor="let cat of categories; index as i" class="test">
+      <ng-template swiperSlide>
+        <div id="card 0" class="cardd" (click)="getProducts(); selectCategory(0)">
+          <img id="image"
+            src="https://img.freepik.com/vetores-gratis/os-vegetais-que-compram-o-conceito-realistico-com-carrinho-de-compras-e-bens-vector-a-ilustracao_1284-16246.jpg?w=2000"
+            alt="categoria">
+          <p class="categoryName">All</p>
+        </div>
+      </ng-template>
+      <ng-template swiperSlide *ngFor="let cat of categories; index as i">
         <div id="card {{cat.id}}" (click)="getCategoryItems(cat.id); selectCategory(cat.id); getSubCategory(cat.id)">
-          <img id="image {{cat.id}}" src="{{cat.image}}" alt="">
+          <img id="image {{cat.id}}" src="{{cat.image}}" alt="categoria">
           <p class="categoryName">{{cat.name}}</p>
         </div>
       </ng-template>
     </swiper>
 
-    <swiper [slidesPerView]="8" [spaceBetween]="30" [freeMode]="true" [pagination]="{clickable: true}"
-      style="margin-top: 20px; margin-left: 50px; margin-bottom: -15px;">
+    <swiper *ngIf="length > 0 && selectedID !== 0" [slidesPerView]="8" [spaceBetween]="30" [freeMode]="true"
+      [pagination]="{clickable: true}" style="margin-top: 20px; margin-left: 50px; margin-bottom: -15px;">
       <ng-template swiperSlide *ngFor="let sub of subCategories; index as i">
-        <div id="cardSub {{sub.id}}" (click)="getSubCategoryItems(sub.id); selectSubCategory(sub.id)">
-          <img id="image {{sub.id}}" src="{{sub.image}}" alt="">
+        <div class="cardSub" id="cardSub {{sub.id}}" (click)="getSubCategoryItems(sub.id); selectSubCategory(sub.id)">
+          <img id="image {{sub.id}}" src="{{sub.image}}" alt="subcategoria">
           <p class="categoryName">{{sub.name}}</p>
         </div>
       </ng-template>
     </swiper>
-
-
     <div class="alignGrid">
-      <mat-grid-list cols="5" rowHeight="210px" gutterSize="40px">
+      <mat-grid-list cols="5" rowHeight="180px" gutterSize="40px">
         <mat-grid-tile *ngFor="let prod of categoryItems">
           <div class="card" id="{{ prod.id }}" (click)="addProduct(prod.id); getProductsId()">
-            <img class="productImg" src="{{ prod.image }}" alt="" />
+            <img class="productImg" src="{{ prod.image }}" alt="produto" />
             <span class="productName">{{ prod.name }}</span>
             <span class="productWeight" *ngIf="!prod.unity_value">1 {{prod.sub_unity}}</span>
             <span class="productWeight" *ngIf="prod.unity_value">{{ prod.unity_value }} {{prod.sub_unity}}</span>

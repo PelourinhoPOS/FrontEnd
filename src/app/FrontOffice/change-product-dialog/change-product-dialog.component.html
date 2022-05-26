@@ -1,1 +1,19 @@
-<p>change-product-dialog works!</p>
+<div class="modalFlex">
+    <img class="itemImg" src="{{this.item.image}}" alt="product image">
+    <p class="modalItemName">{{this.item.name}}</p>
+    <form style="display: flex; margin-top: 5px;" [formGroup]="Form" (ngSubmit)="updateProduct(data.id)">
+        <div class="alignInputs">
+            <span>Price</span>
+            <input class="itemInput" formControlName="price" [(ngModel)]="this.item.price" type="number" (click)="clearInputPrice()"/>
+        </div>
+        <div class="alignInputs">
+            <span>Quantity</span>
+            <input  class="itemInput" formControlName="quantity" [(ngModel)]="this.quantity" type="number" min="1" (click)="clearInputQuantity()"/>
+        </div>
+        <div class="alignInputs">
+            <span>Promotion(%)</span>
+            <input class="itemInput" formControlName="promotion" [(ngModel)]="this.item.promotion" type="number">
+        </div>
+        <button>ok</button>
+    </form>
+</div>
