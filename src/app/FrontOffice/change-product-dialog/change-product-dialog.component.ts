@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ArtigosService } from 'src/app/BackOffice/modules/artigos/artigos.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { Artigo } from 'src/app/BackOffice/models/artigo';
+import { MesasService } from 'src/app/BackOffice/modules/mesas/mesas.service';
 
 export interface DialogData {
   id: number,
@@ -27,7 +27,7 @@ export class ChangeProductDialogComponent implements OnInit {
 
   public item;
   public quantity;
-  public promotion;
+  public promotion: number = 1;
 
   getById() {
     this.ArtigosService.getDataOffline().subscribe((data) => {
@@ -60,6 +60,16 @@ export class ChangeProductDialogComponent implements OnInit {
         element.product.price = this.item.price;
       }
     });
+
+    const round = (num, places) => {
+      return +parseFloat(num).toFixed(places);
+    };
+
+    if (this.item.promotion !== undefined ) {
+      this.item.price = round(this.item.price - (this.item.price * this.item.promotion / 100), 2);
+    } else {
+      this.item.price = this.item.price
+    }
 
     this.dialogRef.close(this.item.price);
   }

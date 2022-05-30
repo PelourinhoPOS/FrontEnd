@@ -48,6 +48,8 @@ export class FoodDrinksComponent implements OnInit {
   public subcategoryItems;
   public length: number = 0;
   public changedprice;
+  public selfid;
+  public productbyid;
 
   constructor(
     private empregadosService: EmpregadosService,
@@ -100,6 +102,14 @@ export class FoodDrinksComponent implements OnInit {
         } else if (element.product.id == id) {
           element.product.price = result;
           this.changedprice = result;
+
+          let mesa: Mesa = {
+            id: this.boardId,
+            cart: this.cart,
+            total: this.total
+          }
+
+          this.mesasService.updateDataOffline(mesa)
         }
       });
       this.totalPrice();
@@ -170,14 +180,20 @@ export class FoodDrinksComponent implements OnInit {
           this.totalPrice();
         } else {
           for (let i = 0; i < this.cart.length; i++) {
+
             if (this.cart[i].product.id == id) {
-              this.cart[i].quantity++;
-              this.totalPrice();
+              this.selfid = this.cart[i].product.id
+              this.getProductById();
+
+              if (this.productbyid[0]?.price == this.cart[i].product.price) {
+                console.log(this.productbyid[0]?.price)
+                this.cart[i].quantity++;
+                this.totalPrice();
+              }
             }
           }
         }
-      })
-    );
+      }));
 
     let mesa: Mesa = {
       id: this.boardId,
@@ -186,6 +202,15 @@ export class FoodDrinksComponent implements OnInit {
     }
 
     this.mesasService.updateDataOffline(mesa);
+  }
+
+  getProductById() {
+    this.artigosService.getLocalDataFromId('id', this.selfid).then(
+      (data => {
+        this.productbyid = data;
+        console.log(data);
+      })
+    );
   }
 
   removeProduct(id) {
