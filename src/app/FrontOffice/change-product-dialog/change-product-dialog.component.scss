@@ -15,6 +15,7 @@
     width: 170px;
     height: 35px;
     text-align: center;
+    font-size: 16px;
     border-radius: 10px;
     border: 2px solid black;
 }
@@ -54,4 +55,17 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.btnOk{
+    width: 130px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background-color: #FDBC18;
+    font-size: 16px;
+    font-family: Ubuntu;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 25px;
 }

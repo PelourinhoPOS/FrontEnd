@@ -89,7 +89,7 @@ export class FoodDrinksComponent implements OnInit {
   openProductDialog(id) {
     const dialogRef = this.dialog.open(ChangeProductDialogComponent, {
       width: '750px',
-      height: '550px',
+      height: '580px',
       data: {
         id: id,
         cart: this.cart,
@@ -184,12 +184,13 @@ export class FoodDrinksComponent implements OnInit {
             if (this.cart[i].product.id == id) {
               this.selfid = this.cart[i].product.id
               this.getProductById();
-
-              if (this.productbyid[0]?.price == this.cart[i].product.price) {
-                console.log(this.productbyid[0]?.price)
-                this.cart[i].quantity++;
-                this.totalPrice();
-              }
+              this.cart[i].quantity++;
+              this.totalPrice();
+              // if (this.productbyid[0]?.price == this.cart[i].product.price) {
+              //   console.log(this.productbyid[0]?.price)
+              //   this.cart[i].quantity++;
+              //   this.totalPrice();
+              // }
             }
           }
         }
@@ -346,6 +347,10 @@ export class FoodDrinksComponent implements OnInit {
       }
     }
     this.id = id;
+  }
+
+  removeFilters() {
+    this.item = undefined;
   }
 
   ngOnInit(): void {

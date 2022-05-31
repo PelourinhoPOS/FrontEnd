@@ -37,6 +37,7 @@ import { SplitMoneyDialogComponent } from './FrontOffice/split-money-dialog/spli
 import { MatTableModule } from '@angular/material/table';
 import { MoneyDialogComponent } from './FrontOffice/money-dialog/money-dialog.component';
 import { LongPressDirective } from './FrontOffice/board/long-press.directive';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { LongPressDirective } from './FrontOffice/board/long-press.directive';
     MatSelectModule,
     DefaultModule,
     MatTableModule,
+    Ng2SearchPipeModule,
     ToastrModule.forRoot({
       timeOut: 1500,
       progressBar: true,

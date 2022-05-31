@@ -37,26 +37,20 @@
   </div>
   <div class="alignSlider">
     <mat-icon class="mat" (click)="openDialog();">search</mat-icon>
-    <!-- <div class="flexSearch">
-      <p class="category">Choose Category</p>
-      <div class="searchBar">
-        <input (click)="openDialog();" matInput [(ngModel)]="item" class="searchField" type="text" id="searchBar"
-          placeholder="Press here to search category or itens..." />
-      </div>
-    </div> -->
+    <mat-icon *ngIf="this.item !== undefined" class="matt" (click)="removeFilters();">close</mat-icon>
 
     <swiper [slidesPerView]="8" [spaceBetween]="30" [freeMode]="true" [pagination]="{
       clickable: true
     }">
       <ng-template swiperSlide>
-        <div id="card 0" class="cardd" (click)="getProducts(); selectCategory(0)">
+        <div id="card 0" class="cardd" (click)="getProducts(); selectCategory(0);">
           <img id="image"
             src="https://img.freepik.com/vetores-gratis/os-vegetais-que-compram-o-conceito-realistico-com-carrinho-de-compras-e-bens-vector-a-ilustracao_1284-16246.jpg?w=2000"
             alt="categoria">
           <p class="categoryName">All</p>
         </div>
       </ng-template>
-      <ng-template swiperSlide *ngFor="let cat of categories; index as i">
+      <ng-template swiperSlide *ngFor="let cat of categories | filter:this.item; index as i">
         <div id="card {{cat.id}}" (click)="getCategoryItems(cat.id); selectCategory(cat.id); getSubCategory(cat.id)">
           <img id="image {{cat.id}}" src="{{cat.image}}" alt="categoria">
           <p class="categoryName">{{cat.name}}</p>
@@ -75,7 +69,7 @@
     </swiper>
     <div class="alignGrid">
       <mat-grid-list cols="5" rowHeight="180px" gutterSize="40px">
-        <mat-grid-tile *ngFor="let prod of categoryItems">
+        <mat-grid-tile *ngFor="let prod of categoryItems | filter:this.item">
           <div class="card" id="{{ prod.id }}" (click)="addProduct(prod.id); getProductsId()">
             <img class="productImg" src="{{ prod.image }}" alt="produto" />
             <span class="productName">{{ prod.name }}</span>
