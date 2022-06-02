@@ -70,7 +70,7 @@
     <div class="alignGrid">
       <mat-grid-list cols="5" rowHeight="180px" gutterSize="40px">
         <mat-grid-tile *ngFor="let prod of categoryItems | filter:this.item">
-          <div class="card" id="{{ prod.id }}" (click)="addProduct(prod.id); getProductsId()">
+          <div class="card" id="{{ prod.id }}" (click)="addProduct(prod.id); getProductsId(prod.id)">
             <img class="productImg" src="{{ prod.image }}" alt="produto" />
             <span class="productName">{{ prod.name }}</span>
             <span class="productWeight" *ngIf="!prod.unity_value">1 {{prod.sub_unity}}</span>

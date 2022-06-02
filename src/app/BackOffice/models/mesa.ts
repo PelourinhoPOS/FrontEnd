@@ -11,5 +11,8 @@ export class Mesa {
     dragPosition?: {
         x: number,
         y: number,
+    };
+    products?: {
+        id: number,
     }
 }

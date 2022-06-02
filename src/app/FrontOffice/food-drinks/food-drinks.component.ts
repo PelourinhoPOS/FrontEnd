@@ -141,8 +141,11 @@ export class FoodDrinksComponent implements OnInit {
   getBoard() {
     this.mesasService.getDataOffline().subscribe((data) => {
       this.board = data.find(x => x.id == this.boardId);
+      console.log(this.board);
       if (this.board.cart) {
         this.cart = this.board.cart;
+        this.board.products = this.board.cart.map(x => x.product.id);
+        this.productarray = this.board.products;
       }
       this.totalPrice();
     })
@@ -154,17 +157,15 @@ export class FoodDrinksComponent implements OnInit {
   //   console.log(this.products[id]);
   // }
 
-  getProductsId() {
-    this.mesasService.getDataOffline().subscribe((data) => {
-      data.forEach((board) => {
-        this.productId = data.find(x => x.id == this.boardId)
-
-        board.cart?.forEach((id) => {
-          this.productarray.push(id.product.id);
-        });
-
-      })
-    })
+  getProductsId(id) {
+    setTimeout(() => {
+      this.productarray.push(id)
+      let mesa: any = {
+        id: this.boardId,
+        products: this.productarray
+      }
+      this.mesasService.update(mesa);
+    }, 100);
   }
 
   addProduct(id) {
@@ -173,60 +174,67 @@ export class FoodDrinksComponent implements OnInit {
 
     this.artigosService.getLocalDataFromId('id', id).then(
       (data => {
-        product = data
+        product = data;
 
-        if (!this.productarray.includes(id)) {
+        if (this.productarray.includes(id) == false) {
           this.cart.push({ product: product[0], quantity: 1 });
-          this.totalPrice();
         } else {
           for (let i = 0; i < this.cart.length; i++) {
+            this.selfid = this.cart[i].product.id
+            // this.getProductById();
+            this.artigosService.getLocalDataFromId('id', this.selfid).then(
+              (data => {
+                this.productbyid = data;
+                console.log(data);
 
-            if (this.cart[i].product.id == id) {
-              this.selfid = this.cart[i].product.id
-              this.getProductById();
-              this.cart[i].quantity++;
-              this.totalPrice();
-              // if (this.productbyid[0]?.price == this.cart[i].product.price) {
-              //   console.log(this.productbyid[0]?.price)
-              //   this.cart[i].quantity++;
-              //   this.totalPrice();
-              // }
-            }
+                if (this.cart[i].product.id == id && this.productbyid[0].price == this.cart[i].product.price) {
+                  this.cart[i].quantity++;
+                } else if (this.cart[i].product.id == id && this.productbyid[0].price != this.cart[i].product.price) {
+                  // this.cart.push({ product: product[0], quantity: 1 });
+                }
+              })
+            );
+
           }
         }
+        this.totalPrice();
+
+        let mesa: Mesa = {
+          id: this.boardId,
+          cart: this.cart,
+          total: this.total
+        }
+
+        this.mesasService.updateDataOffline(mesa);
       }));
-
-    let mesa: Mesa = {
-      id: this.boardId,
-      cart: this.cart,
-      total: this.total
-    }
-
-    this.mesasService.updateDataOffline(mesa);
   }
 
-  getProductById() {
-    this.artigosService.getLocalDataFromId('id', this.selfid).then(
-      (data => {
-        this.productbyid = data;
-        console.log(data);
-      })
-    );
-  }
+  // getProductById() {
+  //   this.artigosService.getLocalDataFromId('id', this.selfid).then(
+  //     (data => {
+  //       this.productbyid = data;
+  //       console.log(data);
+  //     })
+  //   );
+  // }
 
   removeProduct(id) {
-
-    let mesa: Mesa = {
-      id: this.boardId,
-      cart: this.cart,
-      total: this.total
-    }
 
     this.cart.forEach((product) => {
       if (product.product.id == id) {
         this.cart.splice(this.cart.indexOf(product), 1);
         this.productarray.splice(this.productarray.indexOf(id));
       }
+
+      this.totalPrice();
+
+      let mesa: Mesa = {
+        id: this.boardId,
+        cart: this.cart,
+        total: this.total,
+        products: this.productarray
+      }
+
       this.mesasService.updateDataOffline(mesa);
     });
   }
@@ -357,10 +365,9 @@ export class FoodDrinksComponent implements OnInit {
     let id = parseInt(this.route.snapshot.paramMap.get('id'));
     this.boardId = id;
     this.getCategories();
-    this.getProductsId();
     //this.addNewProduct();
-    this.getProducts();
     this.getBoard();
+    this.getProducts();
     this.selectCategory(0);
     this.getCookies();
     this.getAuthTime();

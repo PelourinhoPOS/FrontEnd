@@ -18,6 +18,9 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
                         </div>
@@ -27,11 +30,11 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
-                        </div>
-                        <div class="capacityContent" *ngIf="b.cart">
-                            <mat-icon>money</mat-icon> Tem carro
                         </div>
                     </div>
                     <div *ngIf="b.capacity === 6 && b.type==='round'" class="example-round" id="six"
@@ -39,6 +42,9 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
                         </div>
@@ -48,6 +54,9 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
                         </div>
@@ -57,6 +66,9 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
                         </div>
@@ -66,6 +78,9 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
                         </div>
@@ -75,6 +90,9 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
                         </div>
@@ -84,11 +102,11 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
-                        </div>
-                        <div class="capacityContent" *ngIf="b.cart">
-                            <mat-icon>money</mat-icon> Tem carro
                         </div>
                     </div>
                     <div *ngIf="b.capacity === 6 && b.type=== 'square'" class="example-box" id="six"
@@ -96,6 +114,9 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
                         </div>
@@ -105,6 +126,9 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
                         </div>
@@ -114,6 +138,9 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
                         </div>
@@ -123,6 +150,9 @@
                         [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
                         (cdkDragEnded)="onDragEnded($event , b.id)">
                         <span>Board #{{b.number}}</span>
+                        <div class="capacityContent" *ngIf="b.cart">
+                            <mat-icon>money</mat-icon> {{b.total}}€
+                        </div>
                         <div class="capacityContent" *ngIf="!b.cart">
                             <mat-icon>money</mat-icon> 0€
                         </div>
