@@ -13,11 +13,12 @@ import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { AreaComponent } from './widgets/area/area.component';
 import { HighchartsChartModule } from 'highcharts-angular';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { VirtualKeyboardComponent } from './components/virtual-keyboard/virtual-keyboard.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
 import { CookieService } from 'ngx-cookie-service';
+import { InputMaskModule } from '@ngneat/input-mask';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,10 @@ import { CookieService } from 'ngx-cookie-service';
     RouterModule,
     HighchartsChartModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    FormsModule,
+    ReactiveFormsModule,
+    InputMaskModule.forRoot({ inputSelector: 'input', isAsync: true }),
   ],
   exports: [
     HeaderComponent,

@@ -37,7 +37,9 @@ import { SplitMoneyDialogComponent } from './FrontOffice/split-money-dialog/spli
 import { MatTableModule } from '@angular/material/table';
 import { MoneyDialogComponent } from './FrontOffice/money-dialog/money-dialog.component';
 import { LongPressDirective } from './FrontOffice/board/long-press.directive';
+import { InputMaskModule } from '@ngneat/input-mask';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { PaymentMethodsComponent } from './FrontOffice/payment-methods/payment-methods.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,8 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
     CustomerDialogComponent,
     SplitMoneyDialogComponent,
     MoneyDialogComponent,
-    LongPressDirective 
+    LongPressDirective,
+    PaymentMethodsComponent 
   ],
   imports: [
     HttpClientModule,
@@ -75,9 +78,9 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
     ReactiveFormsModule,
     MatButtonModule,
     MatSelectModule,
+    Ng2SearchPipeModule,
     DefaultModule,
     MatTableModule,
-    Ng2SearchPipeModule,
     ToastrModule.forRoot({
       timeOut: 1500,
       progressBar: true,
@@ -90,6 +93,7 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
+    InputMaskModule,
   ],
   providers: [CookieService, authenticationService, OnlineOfflineService],
   bootstrap: [AppComponent]

@@ -1,15 +1,16 @@
-.mat-tab-group {
-    margin-bottom: 48px;
-    width: 100%;
-    height: 100%;
-    background-color: #FFFFFF;
-}
+
+// .mat-tab-group {
+//     margin-bottom: 48px;
+//     width: 100%;
+//     height: 100%;
+//     background-color: #FFFFFF;
+// }
 
 .allBoards {
     align-self: center;
     display: flex;
-    width: 80%;
-    margin-left: 10%;
+    width: 100%;
+    height: 600px;
     align-items: center;
     justify-content: center;
     background-repeat: no-repeat;
@@ -17,8 +18,7 @@
 
 .example-box {
     border: 2px solid gray;
-    resize: both;
-    overflow: none;
+    overflow: hidden;
     max-width: 100%;
     min-width: 170px;
     max-height: 80px;
@@ -26,7 +26,6 @@
     display: flex;
     flex-direction: column;
     color: rgba(0, 0, 0, 0.87);
-    cursor: move;
     position: absolute;
     justify-content: center;
     align-items: center;
@@ -70,8 +69,7 @@
     font-weight: bold;
     font-family: Ubuntu;
     border-radius: 100%;
-    resize: both;
-    overflow: none;
+    overflow: hidden;
     max-width: 100%;
     min-width: 170px;
     min-height: 85px;
@@ -80,7 +78,6 @@
     flex-direction: column;
     border: 2px solid gray;
     color: rgba(0, 0, 0, 0.87);
-    cursor: move;
     position: absolute;
     justify-content: center;
     align-items: center;
@@ -134,12 +131,11 @@
 }
 
 .example-boundary {
-    width: 1000px;
+    width: 527px;
     height: 600px;
     border: dotted #ccc 1px;
     margin-bottom: 20px;
-    background-image: url('../../../assets/images/RoomRestaurant.jpg');
-    background-size: cover;
+    background-size: auto;
     background-repeat: no-repeat;
 }
 
@@ -148,7 +144,7 @@
     flex-direction: column;
     justify-content: center;
     position: absolute;
-    top: 10%;
+    top: 30%;
     right: 5%;
 }
 

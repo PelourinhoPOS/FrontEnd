@@ -3,12 +3,14 @@ import { Observable, Subscription, combineLatest, map, of } from 'rxjs';
 import { Cliente } from '../../models/cliente';
 import { OnlineOfflineService } from '../../services/online-offline.service';
 import { ClientesService } from './clientes.service';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
 import { ToastrService } from 'ngx-toastr';
 import { DeleteModalComponent } from '../../shared/components/delete-modal/delete-modal.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
+import { createMask } from '@ngneat/input-mask';
 
 @Component({
   selector: 'app-clientes',
@@ -48,8 +50,8 @@ export class ClientesComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  ngOnInit(): void {
 
+  ngOnInit(): void {
     //list data on init
     this.listLocalData();
     // this.listAPIdata();
@@ -67,16 +69,29 @@ export class ClientesComponent implements OnInit, AfterViewInit {
 
   //register data in API or local storage
   async register(cliente: Cliente) {
-    await this.clientesService.register(cliente);
+    await this.clientesService.register(cliente).then(() => {
+      this.toastr.success('Cliente registado com sucesso.');
+    }).catch((err) => {
+      err
+    });
   }
 
   //update data in API or local storage
   async update(cliente: Cliente) {
-    await this.clientesService.update(cliente);
+    await this.clientesService.update(cliente).then(() => {
+      console.log();
+      this.toastr.success('Cliente atualizado com sucesso.');
+    }).catch((err) => {
+      err
+    });
   }
 
   async delete(cliente: Cliente) {
-    await this.clientesService.delete(cliente);
+    await this.clientesService.delete(cliente).then(() => {
+      this.toastr.success('Cliente eliminado com sucesso.');
+    }).catch((err) => {
+      err
+    });
   }
 
   //search data from API
@@ -159,10 +174,9 @@ export class ClientesComponent implements OnInit, AfterViewInit {
     this.unselectRow();
     const dialogRef = this.dialog.open(CreateClientModalComponent, {
       height: '690px',
-      width: '770px',
+      width: '790px',
     });
     dialogRef.afterClosed().subscribe(cliente => {
-      //console.log(cliente)
       if (cliente) {
         this.register(cliente);
       }
@@ -171,45 +185,50 @@ export class ClientesComponent implements OnInit, AfterViewInit {
 
   //function that opens the update client modal
   openUpdateModal(data: any) {
-    if (data) {
-      const dialogRef = this.dialog.open(CreateClientModalComponent, {
-        height: '690px',
-        width: '770px',
-        data: { values: data, update: true }
-      });
-      dialogRef.afterClosed().subscribe(cliente => {
-        // console.log(cliente)
-        if (cliente) {
-          this.update(cliente);
+    this.clientesOff.subscribe(dataOff => {
+      if (dataOff.length > 0) {
+        if (data) {
+          const dialogRef = this.dialog.open(CreateClientModalComponent, {
+            height: '690px',
+            width: '770px',
+            data: { values: data, update: true }
+          });
+          dialogRef.afterClosed().subscribe(cliente => {
+            if (cliente) {
+              this.update(cliente);
+            }
+          });
+        } else {
+          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
         }
-      });
-    } else {
-      this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
-    }
+      } else {
+        this.toastr.warning('Não existem clientes para editar', 'Aviso');
+      }
+    });
   }
 
   //function that opens the delete client modal
   openDeleteModal(data: any) {
-    if (data) {
-      const dialogRef = this.dialog.open(DeleteModalComponent, {
-        height: '30%',
-        width: '50%',
-        data: { values: data }
-      });
-      dialogRef.afterClosed().subscribe(cliente => {
-        // console.log(cliente)
-        if (cliente) {
-          this.delete(cliente);
+    this.clientesOff.subscribe(dataOff => {
+      if (dataOff.length > 0) {
+        if (data) {
+          const dialogRef = this.dialog.open(DeleteModalComponent, {
+            height: '30%',
+            width: '50%',
+            data: { values: data }
+          });
+          dialogRef.afterClosed().subscribe(cliente => {
+            if (cliente) {
+              this.delete(cliente);
+            }
+          });
+        } else {
+          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
         }
-      });
-    } else {
-      this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
-    }
-    // if (data) {
-    //   this.clientesService.delete(data);
-    // } else {
-    //   this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
-    // }
+      } else {
+        this.toastr.warning('Não existem clientes para eliminar', 'Aviso');
+      }
+    })
   }
 
   //function to know which line is selected
@@ -238,9 +257,9 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   }
 
   //when component is closed, unsubscribe from the observable to avoid memory leaks
-   ngOnDestroy(): void {
-     this.subscriptionData.unsubscribe();
-   }
+  ngOnDestroy(): void {
+    this.subscriptionData.unsubscribe();
+  }
 
 }
 
@@ -254,17 +273,82 @@ export class ClientesComponent implements OnInit, AfterViewInit {
 
 export class CreateClientModalComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private fb: FormBuilder, public dialogRefCreate: MatDialogRef<CreateClientModalComponent>, public toastr: ToastrService) { }
 
   public cliente: Cliente = new Cliente(); //save the client data
   public dialogRef: any; //save the dialog reference
   public update: boolean = false; //save if is update or create
 
+  myForm: FormGroup; //save the form
+
+  postalCodeInputMask = createMask('9999-999'); //create the input mask for the postal code
+
   ngOnInit(): void {
+
+    this.myForm = new FormGroup({
+      name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
+      phone: new FormControl('', [Validators.required, Validators.maxLength(9), Validators.minLength(9), Validators.pattern('[0-9]*')]),
+      nif: new FormControl('', [Validators.required, Validators.maxLength(9), Validators.minLength(9), Validators.pattern('[0-9]*')]),
+      address: new FormControl('', [Validators.required, Validators.minLength(5)]),
+      postalCode: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]),
+      parish: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      county: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    })
     //get the data from client and set it in the form
     if (this.data) {
       this.update = true; //set update to true, to know if is update or create
-      this.cliente = this.data.values; //set the data in the form
+      this.cliente.id = this.data.values.id;
+      this.myForm.get('name').setValue(this.data.values.name);
+      this.myForm.get('phone').setValue(this.data.values.phone);
+      this.myForm.get('nif').setValue(this.data.values.nif);
+      this.myForm.get('address').setValue(this.data.values.address);
+      this.myForm.get('postalCode').setValue(this.data.values.postalCode);
+      this.myForm.get('parish').setValue(this.data.values.parish);
+      this.myForm.get('county').setValue(this.data.values.county);
+      ; //set the data in the form
+    }
+  }
+
+  get name() {
+    this.cliente.name = this.myForm.get('name').value;
+    return this.myForm.get('name');
+  }
+
+  get phone() {  //get the phone number
+    this.cliente.phone = this.myForm.get('phone').value;
+    return this.myForm.get('phone');
+  }
+
+  get nif() { //get the nif
+    this.cliente.nif = this.myForm.get('nif').value;
+    return this.myForm.get('nif');
+  }
+
+  get address() {   //get the address
+    this.cliente.address = this.myForm.get('address').value;
+    return this.myForm.get('address');
+  }
+
+  get codPostal() {  //get the postal code
+    this.cliente.postalCode = this.myForm.get('postalCode').value;
+    return this.myForm.get('postalCode');
+  }
+
+  get parish() {  //get the parish
+    this.cliente.parish = this.myForm.get('parish').value;
+    return this.myForm.get('parish');
+  }
+
+  get county() {  //get the county
+    this.cliente.county = this.myForm.get('county').value;
+    return this.myForm.get('county');
+  }
+
+  submitForm() {
+    if (this.myForm.valid) {
+      this.dialogRefCreate.close(this.cliente);
+    } else {
+      this.toastr.error('Existem erros no formulário.', 'Aviso');
     }
   }
 
@@ -289,25 +373,25 @@ export class CreateClientModalComponent implements OnInit {
       //switch to know which input is changed
       switch (result[1][0]) {
         case 'name':
-          this.cliente.name = result[0];
+          this.myForm.get('name').setValue(result[0]);
           break;
         case 'phone':
-          this.cliente.phone = result[0];
+          this.myForm.get('phone').setValue(result[0]);
           break;
         case 'nif':
-          this.cliente.nif = result[0];
+          this.myForm.get('nif').setValue(result[0]);
           break;
         case 'address':
-          this.cliente.address = result[0];
+          this.myForm.get('address').setValue(result[0]);
           break;
         case 'postalCode':
-          this.cliente.postalCode = result[0];
+          this.myForm.get('postalCode').setValue(result[0]);
           break;
         case 'parish':
-          this.cliente.parish = result[0];
+          this.myForm.get('parish').setValue(result[0]);
           break;
         case 'county':
-          this.cliente.county = result[0];
+          this.myForm.get('county').setValue(result[0]);
           break;
       }
     });

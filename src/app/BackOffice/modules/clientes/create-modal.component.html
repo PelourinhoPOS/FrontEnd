@@ -6,34 +6,71 @@
     <h2 mat-dialog-title>Adicionar novo cliente</h2>
 </ng-template>
 
-<form class="example-form">
+<form class="example-form" [formGroup]="myForm" (ngSubmit)="submitForm()" #formDir="ngForm">
     <table>
         <td>
             <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Nome do cliente</mat-label>
-                <input matInput (click)="openKeyboard('name', 'text', cliente.name)" [(ngModel)]="cliente.name"
-                    [ngModelOptions]="{standalone: true}">
+                <input matInput formControlName="name" (click)="openKeyboard('name', 'text', cliente.name)" required>
+                <div *ngIf="name.invalid && formDir.submitted">
+                    <div *ngIf="name.errors?.['required']">
+                        <span class="labelError">O nome do cliente é obrigatório</span>
+                    </div>
+                    <div *ngIf="name.errors?.['minlength'] || name.errors?.['maxlength']">
+                        <span class="labelError">O nome deve ter entre 3 e 50 caracteres</span>
+                    </div>
+                </div>
             </mat-form-field>
 
             <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Telefone</mat-label>
-                <input matInput (click)="openKeyboard('phone', 'number', cliente.phone, 9)" #telefone maxlength="9"
-                    placeholder="Ex. 2715443890" [(ngModel)]="cliente.phone" [ngModelOptions]="{standalone: true}">
+                <input matInput formControlName="phone" (click)="openKeyboard('phone', 'number', cliente.phone, 9)"
+                    #telefone maxlength="9" placeholder="Ex. 2715443890">
+                <div *ngIf="phone.invalid && formDir.submitted">
+                    <div *ngIf="phone.errors?.['required']">
+                        <span class="labelError">O telefone do cliente é obrigatório</span>
+                    </div>
+                    <div *ngIf="phone.errors?.['minlength'] || phone.errors?.['maxlength']">
+                        <span class="labelError">O numero de telefone deve ter 9 dígitos</span>
+                    </div>
+                    <div *ngIf="phone.errors?.['pattern']">
+                        <span class="labelError">O nº de telefone só deve conter números</span>
+                    </div>
+                </div>
                 <mat-hint align="end">{{telefone.value.length}} / 9</mat-hint>
             </mat-form-field>
 
             <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Nº contriubuinte</mat-label>
-                <input type="number" matInput (click)="openKeyboard('nif', 'number', cliente.nif, 9)" #contribuinte maxlength="9"
-                    placeholder="Ex. 2715443890" [(ngModel)]="cliente.nif" [ngModelOptions]="{standalone: true}">
+                <input matInput formControlName="nif" 
+                    (click)="openKeyboard('nif', 'number', cliente.nif, 9)" #contribuinte maxlength="9"
+                    placeholder="Ex. 2715443890">
+                <div *ngIf="nif.invalid && formDir.submitted">
+                    <div *ngIf="nif.errors?.['required']">
+                        <span class="labelError">O NIF do cliente é obrigatório</span>
+                    </div>
+                    <div *ngIf="nif.errors?.['minlength'] || nif.errors?.['maxlength']">
+                        <span class="labelError">O NIF deve ter 9 dígitos</span>
+                    </div>
+                    <div *ngIf="nif.errors?.['pattern']">
+                        <span class="labelError">O NIF só deve conter números</span>
+                    </div>
+                </div>
                 <mat-hint align="end">{{contribuinte.value.length}} / 9</mat-hint>
             </mat-form-field>
 
             <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Morada</mat-label>
-                <textarea matInput (click)="openKeyboard('address', 'text', cliente.address)"
-                    placeholder="Ex. Rua da Liberdade, 25" [(ngModel)]="cliente.address"
-                    [ngModelOptions]="{standalone: true}"></textarea>
+                <textarea matInput formControlName="address" (click)="openKeyboard('address', 'text', cliente.address)"
+                    placeholder="Ex. Rua da Liberdade, 25"></textarea>
+                <div *ngIf="address.invalid && formDir.submitted">
+                    <div *ngIf="address.errors?.['required']">
+                        <span class="labelError">A morada do cliente é obrigatória</span>
+                    </div>
+                    <div *ngIf="address.errors?.['minlength']">
+                        <span class="labelError">A morada deve ter pelo menos 5 caracteres</span>
+                    </div>
+                </div>
             </mat-form-field>
 
             <table class="example-full-width" cellspacing="0">
@@ -41,26 +78,47 @@
                     <td>
                         <mat-form-field class="example-full-width" appearance="fill">
                             <mat-label>Código Postal</mat-label>
-                            <input matInput (click)="openKeyboard('postalCode', 'number', cliente.postalCode)"
-                                #postalCode maxlength="8" placeholder="Ex. 4200-000" [(ngModel)]="cliente.postalCode"
-                                [ngModelOptions]="{standalone: true}">
-                            <mat-hint align="end">{{postalCode.value.length}} / 8</mat-hint>
+                            <input matInput formControlName="postalCode" [inputMask]="postalCodeInputMask"
+                                (click)="openKeyboard('postalCode', 'number', cliente.postalCode)" #postalCode
+                                maxlength="8" placeholder="Ex. 4200-000">
+                            <div *ngIf="codPostal.invalid && formDir.submitted">
+                                <div *ngIf="codPostal.errors?.['required']">
+                                    <span class="labelError">O código postal é obrigatório</span>
+                                </div>
+                                <div *ngIf="codPostal.errors?.['maxlength'] || codPostal.errors?.['minlength']">
+                                    <span class="labelError">O código postal tem de estar preenchido</span>
+                                </div>
+                            </div>
                         </mat-form-field>
                     </td>
                     <td>
                         <mat-form-field class="example-full-width" appearance="fill">
                             <mat-label>Freguesia</mat-label>
-                            <input matInput (click)="openKeyboard('parish', 'text', cliente.parish)"
-                                placeholder="Ex. Campanhã" [(ngModel)]="cliente.parish"
-                                [ngModelOptions]="{standalone: true}">
+                            <input matInput formControlName="parish"
+                                (click)="openKeyboard('parish', 'text', cliente.parish)" placeholder="Ex. Campanhã">
+                            <div *ngIf="parish.invalid && formDir.submitted">
+                                <div *ngIf="parish.errors?.['required']">
+                                    <span class="labelError">A freguesia do cliente é obrigatória</span>
+                                </div>
+                                <div *ngIf="parish.errors?.['minlength']">
+                                    <span class="labelError">A freguesia deve ter pelo menos 3 caracteres</span>
+                                </div>
+                            </div>
                         </mat-form-field>
                     </td>
                     <td>
                         <mat-form-field class="example-full-width" appearance="fill">
                             <mat-label>Concelho</mat-label>
-                            <input matInput (click)="openKeyboard('county', 'text', cliente.county)"
-                                placeholder="Ex. Porto" [(ngModel)]="cliente.county"
-                                [ngModelOptions]="{standalone: true}">
+                            <input matInput formControlName="county"
+                                (click)="openKeyboard('county', 'text', cliente.county)" placeholder="Ex. Porto">
+                            <div *ngIf="county.invalid && formDir.submitted">
+                                <div *ngIf="county.errors?.['required']">
+                                    <span class="labelError">O concelho do cliente é obrigatório</span>
+                                </div>
+                                <div *ngIf="county.errors?.['minlength']">
+                                    <span class="labelError">O concelho deve ter pelo menos 3 caracteres</span>
+                                </div>
+                            </div>
                         </mat-form-field>
                     </td>
                 </tr>
@@ -72,13 +130,11 @@
                     <button class="dialog-btn" mat-stroked-button [mat-dialog-close]="false">Cancelar</button>
 
                     <ng-container *ngIf="update; else elseBlockButton">
-                        <button class="dialog-btn" mat-stroked-button [mat-dialog-close]="cliente" color="warn"
-                            cdkFocusInitial>Atualizar</button>
+                        <button type="submit" class="dialog-btn" mat-stroked-button color="warn" cdkFocusInitial>Atualizar</button>
                     </ng-container>
 
                     <ng-template #elseBlockButton>
-                        <button class="dialog-btn" mat-stroked-button [mat-dialog-close]="cliente" color="warn"
-                            cdkFocusInitial>Registar</button>
+                        <button type="submit" class="dialog-btn" mat-stroked-button color="warn" cdkFocusInitial>Registar</button>
                     </ng-template>
 
                 </mat-dialog-actions>

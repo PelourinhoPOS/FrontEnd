@@ -24,15 +24,14 @@
 .preview-avatar {
     width: 200px;
     height: 200px;
-    border-radius: 50%;
-    padding: 5px;
+    object-fit: contain;
 }
 
 .preview {
     width: 45px;
     height: 45px;
-    border-radius: 50%;
     padding: 5px;
+    object-fit: contain;
 }
 
 .file-upload {

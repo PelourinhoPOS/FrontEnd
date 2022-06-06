@@ -15,7 +15,6 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
   //variables dexie-indexedDB
   private db: Dexie = new Dexie('pos');
   private table!: Dexie.Table<T, any>;
-  private table1!: Dexie.Table<T, any>;
   protected http!: HttpClient;
   protected onlineOfflineService!: OnlineOfflineService;
   protected toastr!: ToastrService;
@@ -61,10 +60,10 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
     this.db.version(1).stores({
       cliente: 'id',
       empregado: 'id',
-      mesa: 'id',
-      artigo: 'id',
-      categories: 'id',
-      subcategories: 'id, id_category',
+      mesa: 'id, id_zone',
+      zone: 'id',
+      artigo: 'id, id_category',
+      categories: 'id, id_category',
       paymentMethods: 'id',
     });
     this.table = this.db.table(this.nomeTabela);
@@ -88,7 +87,6 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
   }
 
   public getData: any;
-  public nifCliente: any;
 
   //register data offline in indexedDB
   async registerDataOffline(data: T) {
@@ -117,149 +115,131 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
     switch (this.nomeTabela) {
 
       case 'cliente':
-        try {
-          this.getDataOffline().subscribe(async (getData: any[]) => {
-            this.getData = getData.find(x => x.nif == data.nif || x.phone == data.phone);
+        return new Promise((resolve, reject) => {
+          try {
+            this.getDataOffline().subscribe(async (getData: any[]) => {
+              this.getData = getData.find(x => x.nif == data.nif || x.phone == data.phone);
 
-            if (this.getData === undefined || this.getData.id == data.id) {
-              if (method === 'register') {
+              if (this.getData === undefined || this.getData.id == data.id) {
+                if (method === 'register') {
 
-                await this.table.add(data);
-                this.toastr.info(this.dataName + ' guardado localmente', 'Aviso');
+                  await this.table.add(data);
+                  resolve(data);
+                  this.refreshData.next();
 
-              } else if (method === 'update') {
+                } else if (method === 'update') {
 
-                await this.table.update(data.id, data);
-                this.toastr.info(this.dataName + ' atualizado localmente', 'Aviso');
+                  await this.table.update(data.id, data);
+                  resolve(data);
+                  this.refreshData.next();
+                }
 
+              } else {
+                reject(this.toastr.warning('Já existe um cliente registado com estes dados', 'Aviso'));
               }
-              this.refreshData.next();
-            } else {
-              this.toastr.warning('Já existe um cliente registado com estes dados', 'Aviso');
-              this.refreshData.next();
-            }
 
-          });
-        } catch (error) {
-          this.toastr.error('Erro ao validar os dados', 'Aviso');
-        }
+            });
+          } catch (error) {
+            reject(this.toastr.error('Erro ao validar os dados', 'Aviso'));
+          }
+        });
         break;
 
       case 'empregado':
-        try {
-          this.getDataOffline().subscribe(async (getData: any[]) => {
-            this.getData = getData.find(x => x.phone == data.phone);
+        return new Promise((resolve, reject) => {
+          try {
+            this.getDataOffline().subscribe(async (getData: any[]) => {
+              this.getData = getData.find(x => x.phone == data.phone);
 
-            if (this.getData === undefined || this.getData.id == data.id) {
-              if (method === 'register') {
+              if (this.getData === undefined || this.getData.id == data.id) {
+                if (method === 'register') {
 
-                await this.table.add(data);
-                this.toastr.info(this.dataName + ' guardado localmente', 'Aviso');
+                  await this.table.add(data);
+                  resolve(data);
 
-              } else if (method === 'update') {
+                } else if (method === 'update') {
 
-                await this.table.update(data.id, data);
-                this.toastr.info(this.dataName + ' atualizado localmente', 'Aviso');
+                  await this.table.update(data.id, data);
+                  resolve(data);
+                }
 
+                this.refreshData.next();
+
+              } else {
+                reject(this.toastr.warning('Já existe um utilizador registado com estes dados', 'Aviso'));
               }
 
-              this.refreshData.next();
+            });
+          } catch (error) {
+            reject(this.toastr.error('Erro ao validar os dados', 'Aviso'));
+          }
+        });
+        break;
 
-            } else {
-              this.toastr.warning('Já existe um utilizador registado com estes dados', 'Aviso');
-              this.refreshData.next();
-            }
+      case 'categories':
+        return new Promise((resolve, reject) => {
+          try {
+            this.getDataOffline().subscribe(async (getData: any[]) => {
+              this.getData = getData.find(x => x.name == data.name);
 
-          });
-        } catch (error) {
-          this.toastr.error('Erro ao validar os dados', 'Aviso');
-        }
+              if (this.getData === undefined || this.getData.id == data.id) {
+
+                if (data.id != data.id_category) {
+
+                  if (method === 'register') {
+
+                    await this.table.add(data);
+                    resolve(data);
+
+                  } else if (method === 'update') {
+
+                    await this.table.update(data.id, data);
+                    resolve(data);
+
+                  }
+
+                  this.refreshData.next();
+
+                } else {
+                  reject(this.toastr.error('Não pode associar uma categoria a ela mesma', 'Aviso'));
+                }
+
+              } else {
+                reject(this.toastr.warning('Já existe uma categoria registada com este nome', 'Aviso'));
+              }
+
+            });
+
+          } catch (error) {
+            reject(this.toastr.error('Erro ao validar os dados', 'Aviso'));
+          }
+        });
         break;
 
       default:
-        try {
-          if (method === 'register') {
+        return new Promise(async(resolve, reject) => {
+          try {
+            if (method === 'register') {
 
-            await this.table.add(data);
+              await this.table.add(data);
+              resolve(data);
+
+            } else if (method === 'update') {
+
+              await this.table.update(data.id, data);
+              resolve(data);
+
+            }
+
             this.refreshData.next();
-            this.toastr.info(this.dataName + ' guardado localmente', 'Aviso');
 
-          } else if (method === 'update') {
-            await this.table.update(data.id, data);
-            this.refreshData.next();
-            this.toastr.info(this.dataName + ' atualizado localmente', 'Aviso');
-
+          } catch (error) {
+            reject(this.toastr.error('Erro ao validar os dados', 'Aviso'));
           }
 
-          this.refreshData.next();
-
-        } catch (error) {
-          this.toastr.error('Erro ao validar os dados', 'Aviso');
-        }
+        });
         break;
 
-      // case 'artigo':
-      //   try {
-      //     if (method === 'register') {
-
-      //       await this.table.add(data);
-      //       this.toastr.info(this.dataName + ' guardado localmente', 'Aviso');
-
-      //     } else if (method === 'update') {
-
-      //       await this.table.update(data.id, data);
-      //       this.toastr.info(this.dataName + ' atualizado localmente', 'Aviso');
-
-      //     }
-
-      //     this.refreshData.next();
-
-      //   } catch (error) {
-      //     this.toastr.error('Erro ao validar os dados', 'Aviso');
-      //   }
-      //   break;
-
-      // case 'categories':
-      //   try {
-      //     if (method === 'register') {
-
-      //       await this.table.add(data);
-      //       this.toastr.info(this.dataName + ' guardado localmente', 'Aviso');
-
-      //     } else if (method === 'update') {
-
-      //       await this.table.update(data.id, data);
-      //       this.toastr.info(this.dataName + ' atualizado localmente', 'Aviso');
-
-      //     }
-
-      //     this.refreshData.next();
-
-      //   } catch (error) {
-      //     this.toastr.error('Erro ao validar os dados', 'Aviso');
-      //   }
-      //   break;
-
-      // case 'mesa':
-      //   try {
-      //     if (method === 'register') {
-
-      //       await this.table.add(data);
-      //       this.toastr.info(this.dataName + ' guardado localmente', 'Aviso');
-
-      //     } else if (method === 'update') {
-
-      //       await this.table.update(data.id, data);
-      //       this.toastr.info(this.dataName + ' atualizado localmente', 'Aviso');
-
-      //     }
-
-      //     this.refreshData.next();
-
-      //   } catch (error) {
-      //     this.toastr.error('Erro ao validar os dados', 'Aviso');
-      //   }
-      //   break;
     }
   }
 
@@ -279,62 +259,93 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
   async deleteDataOffline(data: T) {
 
     switch (this.nomeTabela) {
+
       case 'empregado':
-        try {
-          this.userId = this.cookieService.get('userId');
-          if (this.userId == data.id) {
-            this.toastr.warning('Não pode eliminar o seu próprio utilizador', 'Aviso');
-          } else {
-            await this.table.delete(data.id);
-            this.toastr.info(this.dataName + ' eliminado', 'Aviso');
-            this.refreshData.next();
+        return new Promise(async (resolve, reject) => {
+          try {
+            this.userId = this.cookieService.get('userId');
+            if (this.userId == data.id) {
+              reject(this.toastr.warning('Não pode eliminar o seu próprio utilizador', 'Aviso'));
+            } else {
+              await this.table.delete(data.id);
+              this.refreshData.next();
+              resolve(data);
+            }
+          } catch (error) {
+            reject(this.toastr.error('Erro ao eliminar empregado localmente', 'Aviso'));
           }
-        } catch (error) {
-          this.toastr.error('Erro ao eliminar ' + this.dataName + ' localmente', 'Aviso');
-        }
+        });
         break;
 
       case 'categories':
-        try {
-          // this.table = this.db.table('artigo');
-          // this.getDataOffline().subscribe(async (getData) => {
-          //   this.getData = getData.find(x => x.category == data.name);
+        return new Promise(async (resolve, reject) => {
+          try {
+            this.getDataOffline().subscribe(async (getData: any[]) => {
+              this.getData = getData.find(x => x.id_category == data.id);
 
-          //   if (this.getData === undefined) {
-          //     this.table = this.db.table(this.nomeTabela);
-          //     await this.table.delete(data.id);
-          //     this.toastr.info(this.dataName + ' eliminada', 'Aviso');
-          //   } else {
-          //     this.toastr.warning('Não é possível eliminar uma categoria que contém artigos associados', 'Aviso');
-          //   }
-          //   this.table = this.db.table(this.nomeTabela);
-          //   this.refreshData.next();
-          // });
-          this.table = this.db.table('subcategories');
-          this.getDataOffline().subscribe(async (getData) => {
-            this.getData = getData.find(x => x.id_category == data.id);
+              if (this.getData === undefined) {
+                this.table = this.db.table('artigo');
 
-            if (this.getData === undefined) {
+                this.getDataOffline().subscribe(async (getData: any[]) => {
+                  this.getData = getData.find(x => x.id_category == data.id);
+
+                  if (this.getData === undefined) {
+                    await this.table.delete(data.id);
+                    this.refreshData.next();
+                    resolve(data);
+
+                  } else {
+                    reject(this.toastr.warning('Não pode eliminar uma categoria que está associada a um artigo.', 'Aviso'));
+                  }
+                });
+
+              } else {
+                reject(this.toastr.warning('Não pode eliminar uma categoria que está associada a outra.', 'Aviso'));
+              }
               this.table = this.db.table(this.nomeTabela);
-              await this.table.delete(data.id);
-              this.toastr.info(this.dataName + ' eliminada', 'Aviso');
-              this.table = this.db.table(this.nomeTabela);
-              this.refreshData.next();
-            } else {
-              this.toastr.warning('Não é possível eliminar uma categoria que contém subcategorias associadas', 'Aviso');
-            }
+            });
+          } catch (error) {
+            reject(this.toastr.error('Erro ao eliminar categoria localmente', 'Aviso'));
+          }
+        });
+        break;
 
-          })
+      case 'zone':
+        return new Promise(async (resolve, reject) => {
+          try {
+            this.table = this.db.table('mesa');
+            this.getDataOffline().subscribe(async (getData: any[]) => {
+              this.getData = getData.find(x => x.id_zone == data.id);
 
-        } catch (error) {
-          this.toastr.error('Erro ao eliminar ' + this.dataName + ' localmente', 'Aviso');
-        }
+              if (this.getData === undefined) {
+
+                await this.table.delete(data.id);
+                this.refreshData.next();
+                resolve(data);
+
+              } else {
+                reject(this.toastr.warning('Não pode eliminar uma zona que está associada a uma ou mais mesas.', 'Aviso'));
+              }
+            });
+
+            this.table = this.db.table(this.nomeTabela);
+
+          } catch (error) {
+            reject(this.toastr.error('Erro ao eliminar zona localmente', 'Aviso'));
+          }
+        });
         break;
 
       default:
-        await this.table.delete(data.id);
-        this.refreshData.next();
-        this.toastr.info(this.dataName + ' eliminado', 'Aviso');
+        return new Promise(async (resolve, reject) => {
+          try {
+            await this.table.delete(data.id);
+            this.refreshData.next();
+            resolve(data);
+          } catch (error) {
+            reject(this.toastr.error('Erro ao eliminar ' + this.dataName + ' localmente', 'Aviso'));
+          }
+        });
         break;
     }
   }
@@ -359,66 +370,52 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
     return data;
   }
 
-  getCategoryFromSubcategory() {
-
-    this.table1 = this.db.table('subcategories');
-    return this.db.transaction('r', [this.table, this.table1], async () => {
-      const categories = await this.table.get({ id: 1});
-      // Query by "foreign key" on vehicles:
-      const categoriesSubcategories = await this.table1.where({ id_category: categories.id }).toArray();
-      // Include the vehicles in the result:
-      categories.teste = categoriesSubcategories;
-      return categories;
-    });
-    
-  }
-
   //send data to API when online
   async sendDatatoAPI() {
 
-      this.sendData = true;
+    this.sendData = true;
 
-      try {
-        const allData: T[] = await this.table.toArray();
+    try {
+      const allData: T[] = await this.table.toArray();
 
-        for (const data of allData) {
-          this.registerAPI(data);
-          await this.table.delete(data.id);
-          //console.log('eliminou localmente')
-        }
-
-        //when data in indexedDB is send to API, send the notification to the user
-        if (allData.length > 0) {
-          this.toastr.info(this.dataName + 's enviados para o servidor!', 'Aviso');
-        }
-      } catch (error) {
-        this.toastr.error(this.dataName + 's não enviados para o servidor, tente mais tarde', 'Aviso');
+      for (const data of allData) {
+        this.registerAPI(data);
+        await this.table.delete(data.id);
+        //console.log('eliminou localmente')
       }
 
+      //when data in indexedDB is send to API, send the notification to the user
+      if (allData.length > 0) {
+        this.toastr.info(this.dataName + 's enviados para o servidor!', 'Aviso');
+      }
+    } catch (error) {
+      this.toastr.error(this.dataName + 's não enviados para o servidor, tente mais tarde', 'Aviso');
     }
 
-    //register function - if online register in api, if offline register in indexedDB
-    register(data: T) {
-      //  if (this.onlineOfflineService.isOnline) { //if online
-      //    this.registerAPI(data); //register in api
-      //  } else { //if offline
-      //    this.registerDataOffline(data); //register in indexedDB
-      //    //console.log('salvar na base de dados local');
-      //  }
-      //console.log(data);
-      this.registerDataOffline(data);
-    }
-
-    update(data: T) {
-      this.updateDataOffline(data);
-    }
-
-    delete (data: T) {
-      this.deleteDataOffline(data);
-    }
-
-    //list data from API
-    list(): Observable < T[] > {
-      return this.http.get<T[]>(this.urlAPI);
-    }
   }
+
+  //register function - if online register in api, if offline register in indexedDB
+  register(data: T) {
+    //  if (this.onlineOfflineService.isOnline) { //if online
+    //    this.registerAPI(data); //register in api
+    //  } else { //if offline
+    //    this.registerDataOffline(data); //register in indexedDB
+    //    //console.log('salvar na base de dados local');
+    //  }
+    //console.log(data);
+    return this.registerDataOffline(data);
+  }
+
+  update(data: T) {
+    return this.updateDataOffline(data);
+  }
+
+  delete(data: T) {
+    return this.deleteDataOffline(data);
+  }
+
+  //list data from API
+  list(): Observable<T[]> {
+    return this.http.get<T[]>(this.urlAPI);
+  }
+}

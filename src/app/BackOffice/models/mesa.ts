@@ -1,5 +1,6 @@
 export class Mesa {
     id: any;
+    id_zone?: number;
     name?: string;
     capacity?: number;
     number?: number;
@@ -11,8 +12,5 @@ export class Mesa {
     dragPosition?: {
         x: number,
         y: number,
-    };
-    products?: {
-        id: number,
     }
 }

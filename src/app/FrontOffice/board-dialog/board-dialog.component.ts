@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import Localbase from 'localbase';
-import { MatDialogRef } from '@angular/material/dialog';
-import { MesasService } from 'src/app/BackOffice/modules/mesas/mesas.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MesasService } from 'src/app/BackOffice/modules/boards/mesas.service';
 import { Mesa } from 'src/app/BackOffice/models/mesa';
 
 @Component({
@@ -24,7 +24,7 @@ export class BoardDialogComponent implements OnInit {
     number: new FormControl('', [Validators.required]),
   })
 
-  constructor(private mesasService: MesasService,  private fb: FormBuilder, private toastr: ToastrService, public dialogRef: MatDialogRef<BoardDialogComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private mesasService: MesasService,  private fb: FormBuilder, private toastr: ToastrService, public dialogRef: MatDialogRef<BoardDialogComponent>) { }
 
   ngOnInit(): void { this.getBoards() }
 
@@ -32,14 +32,24 @@ export class BoardDialogComponent implements OnInit {
 
     let mesa : Mesa = {
       id: Date.now(),
+      id_zone: parseInt(this.data),
       name: this.Form.controls["name"].value,
       capacity: this.capacity,
       number: this.number,
       type: this.selected,
-      occupy: this.occupy
+      occupy: this.occupy,
+      dragPosition: {
+        x: 0,
+        y: 0
+      }
     }
 
-    this.mesasService.register(mesa);
+    this.mesasService.register(mesa).then(() => {
+      this.toastr.success('Mesa registada com sucesso.');
+    }).catch(() => {
+      this.toastr.error('Erro ao registar mesa.');
+    });
+
     this.onNoClick();
     
     // db.collection('boards').add({

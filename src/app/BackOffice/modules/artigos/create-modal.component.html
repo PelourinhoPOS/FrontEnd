@@ -64,18 +64,6 @@
                                                 </mat-select>
                                             </mat-form-field>
                                         </td>
-                                        <td>
-                                            <mat-form-field class="example-full-width" appearance="fill">
-                                                <mat-label>Subcategoria</mat-label>
-                                                <mat-select [(value)]="subcategorySelected"
-                                                    (selectionChange)="subcategorySelect()">
-                                                    <mat-option *ngFor="let subcategory of subcategoryItems"
-                                                        [value]="subcategory.id">
-                                                        {{subcategory.name}}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                        </td>
                                     </tr>
                                 </table>
                             </td>
@@ -161,18 +149,11 @@
                             </tr>
                         </table>
                     </mat-tab>
-                    <mat-tab label="Quantidades">
+                    <mat-tab label="Unidades">
                         <table class="dataTable">
                             <tr>
                                 <td>
                                     <br>
-                                    <mat-form-field class="example-full-width" appearance="fill">
-                                        <mat-label>Stock</mat-label>
-                                        <input matInput type="number"
-                                            (click)="openKeyboard('stock', 'number', artigo.stock, 9)"
-                                            placeholder="Ex. 12" [(ngModel)]="artigo.stock"
-                                            [ngModelOptions]="{standalone: true}">
-                                    </mat-form-field>
 
                                     <mat-form-field class="example-full-width" appearance="fill">
                                         <mat-label>Unidade</mat-label>

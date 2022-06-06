@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ArtigosService } from 'src/app/BackOffice/modules/artigos/artigos.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { MesasService } from 'src/app/BackOffice/modules/mesas/mesas.service';
+import { MesasService } from 'src/app/BackOffice/modules/boards/mesas.service';
 
 export interface DialogData {
   id: number,

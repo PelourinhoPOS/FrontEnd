@@ -1,9 +1,9 @@
 <ng-container *ngIf="update; else elseBlock">
-    <h1 mat-dialog-title>Atualizar categoria</h1>
+    <h1 mat-dialog-title>Atualizar método de pagamento</h1>
 </ng-container>
 
 <ng-template #elseBlock>
-    <h1 mat-dialog-title>Adicionar nova categoria</h1>
+    <h1 mat-dialog-title>Adicionar novo método de pagamento</h1>
 </ng-template>
 
 <form class="example-form">
@@ -34,6 +34,17 @@
                                 <mat-label>Nome</mat-label>
                                 <input matInput (click)="openKeyboard('name', 'text', paymentMethod.name)"
                                     [(ngModel)]="paymentMethod.name" [ngModelOptions]="{standalone: true}">
+                            </mat-form-field>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="category-form">
+                            <br>
+                            <mat-form-field class="example-full-width" appearance="fill">
+                                <mat-label>Descrição</mat-label>
+                                <input matInput (click)="openKeyboard('description', 'text', paymentMethod.description)"
+                                    [(ngModel)]="paymentMethod.description" [ngModelOptions]="{standalone: true}">
                             </mat-form-field>
 
                         </td>

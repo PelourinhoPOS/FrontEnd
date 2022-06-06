@@ -17,7 +17,7 @@ import { PaymentMethodsService } from './payment-methods.service';
 export class PaymentMethodsComponent implements OnInit {
 
   constructor(private paymentMethodService: PaymentMethodsService, public dialog: MatDialog, private toastr: ToastrService) { }
-  
+
   public methods!: Observable<PaymentMethod[]>; //save the clients returned from the API
   public methodsOff!: Observable<PaymentMethod[]>; //save the clients returned from the local storage
   public allMethodsData!: Observable<PaymentMethod[]>; //save all clients from API and local storage
@@ -27,7 +27,7 @@ export class PaymentMethodsComponent implements OnInit {
 
   selectedRowIndex = -1; //save the selected index from the table
 
-  displayedColumnsPaymentMethods: string[] = ['image', 'name', 'description',]; //declare the columns of the payment methods table
+  displayedColumns: string[] = ['image', 'name', 'description', 'state']; //declare the columns of the payment methods table
   orderBy = 'name'; //save the order by selected
 
   public tabIndex = 0 //save the index of the tab
@@ -43,21 +43,43 @@ export class PaymentMethodsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.listLocalData();
+
+    this.translatePaginator(this.paginator);
+
+    //subscribe to refresh data, when data is changed
+    this.subscriptionData = this.paymentMethodService.refreshData.subscribe(() => {
+      this.listLocalData();
+      // this.listAPIdata();
+      // this.listAllData();
+    });
 
   }
 
   //register data in API or local storage
   async register(method: PaymentMethod) {
-    await this.paymentMethodService.register(method);
+    await this.paymentMethodService.register(method).then(() => {
+      this.toastr.success('Método de pagamento registado com sucesso!');
+    }).catch((err) => {
+      err
+    });
   }
 
   //update data in API or local storage
   async update(method: PaymentMethod) {
-    await this.paymentMethodService.update(method);
+    await this.paymentMethodService.update(method).then(() => {
+      this.toastr.success('Método de pagamento atualizado com sucesso!');
+    }).catch((err) => {
+      err
+    });
   }
 
   async delete(method: PaymentMethod) {
-    await this.paymentMethodService.delete(method);
+    await this.paymentMethodService.delete(method).then(() => {
+      this.toastr.success('Método de pagamento eliminado com sucesso!');
+    }).catch((err) => {
+      err
+    });
   }
 
   //search data from API
@@ -69,13 +91,6 @@ export class PaymentMethodsComponent implements OnInit {
   async listLocalData() {
 
     this.showProgressBar = true;
-
-    this.paymentMethodService.getDataOffline().pipe(
-      map(arr => arr.sort((a, b) => a.name.localeCompare(b.name)))
-    ).subscribe(data => {
-      this.methodsOff = of(data);
-      this.dataSourcePaymentMethods.data = data
-    });
 
     this.paymentMethodService.getDataOffline().pipe(
       map(arr => arr.sort((a, b) => b.id - a.id))
@@ -136,42 +151,51 @@ export class PaymentMethodsComponent implements OnInit {
 
   //function that opens the update client modal
   openUpdateModal(data: any) {
-    if (data) {
-
-      const dialogRef = this.dialog.open(CreatePaymentMethodsComponent, {
-        height: '690px',
-        width: '770px',
-        data: { values: data, update: true }
-      });
-      dialogRef.afterClosed().subscribe(category => {
-        // console.log(category)
-        if (category) {
-          this.paymentMethodService.update(category);
+    this.methodsOff.subscribe(dataOff => {
+      if (dataOff.length > 0) {
+        if (data) {
+          const dialogRef = this.dialog.open(CreatePaymentMethodsComponent, {
+            height: '690px',
+            width: '770px',
+            data: { values: data, update: true }
+          });
+          dialogRef.afterClosed().subscribe(category => {
+            // console.log(category)
+            if (category) {
+              this.paymentMethodService.update(category);
+            }
+          });
+        } else {
+          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
         }
-      });
-
-    } else {
-      this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
-    }
+      } else {
+        this.toastr.warning('Não existem métodos de pagamento para editar.', 'Aviso');
+      }
+    })
   }
 
   //function that opens the delete client modal
   openDeleteModal(data: any) {
-    if (data) {
-      const dialogRef = this.dialog.open(DeleteModalComponent, {
-        height: '30%',
-        width: '50%',
-        data: { values: data }
-      });
-      dialogRef.afterClosed().subscribe(data => {
-        // console.log(data)
+    this.methodsOff.subscribe(dataOff => {
+      if (dataOff.length > 0) {
         if (data) {
-          this.paymentMethodService.delete(data);
+          const dialogRef = this.dialog.open(DeleteModalComponent, {
+            height: '30%',
+            width: '50%',
+            data: { values: data }
+          });
+          dialogRef.afterClosed().subscribe(data => {
+            if (data) {
+              this.paymentMethodService.delete(data);
+            }
+          });
+        } else {
+          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
         }
-      });
-    } else {
-      this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
-    }
+      } else {
+        this.toastr.warning('Não existem métodos de pagamento para eliminar.', 'Aviso');
+      }
+    });
   }
 
   //function to know which line is selected
@@ -188,6 +212,14 @@ export class PaymentMethodsComponent implements OnInit {
 
   onOptionsSelected() {
     this.listAllData();
+  }
+
+  translatePaginator(paginator: MatPaginator) {
+    paginator._intl.firstPageLabel = 'Primeira Página';	//first page label
+    paginator._intl.lastPageLabel = 'Última Página';	//last page label
+    paginator._intl.nextPageLabel = 'Próxima Página';	//next page label
+    paginator._intl.previousPageLabel = 'Página Anterior';  //previous page label
+    paginator._intl.itemsPerPageLabel = 'Itens por página'; //items per page label
   }
 
   //when component is closed, unsubscribe from the observable to avoid memory leaks
@@ -248,6 +280,10 @@ export class CreatePaymentMethodsComponent implements OnInit {
       switch (result[1][0]) {
         case 'name':
           this.paymentMethod.name = result[0];
+          break;
+        case 'description':
+          this.paymentMethod.description = result[0];
+          break;
       }
     });
   }

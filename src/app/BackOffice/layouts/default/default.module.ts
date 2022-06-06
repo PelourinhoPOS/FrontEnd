@@ -8,13 +8,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DefaultComponent } from './default.component';
 import { SharedModule } from '../../shared/shared.module';
 import { DashboardComponent } from '../../modules/dashboard/dashboard.component';
 import { ClientesComponent, CreateClientModalComponent } from '../../modules/clientes/clientes.component';
-import { CreateEmployeeModalComponent, EmpregadosComponent } from '../../modules/empregados/empregados.component';
+import { CreateEmployeeModalComponent, UsersComponent } from '../../modules/users/users.component';
 import { OnlineOfflineService } from '../../services/online-offline.service';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 
@@ -22,23 +22,23 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ArtigosComponent, CreateArticleModalComponent } from '../../modules/artigos/artigos.component';
-import { CreateBoardModalComponent, MesasComponent } from '../../modules/mesas/mesas.component';
-import { CategoriesComponent, CreateCategorieModalComponent, CreateSubCategorieModalComponent } from '../../modules/categories/categories.component';
+import { CreateBoardModalComponent, MesasComponent } from '../../modules/boards/mesas.component';
+import { CategoriesComponent, CreateCategorieModalComponent } from '../../modules/categories/categories.component';
 
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { CookieService } from 'ngx-cookie-service';
-import { BoardComponent } from '../../modules/mesas/board.component';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreatePaymentMethodsComponent, PaymentMethodsComponent } from '../../modules/payment-methods/payment-methods.component';
 import { PaymentMethodsService } from '../../modules/payment-methods/payment-methods.service';
+import { InputMaskModule } from '@ngneat/input-mask';
 
 @NgModule({
   declarations: [
     DefaultComponent,
     DashboardComponent,
     ClientesComponent, 
-    EmpregadosComponent,
+    UsersComponent,
     MesasComponent,
     ArtigosComponent,
     CategoriesComponent,
@@ -47,8 +47,6 @@ import { PaymentMethodsService } from '../../modules/payment-methods/payment-met
     CreateArticleModalComponent,
     CreateCategorieModalComponent,
     CreateBoardModalComponent,
-    CreateSubCategorieModalComponent,
-    BoardComponent,
     PaymentMethodsComponent,
     CreatePaymentMethodsComponent
   ],
@@ -69,7 +67,10 @@ import { PaymentMethodsService } from '../../modules/payment-methods/payment-met
     MatDialogModule,
     MatProgressBarModule,
     MatPaginatorModule,
-    DragDropModule
+    DragDropModule, 
+    FormsModule,
+    ReactiveFormsModule,
+    InputMaskModule.forRoot({ inputSelector: 'input', isAsync: true }),
   ],
   providers: [CookieService, OnlineOfflineService, PaymentMethodsService],
 })

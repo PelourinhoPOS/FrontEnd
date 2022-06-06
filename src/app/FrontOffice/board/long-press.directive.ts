@@ -38,7 +38,7 @@ import {
       );
       this.eventSubscribe = merge(mousedown, mouseup, touchstart, touchEnd)
         .pipe(
-          switchMap((state) => (state ? timer(this.threshold, 1500) : of(null))),
+          switchMap((state) => (state ? timer(this.threshold, 100) : of(null))),
           filter((value:any) => value)
         )
         .subscribe(() => this.mouseLongPress.emit());

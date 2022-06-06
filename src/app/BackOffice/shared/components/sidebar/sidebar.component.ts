@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
-import { EmpregadosComponent } from 'src/app/BackOffice/modules/empregados/empregados.component';
-import { EmpregadosService } from 'src/app/BackOffice/modules/empregados/empregados.service';
+import { UsersService } from 'src/app/BackOffice/modules/users/users.service';
 import { authenticationService } from 'src/app/FrontOffice/authentication-dialog/authentication-dialog.service';
 
 @Component({
@@ -12,7 +11,7 @@ import { authenticationService } from 'src/app/FrontOffice/authentication-dialog
 })
 export class SidebarComponent implements OnInit {
 
-  constructor(private cookieService: CookieService, private _router: Router, private empregadosService: EmpregadosService, private authService: authenticationService ) { }
+  constructor(private cookieService: CookieService, private _router: Router, private usersService: UsersService, private authService: authenticationService ) { }
 
   public userId;
   public data;
@@ -25,7 +24,7 @@ export class SidebarComponent implements OnInit {
   getUserData(){
     this.userId = parseInt(this.cookieService.get('userId'));
 
-    this.empregadosService.getDataOffline().subscribe(data => {
+    this.usersService.getDataOffline().subscribe(data => {
       this.data = data.filter(item => item.id === this.userId)[0];
     });
 

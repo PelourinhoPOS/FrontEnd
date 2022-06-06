@@ -84,3 +84,15 @@ input {
 label#title {
     font-weight: bold;
 }
+
+.material-icons{
+    color: red;
+    font-size: 30px;
+}
+
+.material-icons:hover {
+    box-shadow: 2px 2px 2px 2px rgba(0.2, 0.2, 0.2, 0.2);
+    border-radius: 50%;
+    color: rgb(255, 9, 9);
+    font-size: 30px;
+}

@@ -1,5 +1,9 @@
 <form [formGroup]="Form" (ngSubmit)="updateBoard(data.id)">
     <div class="boardItens">
+        <span class="material-icons" color="warn" (click)="deleteBoard(data.id)">
+            delete
+        </span>
+        <br>
         <label id="title" for="boardName">Reserve Name</label>
         <input id="boardName" type="text" formControlName="name" [(ngModel)]="data.name" />
         <label id="title" for="boardNumber">Board Number</label>

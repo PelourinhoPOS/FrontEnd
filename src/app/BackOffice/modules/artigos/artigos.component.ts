@@ -9,7 +9,6 @@ import { OnlineOfflineService } from '../../services/online-offline.service';
 import { DeleteModalComponent } from '../../shared/components/delete-modal/delete-modal.component';
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
 import { CategoriesService } from '../categories/categories.service';
-import { SubcategoriesService } from '../categories/subcategories.service';
 import { ArtigosService } from './artigos.service';
 
 @Component({
@@ -22,7 +21,7 @@ export class ArtigosComponent implements OnInit {
   public header: any
   public sticky: any;
 
-  constructor(public dialog: MatDialog, private artigosService: ArtigosService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService, private subcategoriesService: SubcategoriesService) { }
+  constructor(public dialog: MatDialog, private artigosService: ArtigosService, private categorieServive: CategoriesService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService) { }
 
   public artigos!: Observable<Artigo[]>; //save the clients returned from the API
   public artigosOff!: Observable<Artigo[]>; //save the clients returned from the local storage
@@ -61,21 +60,41 @@ export class ArtigosComponent implements OnInit {
 
   //register data in API or local storage
   async register(artigo: Artigo) {
-    await this.artigosService.register(artigo);
+    await this.artigosService.register(artigo).then(() => {
+      this.toastr.success('Artigo registado com sucesso.');
+    }).catch((err) => {
+      err
+    });
   }
 
   //update data in API or local storage
   async update(artigo: Artigo) {
-    await this.artigosService.update(artigo);
+    await this.artigosService.update(artigo).then(() => {
+      this.toastr.success('Artigo atualizado com sucesso.');
+    }).catch((err) => {
+      err
+    });
   }
 
   async delete(artigo: Artigo) {
-    await this.artigosService.delete(artigo);
+    await this.artigosService.delete(artigo).then(() => {
+      this.toastr.success('Artigo eliminado com sucesso.');
+    }).catch((err) => { 
+      err
+    });
   }
 
   //search data from API
   listAPIdata(): void {
     this.artigos = this.artigosService.list();
+  }
+
+  namesCategories: any[] = [];
+
+  getCategorieName(id, id_category: number) {
+    return this.categorieServive.getLocalDataFromId('id', id_category).then(data => {
+      this.namesCategories[id - 1] = data[0].name;
+    });
   }
 
   //search data from local storage
@@ -89,42 +108,29 @@ export class ArtigosComponent implements OnInit {
         this.artigosService.getDataOffline().pipe(
           map(arr => arr.sort((a, b) => a.name.localeCompare(b.name)))
         ).subscribe(data => {
-          this.artigosOff = of(data);
 
-          this.dataSource.data = data
+          for (let i = 0; i < data.length; i++) {
+            this.getCategorieName(data[i].id, data[i].id_category)
+          }
 
-          // for (let i = 0; i < data.length; i++) {
-          //   this.subcategoriesService.getLocalDataFromId('id', data[i].id_category).then(category => {
-          //     console.log(category);
-          //      this.dataSource.data[i] = ({
-          //        id: data[i].id,
-          //        name: data[i].name,
-          //        price:  data[i].price,
-          //        iva: data[i].iva,
-          //        weight: data[i].weight,
-          //        id_category: data[i].id_category,
-          //        name_category: category[0].name,
-          //        image: data[i].image,
-          //        synchronized: false
-          //      });
-          //   });
-          // }
-
-          // this.dataSource.data = data
-        })
-        break;
-
-      case 'category'://order by function
-        this.artigosService.getDataOffline().pipe(
-          map(arr => arr.sort((a, b) => a.name_category.localeCompare(b.name_category)))
-        ).subscribe(data => {
           this.artigosOff = of(data);
           this.dataSource.data = data
         })
         break;
 
       case 'id':
-        this.artigosService.getDataOffline().subscribe(data => {
+        this.artigosService.getDataOffline().pipe(
+          map(arr => arr.sort((a, b) => a.id - b.id))
+        ).subscribe(data => {
+          this.artigosOff = of(data);
+          this.dataSource.data = data
+        })
+        break;
+
+      case 'preco':
+        this.artigosService.getDataOffline().pipe(
+          map(arr => arr.sort((a, b) => b.price - a.price))
+        ).subscribe(data => {
           this.artigosOff = of(data);
           this.dataSource.data = data
         })
@@ -164,55 +170,73 @@ export class ArtigosComponent implements OnInit {
 
   //function that opens the create client modal
   openCreateModal() {
-    this.unselectRow();
-    const dialogRef = this.dialog.open(CreateArticleModalComponent, {
-      height: '710px',
-      width: '870px',
-    });
-    dialogRef.afterClosed().subscribe(artigo => {
-      console.log(artigo)
-      if (artigo) {
-        this.register(artigo);
+    this.categorieServive.getDataOffline().subscribe(data => {
+      if (data.length > 0) {
+        this.unselectRow();
+        const dialogRef = this.dialog.open(CreateArticleModalComponent, {
+          height: '710px',
+          width: '870px',
+        });
+        dialogRef.afterClosed().subscribe(artigo => {
+          console.log(artigo)
+          if (artigo) {
+            this.register(artigo);
+          }
+        });
+      } else {
+        this.toastr.warning('Não existem categorias para criar artigos.', 'Aviso');
       }
     });
   }
 
   //function that opens the update client modal
   openUpdateModal(data: any) {
-    if (data) {
-      const dialogRef = this.dialog.open(CreateArticleModalComponent, {
-        height: '710px',
-        width: '870px',
-        data: { values: data, update: true }
-      });
-      dialogRef.afterClosed().subscribe(cliente => {
-        // console.log(cliente)
-        if (cliente) {
-          this.update(cliente);
+    this.artigosOff.subscribe(dataOff => {
+      if (dataOff.length > 0) {
+        if (data) {
+          const dialogRef = this.dialog.open(CreateArticleModalComponent, {
+            height: '710px',
+            width: '870px',
+            data: { values: data, update: true }
+          });
+          dialogRef.afterClosed().subscribe(artigo => {
+            if (artigo) {
+              this.update(artigo);
+            }
+          });
+        } else {
+          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
         }
-      });
-    } else {
-      this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
-    }
+      } else {
+        this.toastr.warning('Não existem artigos para editar.', 'Aviso');
+      }
+    })
+
   }
 
   //function that opens the delete client modal
   openDeleteModal(data: any) {
-    if (data) {
-      const dialogRef = this.dialog.open(DeleteModalComponent, {
-        height: '30%',
-        width: '50%',
-        data: { values: data }
-      });
-      dialogRef.afterClosed().subscribe(cliente => {
-        // console.log(cliente)
-        if (cliente) {
-          this.delete(cliente);
+    this.artigosOff.subscribe(dataOff => {
+      if (dataOff.length > 0) {
+        if (data) {
+          const dialogRef = this.dialog.open(DeleteModalComponent, {
+            height: '30%',
+            width: '50%',
+            data: { values: data }
+          });
+          dialogRef.afterClosed().subscribe(artigo => {
+            if (artigo) {
+              this.delete(artigo);
+            }
+          });
+        } else {
+          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
         }
-      });
-    } else {
-      this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
-    }
+      } else {
+        this.toastr.warning('Não existem artigos para eliminar.', 'Aviso');
+      }
+    })
+
     // if (data) {
     //   this.clientesService.delete(data);
     // } else {
@@ -228,7 +252,8 @@ export class ArtigosComponent implements OnInit {
 
   //function event to change the order by
   onOptionsSelected() {
-    this.listAllData();
+    //this.listAllData();
+    this.listLocalData();
   }
 
   //function to unselect the selected row
@@ -254,7 +279,7 @@ export class ArtigosComponent implements OnInit {
 
 export class CreateArticleModalComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private categorieServive: CategoriesService, private subcategorieServive: SubcategoriesService) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private categorieServive: CategoriesService) { }
 
   public artigo: Artigo = new Artigo(); //save the client data
   public dialogRef: any; //save the dialog reference
@@ -276,7 +301,6 @@ export class CreateArticleModalComponent implements OnInit {
   ngOnInit(): void {
     //get the data from client and set it in the form
     this.getCategories();
-    this.getSubcategories();
 
     if (this.data) {
       this.update = true; //set update to true, to know if is update or create
@@ -284,12 +308,9 @@ export class CreateArticleModalComponent implements OnInit {
       this.fileName = 'Alterar imagem'; //set the file name
       this.url = this.artigo.image; //set the photo in the form
       this.categorySelected = this.artigo.id_category; //set the category in the form
-      this.subcategorySelected = this.artigo.id_subcategory; //set the subcategory in the form
       this.unitySelected = this.artigo.unity; //set the unity in the form
       this.subUnitySelected = this.artigo.sub_unity; //set the sub unity in the form
       this.ivaSelected = (this.artigo.iva).toString(); //set the iva in the form
-      this.getSubcategories(); //call the function to get the subcategories
-
     } else {
       this.categorySelect(); //set the category data if the user don't change the select
       this.ivaSelect(); //set the iva data if the user don't change the select
@@ -304,25 +325,8 @@ export class CreateArticleModalComponent implements OnInit {
     });
   };
 
-  getSubcategories() {
-    this.subcategorieServive.getLocalDataFromId('id_category', this.categorySelected).then(data => {
-      if (data.length) {
-        // this.subcategorySelected = data[0].id;
-        this.artigo.id_subcategory = this.subcategorySelected;
-        this.subcategoryItems = data
-      } else {
-        this.subcategorySelected = 0;
-      }
-    });
-  }
-
   categorySelect() {
     this.artigo.id_category = this.categorySelected;
-    this.getSubcategories();
-  }
-
-  subcategorySelect() {
-    this.artigo.id_subcategory = this.subcategorySelected;
   }
 
   ivaSelect() {
@@ -400,9 +404,6 @@ export class CreateArticleModalComponent implements OnInit {
           break;
         case 'description':
           this.artigo.description = result[0];
-          break;
-        case 'stock':
-          this.artigo.stock = result[0];
           break;
         case 'price':
           this.artigo.price = result[0];

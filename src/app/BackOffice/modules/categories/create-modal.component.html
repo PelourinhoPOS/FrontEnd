@@ -35,7 +35,20 @@
                                 <input matInput (click)="openKeyboard('name', 'text', categorie.name)"
                                     [(ngModel)]="categorie.name" [ngModelOptions]="{standalone: true}">
                             </mat-form-field>
-
+                        </td>
+                        <td class="category-form">
+                            <br>
+                            <mat-form-field class="example-full-width" appearance="fill">
+                                <mat-label>Categoria Pai</mat-label>
+                                <mat-select [(value)]="subcategorySelected" (selectionChange)="categorySelect()">
+                                    <mat-option value="0">
+                                        Sem categoria pai
+                                    </mat-option>
+                                    <mat-option *ngFor="let category of categoryItems" [value]="category.id">
+                                        {{category.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
                         </td>
                     </tr>
                     <tr>

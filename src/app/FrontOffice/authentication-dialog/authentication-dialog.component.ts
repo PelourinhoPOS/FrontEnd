@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CookieService } from 'ngx-cookie-service';
-import { EmpregadosService } from 'src/app/BackOffice/modules/empregados/empregados.service';
+import { UsersService } from 'src/app/BackOffice/modules/users/users.service';
 
 
 export interface DialogData {
@@ -25,7 +25,7 @@ export class AuthenticationDialogComponent implements OnInit {
 
 
   constructor(
-    private empregadosService: EmpregadosService,
+    private usersService: UsersService,
     public dialogRef: MatDialogRef<AuthenticationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData, private _router: Router, private toastr: ToastrService,
     private cookie: CookieService, private authService: authenticationService
@@ -62,7 +62,7 @@ export class AuthenticationDialogComponent implements OnInit {
   }
 
   getPassword(id) {
-    this.empregadosService.getDataOffline().subscribe((data) => {
+    this.usersService.getDataOffline().subscribe((data) => {
       this.userPassword = data.find(x => x.id == id).password
     })
   }

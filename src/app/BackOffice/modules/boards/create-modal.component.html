@@ -1,0 +1,52 @@
+<ng-container *ngIf="update; else elseBlock">
+    <h1 mat-dialog-title>Atualizar zona</h1>
+</ng-container>
+
+<ng-template #elseBlock>
+    <h1 mat-dialog-title>Adicionar nova zona</h1>
+</ng-template>
+
+<form class="example-form styleForm">
+    <table>
+        <tr>
+            <td class="rowStyle">
+                <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
+                <input type="file" class="file" style="display: none;" (change)="onFileSelected($event)" #fileUpload>
+                <div class="file-upload" (click)="fileUpload.click()">
+                    <button mat-mini-fab color="primary" class="upload-btn">
+                        <mat-icon>attach_file</mat-icon>
+                    </button>
+                    <p class="input-text"> {{fileName || "Sem imagem"}} </p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <br>
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Nome</mat-label>
+                    <input matInput (click)="openKeyboard('name', 'text', zone.name)" [(ngModel)]="zone.name"
+                        [ngModelOptions]="{standalone: true}">
+                </mat-form-field>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <mat-dialog-actions align="end">
+                    <button mat-stroked-button class="dialog-btn" [mat-dialog-close]="false">Cancelar</button>
+
+                    <ng-container *ngIf="update; else elseBlockButton">
+                        <button mat-stroked-button color="warn" class="dialog-btn" [mat-dialog-close]="zone"
+                            cdkFocusInitial>Atualizar</button>
+                    </ng-container>
+
+                    <ng-template #elseBlockButton>
+                        <button mat-stroked-button color="warn" class="dialog-btn" [mat-dialog-close]="zone"
+                            cdkFocusInitial>Registar</button>
+                    </ng-template>
+
+                </mat-dialog-actions>
+            </td>
+        </tr>
+    </table>
+</form>

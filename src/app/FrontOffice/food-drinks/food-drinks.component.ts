@@ -5,15 +5,14 @@ import { ActivatedRoute } from '@angular/router';
 import { ChangeProductDialogComponent } from '../change-product-dialog/change-product-dialog.component';
 import { CookieService } from 'ngx-cookie-service';
 import { authenticationService } from '../authentication-dialog/authentication-dialog.service';
-import { EmpregadosService } from 'src/app/BackOffice/modules/empregados/empregados.service';
+import { UsersService } from 'src/app/BackOffice/modules/users/users.service';
 import { ArtigosService } from 'src/app/BackOffice/modules/artigos/artigos.service';
-import { MesasService } from 'src/app/BackOffice/modules/mesas/mesas.service';
+import { MesasService } from 'src/app/BackOffice/modules/boards/mesas.service';
 import { Mesa } from 'src/app/BackOffice/models/mesa';
 import { Subscription, map } from 'rxjs';
 import SwiperCore, { FreeMode, Pagination } from 'swiper';
 import { CategoriesService } from 'src/app/BackOffice/modules/categories/categories.service';
 
-import { SubcategoriesService } from 'src/app/BackOffice/modules/categories/subcategories.service';
 
 SwiperCore.use([FreeMode, Pagination]);
 
@@ -42,7 +41,7 @@ export class FoodDrinksComponent implements OnInit {
   public ivaround;
   public selectedID: number = 0; //guarda o id do utilizador selecionado
   public id: number = 0;
-  public categories = [];
+  public categories: any = [];
   public categoryItems;
   public subCategories;
   public subcategoryItems;
@@ -52,7 +51,7 @@ export class FoodDrinksComponent implements OnInit {
   public productbyid;
 
   constructor(
-    private empregadosService: EmpregadosService,
+    private empregadosService: UsersService,
     private artigosService: ArtigosService,
     private mesasService: MesasService,
     public dialog: MatDialog,
@@ -60,7 +59,6 @@ export class FoodDrinksComponent implements OnInit {
     private cookieService: CookieService,
     private authService: authenticationService,
     private categoryService: CategoriesService,
-    private subcategoryService: SubcategoriesService
   ) { }
 
   openDialog(): void {
@@ -228,7 +226,7 @@ export class FoodDrinksComponent implements OnInit {
 
       this.totalPrice();
 
-      let mesa: Mesa = {
+      let mesa: any = {
         id: this.boardId,
         cart: this.cart,
         total: this.total,
@@ -264,22 +262,22 @@ export class FoodDrinksComponent implements OnInit {
     this.time = this.authService.getTime();
   }
 
-  getSubCategory(id) {
-    this.subcategoryService.getDataOffline().pipe(
-      map(data => data.filter(item => item.id_category == id)))
-      .subscribe(data => {
-        this.subCategories = data;
-        this.length = this.subCategories.length;
-      })
-  }
+  // getSubCategory(id) {
+  //   this.subcategoryService.getDataOffline().pipe(
+  //     map(data => data.filter(item => item.id_category == id)))
+  //     .subscribe(data => {
+  //       this.subCategories = data;
+  //       this.length = this.subCategories.length;
+  //     })
+  // }
 
-  getSubCategoryItems(id) {
-    this.artigosService.getDataOffline().pipe(
-      map(data => data.filter(item => item.id_subcategory == id)))
-      .subscribe(data => {
-        this.categoryItems = data;
-      });
-  }
+  // getSubCategoryItems(id) {
+  //   this.artigosService.getDataOffline().pipe(
+  //     map(data => data.filter(item => item.id_subcategory == id)))
+  //     .subscribe(data => {
+  //       this.categoryItems = data;
+  //     });
+  // }
 
   getCategoryItems(id) {
     this.artigosService.getDataOffline().subscribe(data => {
@@ -288,9 +286,9 @@ export class FoodDrinksComponent implements OnInit {
   }
 
   getCategories() {
-    this.categoryService.getDataOffline().subscribe(data => {
+    this.categoryService.getDataOffline().pipe(map(data => data.filter(item => item.id_category == 0))).subscribe(data => {
       this.categories = data;
-    })
+    });
   }
 
   teste(id: number): number {

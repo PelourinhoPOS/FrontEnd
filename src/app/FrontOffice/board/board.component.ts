@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { BoardDialogComponent } from '../board-dialog/board-dialog.component';
 import { ChangeBoardDialogComponent } from '../change-board-dialog/change-board-dialog.component';
-import { MesasService } from 'src/app/BackOffice/modules/mesas/mesas.service';
+import { MesasService } from 'src/app/BackOffice/modules/boards/mesas.service';
 import { authenticationService } from '../authentication-dialog/authentication-dialog.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
+import { ZonasService } from 'src/app/BackOffice/modules/boards/zonas.service';
 
 export interface DialogData {
   id: string,
@@ -30,13 +31,19 @@ export class BoardComponent implements OnInit {
 
   public subscriptionData!: Subscription; //subscription to refresh data
 
+  public zones;
+  public zonesById;
+
+  selectedTabIndex = 0
+  selectIdZone = 0;
+
   dragPosition = {
     x: 0,
     y: 0
   }
 
   constructor(public dialog: MatDialog, private mesasService: MesasService, public authService: authenticationService,
-    public cookieService: CookieService, private router: Router,) { }
+    public cookieService: CookieService, private router: Router, private zonesService: ZonasService) { }
 
 
   openDialog() {
@@ -44,6 +51,12 @@ export class BoardComponent implements OnInit {
       width: '800px',
       height: '400px',
     });
+  }
+
+  onTabChanged(event) {
+    this.selectIdZone = (event.tab.textLabel).split(' - ')[0];
+    this.getBoards();
+    this.getZonesById(this.selectIdZone);
   }
 
   openUpdateDialog(id) {
@@ -120,8 +133,26 @@ export class BoardComponent implements OnInit {
   }
 
   getBoards() {
-    this.mesasService.getDataOffline().subscribe(data => {
+    this.mesasService.getDataOffline().pipe(
+      map(data => data.filter(x => x.id_zone == this.selectIdZone))
+    ).subscribe(data => {
       this.boards = data
+      console.log(data);
+    })
+  }
+
+  getZones() {
+    this.zonesService.getDataOffline().subscribe(data => {
+      this.selectIdZone = data[0].id;
+      this.zones = data
+    })
+  }
+
+  getZonesById(id: any) {
+    this.zonesService.getDataOffline().pipe(
+      map(data => data.filter(x => x.id == id))
+    ).subscribe(data => {
+      this.zonesById = data
     })
   }
 
@@ -131,6 +162,7 @@ export class BoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBoards();
+    this.getZones();
     this.subscriptionData = this.mesasService.refreshData.subscribe(() => {
       // this.listAPIdata();
       this.getBoards();

@@ -10,7 +10,6 @@ import { OnlineOfflineService } from '../../services/online-offline.service';
 import { DeleteModalComponent } from '../../shared/components/delete-modal/delete-modal.component';
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
 import { CategoriesService } from './categories.service';
-import { SubcategoriesService } from './subcategories.service';
 
 @Component({
   selector: 'app-categories',
@@ -22,7 +21,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
   public header: any
   public sticky: any;
 
-  constructor(public dialog: MatDialog, private categoriesService: CategoriesService, private subcategoriesService: SubcategoriesService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService) { }
+  constructor(public dialog: MatDialog, private categoriesService: CategoriesService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService) { }
 
   public categories!: Observable<Categories[]>; //save the clients returned from the API
   public categoriesOff!: Observable<Categories[]>; //save the clients returned from the local storage
@@ -37,8 +36,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
 
   selectedRowIndex = -1; //save the selected index from the table
 
-  displayedColumnsCategory: string[] = ['image', 'name', 'state']; //declare columns of the categories table
-  displayedColumnsSubCategory: string[] = ['image', 'name', 'category', 'state']; //declare the columns of the subcategories table
+  displayedColumnsCategory: string[] = ['image', 'name', 'categorie', 'state']; //declare columns of the categories table
   orderBy = 'name'; //save the order by selected
 
   public tabIndex = 0 //save the index of the tab
@@ -69,25 +67,32 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
       // this.listAPIdata();
       // this.listAllData();
     });
-    this.subscriptionData = this.subcategoriesService.refreshData.subscribe(() => {
-      this.listLocalData();
-      // this.listAPIdata();
-      // this.listAllData();
-    });
   }
 
   //register data in API or local storage
   async register(categorie: Categories) {
-    await this.categoriesService.register(categorie);
+    await this.categoriesService.register(categorie).then(() => {
+      this.toastr.success('Categoria registada com sucesso');
+    }).catch((err) => {
+      err
+    });
   }
 
   //update data in API or local storage
   async update(categorie: Categories) {
-    await this.categoriesService.update(categorie);
+    await this.categoriesService.update(categorie).then(() => {
+      this.toastr.success('Categoria atualizada com sucesso');
+    }).catch((err) => {
+      err
+    });
   }
 
   async delete(categorie: Categories) {
-    await this.categoriesService.delete(categorie);
+    await this.categoriesService.delete(categorie).then(() => {
+      this.toastr.success('Categoria eliminada com sucesso');
+    }).catch((err) => {
+      err
+    });
   }
 
   //search data from API
@@ -95,39 +100,45 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
     this.categories = this.categoriesService.list();
   }
 
+  namesCategories: any[] = [];
+
+  getCategoryName(id, id_category: number) {
+    return this.categoriesService.getLocalDataFromId('id', id_category).then(category => {
+      this.namesCategories[id - 1] = category[0].name;
+    });
+  }
+
   //search data from local storage
   async listLocalData() {
 
     this.showProgressBar = true;
 
-    this.categoriesService.getDataOffline().pipe(
-      map(arr => arr.sort((a, b) => a.name.localeCompare(b.name)))
-    ).subscribe(data => {
-      this.categoriesOff = of(data);
-      this.dataSourceCategories.data = data
-    });
+    switch (this.orderBy) {
+      case 'name':
+        this.categoriesService.getDataOffline().pipe(
+          map(arr => arr.sort((a, b) => a.name.localeCompare(b.name)))
+        ).subscribe((data: any) => {
+          for (let i = 0; i < data.length; i++) {
+            this.getCategoryName(data[i].id, data[i].id_category);
+          }
+          this.categoriesOff = of(data);
+          this.dataSourceCategories.data = data
+        });
+        break;
+        
+      case 'id':
+        this.categoriesService.getDataOffline().pipe(
+          map(arr => arr.sort((a, b) => a.id - b.id))
+        ).subscribe((data: any) => {
+          for (let i = 0; i < data.length; i++) {
+            this.getCategoryName(data[i].id, data[i].id_category);
+          }
+          this.categoriesOff = of(data);
+          this.dataSourceCategories.data = data
+        });
+        break;
+    }
 
-    this.subcategoriesService.getDataOffline().pipe(
-      map(arr => arr.sort((a, b) => b.id - a.id))
-    ).subscribe(data => {
-
-      this.subcategoriesOff = of(data);
-      this.dataSourceSubCategories.data = data
-
-      // for (let i = 0; i < data.length; i++) {
-      //   this.categoriesService.getLocalDataFromId('id', data[i].id_category).then(category => {
-      //     this.dataSourceSubCategories.data[i] = ({
-      //       id: data[i].id,
-      //       id_category: data[i].id_category,
-      //       category_name: category[0].name,
-      //       name: data[i].name,
-      //       image: data[i].image,
-      //       synchronized: false
-      //     });
-      //   });
-      // }
-
-    });
 
     setInterval(() => {
       this.showProgressBar = false;
@@ -165,96 +176,65 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
 
     this.unselectRow();
 
-    if (this.tabIndex === 0) {
-      const dialogRef = this.dialog.open(CreateCategorieModalComponent, {
-        height: '690px',
-        width: '770px',
-      });
-      dialogRef.afterClosed().subscribe(category => {
-        //console.log(category)
-        if (category) {
-          this.categoriesService.register(category);
-        }
-      });
-    } else if (this.tabIndex === 1) {
-
-      this.categoriesService.getDataOffline().subscribe(data => {
-        if (data.length == 0) {
-          this.toastr.warning('Não existem categorias para criar subcategorias');
-        } else {
-          const dialogRef = this.dialog.open(CreateSubCategorieModalComponent, {
-            height: '690px',
-            width: '770px',
-          });
-          dialogRef.afterClosed().subscribe(subCategory => {
-            //console.log(subCategory)
-            if (subCategory) {
-              this.subcategoriesService.register(subCategory);
-            }
-          });
-        }
-      });
-
-    }
+    const dialogRef = this.dialog.open(CreateCategorieModalComponent, {
+      height: '690px',
+      width: '770px',
+    });
+    dialogRef.afterClosed().subscribe(category => {
+      //console.log(category)
+      if (category) {
+        this.categoriesService.register(category);
+      }
+    });
   }
 
   //function that opens the update client modal
   openUpdateModal(data: any) {
-    if (data) {
-
-      if (this.tabIndex === 0) {
-        const dialogRef = this.dialog.open(CreateCategorieModalComponent, {
-          height: '690px',
-          width: '770px',
-          data: { values: data, update: true }
-        });
-        dialogRef.afterClosed().subscribe(category => {
-          // console.log(category)
-          if (category) {
-            this.categoriesService.update(category);
-          }
-        });
-
-      } else if (this.tabIndex === 1) {
-
-        const dialogRef = this.dialog.open(CreateSubCategorieModalComponent, {
-          height: '690px',
-          width: '770px',
-          data: { values: data, update: true }
-        });
-        dialogRef.afterClosed().subscribe(subCategory => {
-          // console.log(subCategory)
-          if (subCategory) {
-            this.subcategoriesService.update(subCategory);
-          }
-        });
+    this.categoriesOff.subscribe(dataOff => {
+      if (dataOff.length > 0) {
+        if (data) {
+          const dialogRef = this.dialog.open(CreateCategorieModalComponent, {
+            height: '690px',
+            width: '770px',
+            data: { values: data, update: true }
+          });
+          dialogRef.afterClosed().subscribe(category => {
+            // console.log(category)
+            if (category) {
+              this.categoriesService.update(category);
+            }
+          });
+        } else {
+          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
+        }
+      } else {
+        this.toastr.warning('Não existem categorias para editar.', 'Aviso');
       }
-    } else {
-      this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
-    }
+    })
   }
 
   //function that opens the delete client modal
   openDeleteModal(data: any) {
-    if (data) {
-      const dialogRef = this.dialog.open(DeleteModalComponent, {
-        height: '30%',
-        width: '50%',
-        data: { values: data }
-      });
-      dialogRef.afterClosed().subscribe(data => {
-        // console.log(data)
+    this.categoriesOff.subscribe(dataOff => {
+      if (dataOff.length > 0) {
         if (data) {
-          if (this.tabIndex === 0) {
-            this.categoriesService.delete(data);
-          } else if (this.tabIndex === 1) {
-            this.subcategoriesService.delete(data);
-          }
+          const dialogRef = this.dialog.open(DeleteModalComponent, {
+            height: '30%',
+            width: '50%',
+            data: { values: data }
+          });
+          dialogRef.afterClosed().subscribe(data => {
+            if (data) {
+              this.categoriesService.delete(data);
+            }
+          });
+        } else {
+          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
         }
-      });
-    } else {
-      this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
-    }
+      } else {
+        this.toastr.warning('Não existem categorias para eliminar.', 'Aviso');
+      }
+    })
   }
 
   //function to know which line is selected
@@ -276,7 +256,8 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
 
   //function event to change the order by
   onOptionsSelected() {
-    this.listAllData();
+    //this.listAllData();
+    this.listLocalData();
   }
 
   //when component is closed, unsubscribe from the observable to avoid memory leaks
@@ -295,7 +276,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
 
 export class CreateCategorieModalComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private categoriesService: CategoriesService) { }
 
   public categorie: Categories = new Categories(); //save the client data
   public dialogRef: any; //save the dialog reference
@@ -303,16 +284,35 @@ export class CreateCategorieModalComponent implements OnInit {
 
   fileName = '';
   url = './assets/images/user.png';
-  categorySelected = '1';
+  categoryItems: any;
+  subcategorySelected: any;
 
   ngOnInit(): void {
+    this.getCategories();
+    this.subcategorySelected = '0';
     //get the data from client and set it in the form
     if (this.data) {
       this.update = true; //set update to true, to know if is update or create
       this.categorie = this.data.values; //set the data in the form
       this.fileName = 'Alterar imagem'; //set the file name
       this.url = this.categorie.image; //set the photo in the form
+      if (this.categorie.id_category == 0) {
+        this.subcategorySelected = '0';
+      } else {
+        this.subcategorySelected = this.categorie.id_category;
+      }
     }
+  }
+
+  getCategories() {
+    this.categoriesService.getDataOffline().subscribe(data => {
+      //this.categorySelected = data[0].name;
+      this.categoryItems = data
+    });
+  };
+
+  categorySelect() {
+    this.categorie.id_category = parseInt(this.subcategorySelected);
   }
 
   //open the modal keyboard
@@ -351,99 +351,6 @@ export class CreateCategorieModalComponent implements OnInit {
       reader.onload = (event: any) => {
         this.url = event.target.result;
         this.categorie.image = this.url;
-      }
-      // this.fileName = file.name;
-      // const formData = new FormData();
-      // formData.append("thumbnail", file);
-      // console.log(file);
-      // const upload$ = this.http.post("/api/thumbnail-upload", formData);
-      // upload$.subscribe();
-    }
-  }
-
-}
-
-// |||||||||||||||||||||||||||||||||||||||||| CREATE SUBCATEGORY COMPONENT |||||||||||||||||||||||||||||||||||||||||||||| \\
-
-@Component({
-  selector: 'create-new-categorie',
-  templateUrl: './create-subcategory-modal.component.html',
-  styleUrls: ['./categories.component.scss'],
-})
-
-export class CreateSubCategorieModalComponent implements OnInit {
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private categoriesService: CategoriesService) { }
-
-  public subCategorie: SubCategories = new SubCategories(); //save the client data
-  public dialogRef: any; //save the dialog reference
-  public update: boolean = false; //save if is update or create
-
-  fileName = '';
-  url = './assets/images/user.png';
-  subcategorySelected = 1;
-  categoryItems: any;
-
-  ngOnInit(): void {
-    this.getCategories();
-    //get the data from client and set it in the form
-    if (this.data) {
-      this.update = true; //set update to true, to know if is update or create
-      this.subCategorie = this.data.values; //set the data in the form
-      this.fileName = 'Alterar imagem'; //set the file name
-      this.url = this.subCategorie.image; //set the photo in the form
-      this.subcategorySelected = this.subCategorie.id_category;
-    } else {
-      this.categorySelect();
-    }
-  }
-
-  categorySelect() {
-    this.subCategorie.id_category = this.subcategorySelected;
-  }
-
-  getCategories() {
-    this.categoriesService.getDataOffline().subscribe(data => {
-      //this.categorySelected = data[0].name;
-      this.categoryItems = data
-    });
-  };
-
-  //open the modal keyboard
-  openKeyboard(inputName: string, type: string, data: any, maxLength?: number) {
-    //verify if type is number or text to open the respective keyboard
-    if (type == 'text') { //if text
-      this.dialogRef = this.dialog.open(VirtualKeyboardComponent, {
-        height: '57%',
-        width: '48%',
-        data: [inputName, type, data, maxLength]
-      });
-    } else { //else is number
-      this.dialogRef = this.dialog.open(VirtualKeyboardComponent, {
-        height: '72%',
-        width: '48%',
-        data: [inputName, type, data, maxLength]
-      });
-    }
-    this.dialogRef.afterClosed().subscribe((result: any) => {
-      //switch to know which input is changed
-      switch (result[1][0]) {
-        case 'name':
-          this.subCategorie.name = result[0];
-      }
-    });
-  }
-
-  onFileSelected(event) {
-
-    const file: File = event.target.files[0];
-
-    if (file) {
-      var reader = new FileReader();
-      reader.readAsDataURL(file)
-      reader.onload = (event: any) => {
-        this.url = event.target.result;
-        this.subCategorie.image = this.url;
       }
       // this.fileName = file.name;
       // const formData = new FormData();

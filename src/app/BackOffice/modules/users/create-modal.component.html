@@ -1,0 +1,126 @@
+<ng-container *ngIf="update; else elseBlock">
+    <h1 mat-dialog-title>Atualizar utilizador</h1>
+</ng-container>
+
+<ng-template #elseBlock>
+    <h1 mat-dialog-title>Adicionar novo utilizador</h1>
+</ng-template>
+
+<form class="example-form">
+    <table class="dataTable">
+        <tr>
+            <td>
+                <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
+                <input type="file" class="file" style="display: none;" (change)="onFileSelected($event)" #fileUpload>
+                <div class="file-upload" (click)="fileUpload.click()">
+                    <button mat-mini-fab color="primary" class="upload-btn">
+                        <mat-icon>attach_file</mat-icon>
+                    </button>
+                    <p class="input-text"> {{fileName || "Sem imagem"}} </p>
+                </div>
+            </td>
+            <td class="dataTable">
+                <mat-tab-group color="warn">
+                    <mat-tab label="Dados Pessoais">
+                        <table class="dataTable">
+                            <tr>
+                                <td>
+                                    <br>
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Nome</mat-label>
+                                        <input matInput (click)="openKeyboard('name', 'text', user.name)"
+                                            [(ngModel)]="user.name" [ngModelOptions]="{standalone: true}">
+                                    </mat-form-field>
+
+                                    <table class="dataTable">
+                                        <tr>
+                                            <td>
+                                                <mat-form-field class="example-full-width" appearance="fill">
+                                                    <mat-label>Telefone</mat-label>
+                                                    <input matInput (click)="openKeyboard('phone', 'number', user.phone, 9)"
+                                                        #telefone placeholder="Ex. 2715443890" maxlength="9"
+                                                        [(ngModel)]="user.phone" [ngModelOptions]="{standalone: true}">
+                                                    <mat-hint align="end">{{telefone.value.length}} / 9</mat-hint>
+                                                </mat-form-field>
+                                            </td>
+
+                                            <td>
+                                                <mat-form-field class="example-full-width" appearance="fill">
+                                                    <mat-label>NIF</mat-label>
+                                                    <input matInput (click)="openKeyboard('phone', 'number', user.nif, 9)"
+                                                        #nif placeholder="Ex. 2715443890" maxlength="9"
+                                                        [(ngModel)]="user.nif" [ngModelOptions]="{standalone: true}">
+                                                    <mat-hint align="end">{{nif.value.length}} / 9</mat-hint>
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Morada</mat-label>
+                                        <textarea matInput (click)="openKeyboard('description', 'text', user.address)"
+                                            placeholder="Ex. Rua da Liberdade" [(ngModel)]="user.address"
+                                            [ngModelOptions]="{standalone: true}"></textarea>
+                                    </mat-form-field>
+
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Password</mat-label>
+                                        <input type="password" matInput
+                                            (click)="openKeyboard('password', 'number', user.password, 9)"
+                                            #password placeholder="Ex. 2715443890" maxlength="4"
+                                            [(ngModel)]="user.password" [ngModelOptions]="{standalone: true}">
+                                        <mat-hint align="end">{{password.value.length}} / 4</mat-hint>
+                                    </mat-form-field>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </mat-tab>
+                    <mat-tab label="Outras informações">
+                        <table class="dataTable">
+                            <tr>
+                                <td>
+                                    <br>
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Função</mat-label>
+                                        <mat-select [(value)]="levelSelected" (selectionChange)="levelSelect()">
+                                            <mat-option value="Admin">Administrador</mat-option>
+                                            <mat-option value="Gerente">Gerente</mat-option>
+                                            <mat-option value="user">user</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+            
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Estado</mat-label>
+                                        <mat-select [(value)]="stateSelected" (selectionChange)="stateSelect()">
+                                            <mat-option value="true">Ativo</mat-option>
+                                            <mat-option value="false">Inativo</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                            </tr>
+                        </table>
+                    </mat-tab>
+                </mat-tab-group>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <mat-dialog-actions align="end">
+                    <button mat-stroked-button class="dialog-btn" [mat-dialog-close]="false">Cancelar</button>
+
+                    <ng-container *ngIf="update; else elseBlockButton">
+                        <button mat-stroked-button color="warn" class="dialog-btn" [mat-dialog-close]="user"
+                            cdkFocusInitial>Atualizar</button>
+                    </ng-container>
+
+                    <ng-template #elseBlockButton>
+                        <button mat-stroked-button color="warn" class="dialog-btn" [mat-dialog-close]="user"
+                            cdkFocusInitial>Registar</button>
+                    </ng-template>
+
+                </mat-dialog-actions>
+            </td>
+        </tr>
+    </table>
+</form>

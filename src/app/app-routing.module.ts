@@ -5,13 +5,14 @@ import { AuthenticationComponent } from './FrontOffice/authentication/authentica
 import { DefaultComponent } from './BackOffice/layouts/default/default.component';
 import { ClientesComponent } from './BackOffice/modules/clientes/clientes.component';
 import { DashboardComponent } from './BackOffice/modules/dashboard/dashboard.component';
-import { EmpregadosComponent } from './BackOffice/modules/empregados/empregados.component';
+import { UsersComponent } from './BackOffice/modules/users/users.component';
 import { BoardComponent } from './FrontOffice/board/board.component';
 import { FoodDrinksComponent } from './FrontOffice/food-drinks/food-drinks.component';
 import { ArtigosComponent } from './BackOffice/modules/artigos/artigos.component';
 import { CategoriesComponent } from './BackOffice/modules/categories/categories.component';
-import { MesasComponent } from './BackOffice/modules/mesas/mesas.component';
+import { MesasComponent } from './BackOffice/modules/boards/mesas.component';
 import { PaymentModalComponent } from './FrontOffice/payment-modal/payment-modal.component';
+import { PaymentMethodsComponent } from './BackOffice/modules/payment-methods/payment-methods.component';
 
 const routes: Routes = [
   { path: "", component: AuthenticationComponent },
@@ -26,10 +27,11 @@ const routes: Routes = [
       { path: "", redirectTo: "dashboard", pathMatch: "full" },
       { path: "dashboard", component: DashboardComponent }, 
       { path: "clientes", component: ClientesComponent }, 
-      { path: "empregados", component: EmpregadosComponent },
+      { path: "empregados", component: UsersComponent },
       { path: "artigos", component: ArtigosComponent },
       { path: "categorias", component: CategoriesComponent },
-      { path: "mesas", component: MesasComponent }
+      { path: "mesas", component: MesasComponent },
+      { path: "payments", component: PaymentMethodsComponent }
     ]
   }
 ];

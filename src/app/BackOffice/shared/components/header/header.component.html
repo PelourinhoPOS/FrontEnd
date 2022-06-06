@@ -21,9 +21,10 @@
                 </li>
                 <li>
                     <button mat-button [matMenuTriggerFor]="menu">
-                        <mat-icon>account_circle</mat-icon>
+                        <img src={{data[0].avatar}} alt="avatar" class="avatar">
                     </button>
                     <mat-menu #menu="matMenu">
+                        <p class="menuText">{{data[0].name}}</p>
                         <button mat-menu-item [routerLink]="['/board']">
                             <mat-icon>exit_to_app</mat-icon>
                             Sair
