@@ -48,6 +48,7 @@ export class PaymentModalComponent implements OnInit {
   public teste;
   public result;
   public iva;
+  public method;
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CustomerDialogComponent, {
@@ -126,6 +127,9 @@ export class PaymentModalComponent implements OnInit {
     const dialogRef = this.dialog.open(PaymentMethodsComponent, {
       width: '700px',
       height: '550px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.method = result;
     });
   }
 

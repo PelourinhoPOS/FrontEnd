@@ -1,0 +1,31 @@
+.paymentImg{
+    width: 45px;
+    height: 45px;
+    margin-right: 15px;
+    margin-left: 100px;
+}
+
+.paymentBox{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.mat-grid-tile#test{
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.paymentTxt{
+    font-size: 22px;
+    font-family: Ubuntu;
+    font-weight: bold;
+    text-align: center;
+}
+
+.paymentName{
+    font-size: 18px;
+    font-family: Ubuntu;
+    font-weight: bold;
+}

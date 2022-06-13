@@ -34,8 +34,11 @@
             <div class="methods">
                 <button>MB</button>
             </div>
-            <div class="methods" id="noMargin" (click)="paymentMethods()">
+            <div class="methods" id="noMargin" (click)="paymentMethods()" *ngIf="!this.method">
                 <button>...</button>
+            </div>
+            <div class="methods" id="noMargin2" (click)="paymentMethods()" *ngIf="this.method">
+                <button class="noMargin">{{this.method}}</button>
             </div>
         </div>
         <div class="splitColumn">
