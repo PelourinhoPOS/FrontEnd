@@ -28,10 +28,10 @@
         </div>
         <p>Total: {{this.total}}€</p>
         <div style="display: flex;">
-            <div class="methods" (click)="payment()">
+            <div class="methods" (click)="payment(); resetMethod()">
                 <button>Money</button>
             </div>
-            <div class="methods">
+            <div class="methods" (click)="resetMethod()">
                 <button>MB</button>
             </div>
             <div class="methods" id="noMargin" (click)="paymentMethods()" *ngIf="!this.method">

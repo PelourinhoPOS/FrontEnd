@@ -91,6 +91,10 @@ export class PaymentModalComponent implements OnInit {
     }
   }
 
+  resetMethod() {
+    this.method = null;
+  }
+
   payment(): void {
     if (this.done.length > 0) {
       const dialogRef = this.dialog.open(MoneyDialogComponent, {
@@ -124,162 +128,166 @@ export class PaymentModalComponent implements OnInit {
   }
 
   paymentMethods() {
-    const dialogRef = this.dialog.open(PaymentMethodsComponent, {
-      width: '700px',
-      height: '550px',
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      this.method = result;
-    });
+    if (this.done.length > 0) {
+      const dialogRef = this.dialog.open(PaymentMethodsComponent, {
+        width: '700px',
+        height: '550px',
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        this.method = result;
+      });
+    } else {
+      this.toastr.warning('No products to pay!');
+    }
   }
 
   changeClick1() {
-      this.clickedIndexJ = -1;
-    }
+    this.clickedIndexJ = -1;
+  }
 
   changeClick2() {
-      this.clickedIndex = -1;
-    }
+    this.clickedIndex = -1;
+  }
 
   getId(id) {
-      this.productid = id;
-    }
+    this.productid = id;
+  }
 
   receiveDone() {
-      this.getId(this.productid);
-      this.todo.filter((item) => {
-        if (item.product.id === this.productid) {
-          if (item.quantity > 0) {
-            item.quantity -= 1;
-            this.done.push(item);
-            this.totalPrice();
-            this.eachPrice();
-          } else {
-            this.todo.splice(this.todo.indexOf(item), 1);
-            this.totalPrice();
-            this.eachPrice();
-          }
-          // this.done.push(item);
-          // this.todo.splice(this.todo.indexOf(item), 1);
-          // this.totalPrice();
-          // this.eachPrice();
-        }
-      });
-      this.splited = null;
-      this.clickedIndex = -1;
-    }
-
-  receiveTodo() {
-      this.getId(this.productid);
-      this.done.filter((item) => {
-        if (item.product.id === this.productid) {
-          this.todo.push(item);
-          this.done.splice(this.done.indexOf(item), 1);
+    this.getId(this.productid);
+    this.todo.filter((item) => {
+      if (item.product.id === this.productid) {
+        if (item.quantity > 0) {
+          item.quantity -= 1;
+          this.done.push(item);
+          this.totalPrice();
+          this.eachPrice();
+        } else {
+          this.todo.splice(this.todo.indexOf(item), 1);
           this.totalPrice();
           this.eachPrice();
         }
-      });
-      this.splited = null;
-      this.clickedIndexJ = -1;
-    }
+        // this.done.push(item);
+        // this.todo.splice(this.todo.indexOf(item), 1);
+        // this.totalPrice();
+        // this.eachPrice();
+      }
+    });
+    this.splited = null;
+    this.clickedIndex = -1;
+  }
+
+  receiveTodo() {
+    this.getId(this.productid);
+    this.done.filter((item) => {
+      if (item.product.id === this.productid) {
+        this.todo.push(item);
+        this.done.splice(this.done.indexOf(item), 1);
+        this.totalPrice();
+        this.eachPrice();
+      }
+    });
+    this.splited = null;
+    this.clickedIndexJ = -1;
+  }
 
   getBoard() {
-      this.id = Number(this.cookieService.get('boardId'));
-    }
+    this.id = Number(this.cookieService.get('boardId'));
+  }
 
   getItems() {
-      this.mesasService.getDataOffline().subscribe((data: any) => {
-        this.teste = data.find(x => x.id === this.id);
-        this.teste.cart.forEach((item) => {
-          this.iva = item.product.price * item.product.iva
-          this.iva = parseFloat(this.iva.toFixed(2));
-          this.todo.push(item);
-          this.totalPrice();
-        });
-      })
-    }
+    this.mesasService.getDataOffline().subscribe((data: any) => {
+      this.teste = data.find(x => x.id === this.id);
+      this.teste.cart.forEach((item) => {
+        this.iva = item.product.price * item.product.iva
+        this.iva = parseFloat(this.iva.toFixed(2));
+        this.todo.push(item);
+        this.totalPrice();
+      });
+    })
+  }
 
   refreshItems() {
 
-      let mesa: Mesa = {
-        id: this.id,
-        cart: this.todo,
-      };
+    let mesa: Mesa = {
+      id: this.id,
+      cart: this.todo,
+    };
 
-      this.mesasService.update(mesa)
-    }
+    this.mesasService.update(mesa)
+  }
 
   totalPrice() {
-      const round = (num, places) => {
-        return +parseFloat(num).toFixed(places);
-      };
+    const round = (num, places) => {
+      return +parseFloat(num).toFixed(places);
+    };
 
-      let total = 0;
-      this.todo.forEach((item) => {
-        total += (item.product.price * item.quantity * item.product.iva) + item.product.price * item.quantity;
-      });
-      this.total = round(total, 2);
-    }
+    let total = 0;
+    this.todo.forEach((item) => {
+      total += (item.product.price * item.quantity * item.product.iva) + item.product.price * item.quantity;
+    });
+    this.total = round(total, 2);
+  }
 
   eachPrice() {
-      const round = (num, places) => {
-        return +parseFloat(num).toFixed(places);
-      };
+    const round = (num, places) => {
+      return +parseFloat(num).toFixed(places);
+    };
 
-      let total = 0;
-      this.done.forEach((item) => {
-        total += (item.product.price * item.quantity * item.product.iva) + item.product.price * item.quantity;
-      });
-      this.eachtotal = round(total, 2);
-    }
+    let total = 0;
+    this.done.forEach((item) => {
+      total += (item.product.price * item.quantity * item.product.iva) + item.product.price * item.quantity;
+    });
+    this.eachtotal = round(total, 2);
+  }
 
   getIva() {
-      let iva = 0;
-      this.todo.forEach((item) => {
-        iva += item.iva * item.price;
-      });
-      this.done.forEach((item) => {
-        iva += item.iva * item.price;
-      });
-      this.totalIva = parseFloat(iva.toFixed(2));
-    }
+    let iva = 0;
+    this.todo.forEach((item) => {
+      iva += item.iva * item.price;
+    });
+    this.done.forEach((item) => {
+      iva += item.iva * item.price;
+    });
+    this.totalIva = parseFloat(iva.toFixed(2));
+  }
 
   changeRight() {
-      if(this.todo.length > 0) {
-        this.done = this.todo.concat(this.done);
-    this.todo = [];
-  }
+    if (this.todo.length > 0) {
+      this.done = this.todo.concat(this.done);
+      this.todo = [];
+    }
     this.total = 0;
-this.eachPrice();
+    this.eachPrice();
   }
 
-changeLeft() {
-  if (this.done.length > 0) {
-    this.todo = this.done.concat(this.todo);
-    this.done = [];
+  changeLeft() {
+    if (this.done.length > 0) {
+      this.todo = this.done.concat(this.todo);
+      this.done = [];
+    }
+    this.totalPrice();
+    this.eachtotal = 0;
   }
-  this.totalPrice();
-  this.eachtotal = 0;
-}
 
-getInvoice() {
-  let divData = document.getElementById('invoice');
-  let buttonData = document.getElementById('button');
+  getInvoice() {
+    let divData = document.getElementById('invoice');
+    let buttonData = document.getElementById('button');
 
-  this.number++;
+    this.number++;
 
-  if (this.number === 1) {
-    divData.style.backgroundColor = 'rgb(255, 229, 180)';
-    buttonData.style.backgroundColor = 'rgb(255, 229, 180)';
-  } else if (this.number === 2) {
-    divData.style.backgroundColor = 'white';
-    buttonData.style.backgroundColor = 'white';
-    this.number = 0;
+    if (this.number === 1) {
+      divData.style.backgroundColor = 'rgb(255, 229, 180)';
+      buttonData.style.backgroundColor = 'rgb(255, 229, 180)';
+    } else if (this.number === 2) {
+      divData.style.backgroundColor = 'white';
+      buttonData.style.backgroundColor = 'white';
+      this.number = 0;
+    }
   }
-}
 
-ngOnInit(): void {
-  this.getBoard();
-  this.getItems();
-}
+  ngOnInit(): void {
+    this.getBoard();
+    this.getItems();
+  }
 }
