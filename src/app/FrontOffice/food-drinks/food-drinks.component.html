@@ -13,6 +13,10 @@
       <p class="empty">The Cart Is Empty!</p>
     </ng-container>
     <ng-template #elseBlock>
+      <span class="name_card">NAME</span>
+      <span class="iva_card" id="header">IVA</span>
+      <span class="price_card" id="header">PVP</span>
+      <span class="quantity" id="header">QTD</span>
       <hr />
       <div class="overflow">
         <div *ngFor="let item of cart" (click)="openProductDialog(item.product.id)">
@@ -69,7 +73,7 @@
     </swiper>
     <div class="alignGrid">
       <mat-grid-list cols="5" rowHeight="180px" gutterSize="40px">
-        <mat-grid-tile *ngFor="let prod of categoryItems | filter:this.item">
+        <mat-grid-tile class="testam" *ngFor="let prod of categoryItems | filter:this.item">
           <div class="card" id="{{ prod.id }}" (click)="addProduct(prod.id); getProductsId(prod.id)">
             <img class="productImg" src="{{ prod.image }}" alt="produto" />
             <span class="productName">{{ prod.name }}</span>

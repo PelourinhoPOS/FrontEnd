@@ -52,7 +52,7 @@
     margin-left: 30px;
 }
 
-mat-grid-tile {
+.testam {
     background-color: white;
     border-radius: 20px;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
@@ -148,7 +148,7 @@ span {
     align-items: center;
     justify-content: center;
     border-radius: 15px;
-    margin: 20px 10px 20px 0;
+    margin: 20px 10px 10px 0;
 }
 
 .userActivity {
@@ -186,7 +186,7 @@ p {
 }
 
 .overflow {
-    height: 68%;
+    height: 64%;
     overflow: auto;
     position: relative;
 }
@@ -207,15 +207,45 @@ p {
     right: 20px;
 }
 
+.quantity#header{
+    position: absolute;
+    right: 15px;
+    font-family: Ubuntu;
+    font-weight: bold;
+    font-size: 16px;
+}
+
 .iva_card {
     position: absolute;
-    right: 50px;
+    right: 60px;
+}
+
+.iva_card#header{
+    position: absolute;
+    right: 65px;
+    font-family: Ubuntu;
+    font-weight: bold;
+    font-size: 16px;
 }
 
 
 .price_card {
     position: absolute;
-    right: 100px;
+    right: 110px;
+}
+
+.price_card#header{
+    position: absolute;
+    right: 115px;
+    font-family: Ubuntu;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.name_card{
+    margin-left: 35px;
+    font-weight: bold;
+    font-size: 16px;
 }
 
 .totalPrice {
