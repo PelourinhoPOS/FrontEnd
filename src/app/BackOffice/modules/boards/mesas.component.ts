@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { CookieService } from 'ngx-cookie-service';
@@ -31,7 +32,7 @@ export interface DialogData {
 
 export class MesasComponent implements OnInit, AfterViewInit {
 
-  constructor(public dialog: MatDialog, private mesasService: MesasService, private zonesService: ZonasService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService, public cookieService: CookieService) { }
+  constructor(public dialog: MatDialog, private mesasService: MesasService, private zonesService: ZonasService, private toastr: ToastrService, public cookieService: CookieService) { }
 
   public mesas!: Observable<Mesa[]>; //save the employees returned from the API
   public mesasOff!: Observable<Mesa[]>; //save the employees returned from the local storage
@@ -75,7 +76,7 @@ export class MesasComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    
+
     this.getZones();
 
     this.subscriptionData = this.mesasService.refreshData.subscribe(() => {
@@ -364,7 +365,7 @@ export class MesasComponent implements OnInit, AfterViewInit {
 
 export class CreateBoardModalComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, public dialogRefClose: MatDialogRef<CreateBoardModalComponent>, private toastr: ToastrService) { }
 
   public zone: Zone = new Zone(); //save the client data
   public dialogRef: any; //save the dialog reference
@@ -374,17 +375,48 @@ export class CreateBoardModalComponent implements OnInit {
   url = './assets/images/user.png';
   typeSelected = 'square';
 
+  formZones: FormGroup;
+
   ngOnInit(): void {
+
+    this.formZones = new FormGroup({
+      id: new FormControl(),
+      name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
+      image: new FormControl(this.url),
+    });
+
     //get the data from client and set it in the form
     if (this.data) {
       this.update = true; //set update to true, to know if is update or create
       this.zone = this.data.values; //set the data in the form
       this.url = this.data.values.image;
       this.fileName = 'Alterar imagem'; //set the file name
-    } else {
 
+      this.id.setValue(this.zone.id);
+      this.name.setValue(this.zone.name);
+      this.image.setValue(this.zone.image);
+      
     }
+  }
 
+  get id(){
+    return this.formZones.get('id');
+  }
+
+  get name() {
+    return this.formZones.get('name');
+  }
+
+  get image() {
+    return this.formZones.get('image');
+  }
+
+  submitForm() {
+    if (this.formZones.valid) {
+      this.dialogRefClose.close(this.formZones.value);
+    } else {
+      this.toastr.error('Existem erros no formulário.', 'Aviso');
+    }
   }
 
   onFileSelected(event) {
@@ -396,9 +428,9 @@ export class CreateBoardModalComponent implements OnInit {
       reader.readAsDataURL(file)
       reader.onload = (event: any) => {
         this.url = event.target.result;
-        this.zone.image = this.url;
+        this.image.setValue(this.url);
       }
-      // this.fileName = file.name;
+      this.fileName = (file.name).substring(0,15) + '(...)' + file.type.split('/')[1];
       // const formData = new FormData();
       // formData.append("thumbnail", file);
       // console.log(file);
@@ -428,7 +460,7 @@ export class CreateBoardModalComponent implements OnInit {
       //switch to know which input is changed
       switch (result[1][0]) {
         case 'name':
-          this.zone.name = result[0];
+          this.name.setValue(result[0]);
           break;
       }
     });

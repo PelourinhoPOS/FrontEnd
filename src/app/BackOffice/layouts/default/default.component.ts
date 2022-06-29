@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { OnlineOfflineService } from '../../services/online-offline.service';
 import { PermissionsService } from '../../services/permissions.service';
 
 @Component({

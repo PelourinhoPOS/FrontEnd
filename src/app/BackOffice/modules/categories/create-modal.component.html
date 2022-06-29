@@ -6,15 +6,15 @@
     <h1 mat-dialog-title>Adicionar nova categoria</h1>
 </ng-template>
 
-<form class="example-form">
-    <table class="table-form">
+<form class="example-form" [formGroup]="categoriesForm" (ngSubmit)="submitForm()" #formDir="ngForm">
+    <table class="dataTable">
         <tr>
-            <td class="category-form">
+            <td class="cellAvatar">
                 <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
             </td>
         <tr>
         <tr>
-            <td class="category-form">
+            <td>
                 <input type="file" class="file" style="display: none;" (change)="onFileSelected($event)" #fileUpload>
                 <div class="file-upload" (click)="fileUpload.click()">
                     <button mat-mini-fab color="primary" class="upload-btn">
@@ -25,23 +25,23 @@
             </td>
         </tr>
         <tr>
-            <td class="category-form">
-                <table>
-                    <tr>
-                        <td class="category-form">
+            <td>
+                <table class="dataTable">
+                    <tr width="100%">
+                        <td>
                             <br>
                             <mat-form-field class="example-full-width" appearance="fill">
                                 <mat-label>Nome</mat-label>
                                 <input matInput (click)="openKeyboard('name', 'text', categorie.name)"
-                                    [(ngModel)]="categorie.name" [ngModelOptions]="{standalone: true}">
+                                    formControlName="name">
                             </mat-form-field>
                         </td>
-                        <td class="category-form">
+                        <td>
                             <br>
                             <mat-form-field class="example-full-width" appearance="fill">
                                 <mat-label>Categoria Pai</mat-label>
-                                <mat-select [(value)]="subcategorySelected" (selectionChange)="categorySelect()">
-                                    <mat-option value="0">
+                                <mat-select [(value)]="subcategorySelected" (selectionChange)="categorySelect()" formControlName="id_category">
+                                    <mat-option [value]=0>
                                         Sem categoria pai
                                     </mat-option>
                                     <mat-option *ngFor="let category of categoryItems" [value]="category.id">
@@ -51,22 +51,31 @@
                             </mat-form-field>
                         </td>
                     </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="100%">
+                <table class="dataTable">
                     <tr>
-                        <td class="category-form" width="100%">
+                        <td>
+                            <span style="font-size: 15px;"><i>Os campos marcados com * são de preenchimento obrigatório.</i></span>
+                        </td>
+                        <td>
                             <mat-dialog-actions align="end">
                                 <button mat-stroked-button class="dialog-btn"
                                     [mat-dialog-close]="false">Cancelar</button>
-
+            
                                 <ng-container *ngIf="update; else elseBlockButton">
                                     <button mat-stroked-button color="warn" class="dialog-btn"
-                                        [mat-dialog-close]="categorie" cdkFocusInitial>Atualizar</button>
+                                        type="submit" cdkFocusInitial>Atualizar</button>
                                 </ng-container>
-
+            
                                 <ng-template #elseBlockButton>
                                     <button mat-stroked-button color="warn" class="dialog-btn"
-                                        [mat-dialog-close]="categorie" cdkFocusInitial>Registar</button>
+                                        type="submit" cdkFocusInitial>Registar</button>
                                 </ng-template>
-
+            
                             </mat-dialog-actions>
                         </td>
                     </tr>

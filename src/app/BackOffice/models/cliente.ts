@@ -7,5 +7,7 @@ export class Cliente {
     postalCode: string = "";
     parish: string = "";
     county: string = "";
+    lastUpdate: string;
+    registerDate: string;
     synchronized: boolean = false;
 }

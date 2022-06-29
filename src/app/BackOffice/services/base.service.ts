@@ -58,7 +58,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
   startIndexedDb() {
     //this.db = new Dexie('pos-' + this.nomeTabela)
     this.db.version(1).stores({
-      cliente: 'id',
+      cliente: 'id, registerDate',
       empregado: 'id',
       mesa: 'id, id_zone',
       zone: 'id',
@@ -309,7 +309,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
           }
         });
         break;
-
+        
       case 'zone':
         return new Promise(async (resolve, reject) => {
           try {
@@ -370,6 +370,11 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
     return data;
   }
 
+  async getCountLocalData(campo: string, valor: any) {
+    const data = await this.table.where(campo).equals(valor).count();
+    return data;
+  }
+
   //send data to API when online
   async sendDatatoAPI() {
 
@@ -418,4 +423,5 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
   list(): Observable<T[]> {
     return this.http.get<T[]>(this.urlAPI);
   }
+  
 }

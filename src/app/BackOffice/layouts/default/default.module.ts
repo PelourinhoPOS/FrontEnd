@@ -32,6 +32,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreatePaymentMethodsComponent, PaymentMethodsComponent } from '../../modules/payment-methods/payment-methods.component';
 import { PaymentMethodsService } from '../../modules/payment-methods/payment-methods.service';
 import { InputMaskModule } from '@ngneat/input-mask';
+import { MatGridListModule } from '@angular/material/grid-list';
+import {MatCardModule} from '@angular/material/card';
+
 
 @NgModule({
   declarations: [
@@ -71,6 +74,8 @@ import { InputMaskModule } from '@ngneat/input-mask';
     FormsModule,
     ReactiveFormsModule,
     InputMaskModule.forRoot({ inputSelector: 'input', isAsync: true }),
+    MatGridListModule,
+    MatCardModule
   ],
   providers: [CookieService, OnlineOfflineService, PaymentMethodsService],
 })

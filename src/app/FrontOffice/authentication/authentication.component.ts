@@ -48,7 +48,7 @@ export class AuthenticationComponent implements OnInit {
     sessionStarted: new Date(),
     active: true,
     nif: 272533030,
-    password: '1234',
+    password: 1234,
     avatar: 'https://media-exp1.licdn.com/dms/image/C4E03AQGrZ_EMwgu-lw/profile-displayphoto-shrink_400_400/0/1643915772499?e=1655942400&v=beta&t=toXdH3f00wdysaFtOWM771Eiv0iw2escR3B81xAUPfc',
     synchronized: false
   }

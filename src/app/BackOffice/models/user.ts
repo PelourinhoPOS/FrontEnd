@@ -5,7 +5,7 @@ export class User {
     address: string;
     phone: number;
     function: string;
-    password: string;
+    password: number;
     avatar: string;
     sessionStarted: Date = new Date();
     sessionEnded: Date = new Date();

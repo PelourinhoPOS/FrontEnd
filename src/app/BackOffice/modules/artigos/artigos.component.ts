@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
@@ -21,7 +22,7 @@ export class ArtigosComponent implements OnInit {
   public header: any
   public sticky: any;
 
-  constructor(public dialog: MatDialog, private artigosService: ArtigosService, private categorieServive: CategoriesService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService) { }
+  constructor(public dialog: MatDialog, private artigosService: ArtigosService, private categorieServive: CategoriesService, private toastr: ToastrService) { }
 
   public artigos!: Observable<Artigo[]>; //save the clients returned from the API
   public artigosOff!: Observable<Artigo[]>; //save the clients returned from the local storage
@@ -79,7 +80,7 @@ export class ArtigosComponent implements OnInit {
   async delete(artigo: Artigo) {
     await this.artigosService.delete(artigo).then(() => {
       this.toastr.success('Artigo eliminado com sucesso.');
-    }).catch((err) => { 
+    }).catch((err) => {
       err
     });
   }
@@ -222,7 +223,7 @@ export class ArtigosComponent implements OnInit {
           const dialogRef = this.dialog.open(DeleteModalComponent, {
             height: '30%',
             width: '50%',
-            data: { values: data }
+            data: { values: data, component: 'Artigo' }
           });
           dialogRef.afterClosed().subscribe(artigo => {
             if (artigo) {
@@ -279,14 +280,15 @@ export class ArtigosComponent implements OnInit {
 
 export class CreateArticleModalComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private categorieServive: CategoriesService) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private categorieServive: CategoriesService, private dialogRefCreate: MatDialogRef<CreateArticleModalComponent>, private toastr: ToastrService) { }
 
   public artigo: Artigo = new Artigo(); //save the client data
   public dialogRef: any; //save the dialog reference
   public update: boolean = false; //save if is update or create
+  public compareData: any; //save the data to compare
 
   fileName = '';
-  url = './assets/images/user.png';
+  url = './assets/images/productDefault.jpg';
   ivaSelected = "0.23";
 
   categorySelected = 1;
@@ -297,16 +299,56 @@ export class CreateArticleModalComponent implements OnInit {
 
   unitySelected = "peso";
   subUnitySelected = "kg";
-
+  
+  formProducts: FormGroup;
+  
   ngOnInit(): void {
+    
     //get the data from client and set it in the form
     this.getCategories();
 
-    if (this.data) {
-      this.update = true; //set update to true, to know if is update or create
+    this.formProducts = new FormGroup({ //create form group with form controls and validators
+      id: new FormControl(),
+      name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      description: new FormControl('', [Validators.required]),
+      unity: new FormControl('', [Validators.required]),
+      sub_unity: new FormControl('', [Validators.required]),
+      iva: new FormControl('', [Validators.required]),
+      price: new FormControl('', [Validators.required]),
+      id_category: new FormControl('', [Validators.required]),
+      pvp1: new FormControl(),
+      pvp2: new FormControl(),
+      pvp3: new FormControl(),
+      pvp4: new FormControl(),
+      pvp5: new FormControl(),
+      pvp6: new FormControl(),
+      image: new FormControl(this.url)
+    });
+
+
+    if (this.data) { //if is update 
+      this.update = true;
       this.artigo = this.data.values; //set the data in the form
       this.fileName = 'Alterar imagem'; //set the file name
       this.url = this.artigo.image; //set the photo in the form
+      
+      //set the data in the formcontrols
+      this.id.setValue(this.artigo.id);
+      this.name.setValue(this.artigo.name);
+      this.description.setValue(this.artigo.description);
+      this.unity.setValue(this.artigo.unity);
+      this.sub_unity.setValue(this.artigo.sub_unity);
+      this.iva.setValue(this.artigo.iva.toString());
+      this.price.setValue(this.artigo.price);
+      this.id_category.setValue(this.artigo.id_category);
+      this.pvp1.setValue(this.artigo.pvp1);
+      this.pvp2.setValue(this.artigo.pvp2);
+      this.pvp3.setValue(this.artigo.pvp3);
+      this.pvp4.setValue(this.artigo.pvp4);
+      this.pvp5.setValue(this.artigo.pvp5);
+      this.pvp6.setValue(this.artigo.pvp6);
+      this.image.setValue(this.artigo.image);
+
       this.categorySelected = this.artigo.id_category; //set the category in the form
       this.unitySelected = this.artigo.unity; //set the unity in the form
       this.subUnitySelected = this.artigo.sub_unity; //set the sub unity in the form
@@ -315,9 +357,85 @@ export class CreateArticleModalComponent implements OnInit {
       this.categorySelect(); //set the category data if the user don't change the select
       this.ivaSelect(); //set the iva data if the user don't change the select
       this.unitySelect(); //set the unity data if the user don't change the select
+      this.subunitySelect();
     }
   }
 
+  //get value of id in form
+  get id () { 
+    return this.formProducts.get('id'); 
+  }
+
+  //get value of name in form
+  get name() {
+    return this.formProducts.get('name');
+  }
+
+  get image(){
+    return this.formProducts.get('image');
+  }
+
+  //get value of description in form
+  get description() {
+    return this.formProducts.get('description');
+  }
+
+  //get value of iva in form
+  get iva() {
+    return this.formProducts.get('iva');
+  }
+
+  //get value of price in form
+  get price() {
+    return this.formProducts.get('price');
+  }
+
+  //get value of category in form
+  get id_category() {
+    return this.formProducts.get('id_category');
+  }
+
+  //get value of unity in form
+  get unity() {
+    return this.formProducts.get('unity');
+  }
+
+  //get value of sub_unity in form
+  get sub_unity() {
+    return this.formProducts.get('sub_unity');
+  }
+
+  //get value of pvp1 in form
+  get pvp1() {
+    return this.formProducts.get('pvp1');
+  }
+
+  //get value of pvp2 in form
+  get pvp2() {
+    return this.formProducts.get('pvp2');
+  }
+
+  //get value of pvp3 in form
+  get pvp3() {
+    return this.formProducts.get('pvp3');
+  }
+
+  //get value of pvp4 in form
+  get pvp4() {
+    return this.formProducts.get('pvp4');
+  }
+
+  //get value of pvp5 in form
+  get pvp5() {
+    return this.formProducts.get('pvp5');
+  }
+
+  //get value of pvp6 in form
+  get pvp6() {
+    return this.formProducts.get('pvp6');
+  }
+
+  //get the categories
   getCategories() {
     this.categorieServive.getDataOffline().subscribe(data => {
       //this.categorySelected = data[0].name;
@@ -325,37 +443,39 @@ export class CreateArticleModalComponent implements OnInit {
     });
   };
 
+  //select the category
   categorySelect() {
-    this.artigo.id_category = this.categorySelected;
+    this.id_category.setValue(this.categorySelected);
   }
 
+  //select the iva
   ivaSelect() {
-    this.artigo.iva = parseFloat(this.ivaSelected);
+    this.iva.setValue(this.ivaSelected);
   }
 
+  //select the unity
   unitySelect() {
-    this.artigo.unity = this.unitySelected;
+    this.unity.setValue(this.unitySelected);
 
     if (this.unitySelected == "peso") {
       this.subUnitySelected = "kg";
-      this.artigo.sub_unity = this.subUnitySelected;
+      this.sub_unity.setValue(this.subUnitySelected);
     } else if (this.unitySelected == "volume") {
       this.subUnitySelected = "litro";
-      this.artigo.sub_unity = this.subUnitySelected;
+      this.sub_unity.setValue(this.subUnitySelected);
     } else if (this.unitySelected == "unidade") {
       this.subUnitySelected = "uni";
-      this.artigo.sub_unity = this.subUnitySelected;
+      this.sub_unity.setValue(this.subUnitySelected);
     }
-
   }
 
+  //select the sub unity
   subunitySelect() {
-    this.artigo.sub_unity = this.subUnitySelected;
+    this.sub_unity.setValue(this.subUnitySelected);
   }
 
-
+  //get the image
   onFileSelected(event) {
-
     const file: File = event.target.files[0];
 
     if (file) {
@@ -363,10 +483,9 @@ export class CreateArticleModalComponent implements OnInit {
       reader.readAsDataURL(file)
       reader.onload = (event: any) => {
         this.url = event.target.result;
-        this.artigo.image = this.url;
+        this.image.setValue(this.url);
       }
-
-      this.fileName = file.name;
+      this.fileName = (file.name).substring(0,15) + '(...)' + file.type.split('/')[1];
       // const formData = new FormData();
       // formData.append("thumbnail", file);
       // console.log(file);
@@ -375,6 +494,21 @@ export class CreateArticleModalComponent implements OnInit {
     }
   }
 
+  //submit the data
+  submitForm() {
+    this.artigo = this.formProducts.value; //get the data from the form
+    this.artigo.iva = parseFloat(this.iva.value); //set the iva in the form
+    
+    if (this.artigo === this.compareData){
+      this.toastr.info('Não foram efetuadas alterações.', 'Aviso'); //show error message
+    } else {
+      if (this.formProducts.valid) {
+        this.dialogRefCreate.close(this.artigo); //close the dialog and save data
+      } else {
+        this.toastr.error('Existem erros no formulário.', 'Aviso'); //show error message
+      }
+    }
+  }
 
   //open the modal keyboard
   openKeyboard(inputName: string, type: string, data: any, maxLength?: number) {
@@ -397,41 +531,36 @@ export class CreateArticleModalComponent implements OnInit {
       //switch to know which input is changed
       switch (result[1][0]) {
         case 'name':
-          this.artigo.name = result[0];
+          this.name.setValue(result[0]);
           break;
         case 'price':
-          this.artigo.price = result[0];
+          this.price.setValue(result[0]);
           break;
         case 'description':
-          this.artigo.description = result[0];
+          this.description.setValue(result[0]);
           break;
         case 'price':
-          this.artigo.price = result[0];
+          this.price.setValue(result[0]);
           break;
         case 'pvp1':
-          this.artigo.pvp1 = result[0];
+          this.pvp1.setValue(result[0]);
           break;
         case 'pvp2':
-          this.artigo.pvp2 = result[0];
+          this.pvp2.setValue(result[0]);
           break;
         case 'pvp3':
-          this.artigo.pvp3 = result[0];
+          this.pvp3.setValue(result[0]);
           break;
         case 'pvp4':
-          this.artigo.pvp4 = result[0];
+          this.pvp4.setValue(result[0]);
           break;
         case 'pvp5':
-          this.artigo.pvp5 = result[0];
+          this.pvp5.setValue(result[0]);
           break;
         case 'pvp6':
-          this.artigo.pvp6 = result[0];
+          this.pvp6.setValue(result[0]);
           break;
-        // case 'unity_value':
-        //   this.artigo.unity_value = result[0];
-        //   break;
-
       }
     });
   }
-
 }

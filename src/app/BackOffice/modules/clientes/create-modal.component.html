@@ -6,16 +6,13 @@
     <h2 mat-dialog-title>Adicionar novo cliente</h2>
 </ng-template>
 
-<form class="example-form" [formGroup]="myForm" (ngSubmit)="submitForm()" #formDir="ngForm">
+<form class="example-form" [formGroup]="clientsForm" (ngSubmit)="submitForm()" #formDir="ngForm">
     <table>
         <td>
             <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Nome do cliente</mat-label>
                 <input matInput formControlName="name" (click)="openKeyboard('name', 'text', cliente.name)" required>
                 <div *ngIf="name.invalid && formDir.submitted">
-                    <div *ngIf="name.errors?.['required']">
-                        <span class="labelError">O nome do cliente é obrigatório</span>
-                    </div>
                     <div *ngIf="name.errors?.['minlength'] || name.errors?.['maxlength']">
                         <span class="labelError">O nome deve ter entre 3 e 50 caracteres</span>
                     </div>
@@ -27,9 +24,6 @@
                 <input matInput formControlName="phone" (click)="openKeyboard('phone', 'number', cliente.phone, 9)"
                     #telefone maxlength="9" placeholder="Ex. 2715443890">
                 <div *ngIf="phone.invalid && formDir.submitted">
-                    <div *ngIf="phone.errors?.['required']">
-                        <span class="labelError">O telefone do cliente é obrigatório</span>
-                    </div>
                     <div *ngIf="phone.errors?.['minlength'] || phone.errors?.['maxlength']">
                         <span class="labelError">O numero de telefone deve ter 9 dígitos</span>
                     </div>
@@ -42,13 +36,9 @@
 
             <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Nº contriubuinte</mat-label>
-                <input matInput formControlName="nif" 
-                    (click)="openKeyboard('nif', 'number', cliente.nif, 9)" #contribuinte maxlength="9"
-                    placeholder="Ex. 2715443890">
+                <input matInput formControlName="nif" (click)="openKeyboard('nif', 'number', cliente.nif, 9)"
+                    #contribuinte maxlength="9" placeholder="Ex. 2715443890">
                 <div *ngIf="nif.invalid && formDir.submitted">
-                    <div *ngIf="nif.errors?.['required']">
-                        <span class="labelError">O NIF do cliente é obrigatório</span>
-                    </div>
                     <div *ngIf="nif.errors?.['minlength'] || nif.errors?.['maxlength']">
                         <span class="labelError">O NIF deve ter 9 dígitos</span>
                     </div>
@@ -64,9 +54,6 @@
                 <textarea matInput formControlName="address" (click)="openKeyboard('address', 'text', cliente.address)"
                     placeholder="Ex. Rua da Liberdade, 25"></textarea>
                 <div *ngIf="address.invalid && formDir.submitted">
-                    <div *ngIf="address.errors?.['required']">
-                        <span class="labelError">A morada do cliente é obrigatória</span>
-                    </div>
                     <div *ngIf="address.errors?.['minlength']">
                         <span class="labelError">A morada deve ter pelo menos 5 caracteres</span>
                     </div>
@@ -79,13 +66,10 @@
                         <mat-form-field class="example-full-width" appearance="fill">
                             <mat-label>Código Postal</mat-label>
                             <input matInput formControlName="postalCode" [inputMask]="postalCodeInputMask"
-                                (click)="openKeyboard('postalCode', 'number', cliente.postalCode)" #postalCode
-                                maxlength="8" placeholder="Ex. 4200-000">
-                            <div *ngIf="codPostal.invalid && formDir.submitted">
-                                <div *ngIf="codPostal.errors?.['required']">
-                                    <span class="labelError">O código postal é obrigatório</span>
-                                </div>
-                                <div *ngIf="codPostal.errors?.['maxlength'] || codPostal.errors?.['minlength']">
+                                (click)="openKeyboard('postalCode', 'number', cliente.postalCode)"
+                                maxlength="8" placeholder="Ex. 4200-000" required>
+                            <div *ngIf="postalCode.invalid && formDir.submitted">
+                                <div *ngIf="postalCode.errors?.['maxlength'] || postalCode.errors?.['minlength']">
                                     <span class="labelError">O código postal tem de estar preenchido</span>
                                 </div>
                             </div>
@@ -97,9 +81,6 @@
                             <input matInput formControlName="parish"
                                 (click)="openKeyboard('parish', 'text', cliente.parish)" placeholder="Ex. Campanhã">
                             <div *ngIf="parish.invalid && formDir.submitted">
-                                <div *ngIf="parish.errors?.['required']">
-                                    <span class="labelError">A freguesia do cliente é obrigatória</span>
-                                </div>
                                 <div *ngIf="parish.errors?.['minlength']">
                                     <span class="labelError">A freguesia deve ter pelo menos 3 caracteres</span>
                                 </div>
@@ -112,9 +93,6 @@
                             <input matInput formControlName="county"
                                 (click)="openKeyboard('county', 'text', cliente.county)" placeholder="Ex. Porto">
                             <div *ngIf="county.invalid && formDir.submitted">
-                                <div *ngIf="county.errors?.['required']">
-                                    <span class="labelError">O concelho do cliente é obrigatório</span>
-                                </div>
                                 <div *ngIf="county.errors?.['minlength']">
                                     <span class="labelError">O concelho deve ter pelo menos 3 caracteres</span>
                                 </div>
@@ -125,19 +103,30 @@
             </table>
         </td>
         <tr>
-            <td width="100%">
-                <mat-dialog-actions align="end">
-                    <button class="dialog-btn" mat-stroked-button [mat-dialog-close]="false">Cancelar</button>
-
-                    <ng-container *ngIf="update; else elseBlockButton">
-                        <button type="submit" class="dialog-btn" mat-stroked-button color="warn" cdkFocusInitial>Atualizar</button>
-                    </ng-container>
-
-                    <ng-template #elseBlockButton>
-                        <button type="submit" class="dialog-btn" mat-stroked-button color="warn" cdkFocusInitial>Registar</button>
-                    </ng-template>
-
-                </mat-dialog-actions>
+            <td>
+                <table class="dataTable">
+                    <tr>
+                        <td>
+                            <span style="font-size: 15px;"><i>Os campos marcados com * são de preenchimento obrigatório.</i></span>
+                        </td>
+                        <td>
+                            <mat-dialog-actions align="end">
+                                <button class="dialog-btn" mat-stroked-button [mat-dialog-close]="false">Cancelar</button>
+            
+                                <ng-container *ngIf="update; else elseBlockButton">
+                                    <button type="submit" class="dialog-btn" mat-stroked-button color="warn"
+                                        cdkFocusInitial>Atualizar</button>
+                                </ng-container>
+            
+                                <ng-template #elseBlockButton>
+                                    <button type="submit" class="dialog-btn" mat-stroked-button color="warn"
+                                        cdkFocusInitial>Registar</button>
+                                </ng-template>
+            
+                            </mat-dialog-actions>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>

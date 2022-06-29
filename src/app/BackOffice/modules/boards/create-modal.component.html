@@ -6,8 +6,8 @@
     <h1 mat-dialog-title>Adicionar nova zona</h1>
 </ng-template>
 
-<form class="example-form styleForm">
-    <table>
+<form class="example-form styleForm" [formGroup]="formZones" (ngSubmit)="submitForm()" #formDir="ngForm">
+    <table class="dataTable">
         <tr>
             <td class="rowStyle">
                 <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
@@ -25,27 +25,35 @@
                 <br>
                 <mat-form-field class="example-full-width" appearance="fill">
                     <mat-label>Nome</mat-label>
-                    <input matInput (click)="openKeyboard('name', 'text', zone.name)" [(ngModel)]="zone.name"
-                        [ngModelOptions]="{standalone: true}">
+                    <input matInput (click)="openKeyboard('name', 'text', zone.name)" formControlName="name">
                 </mat-form-field>
             </td>
         </tr>
         <tr>
             <td>
-                <mat-dialog-actions align="end">
-                    <button mat-stroked-button class="dialog-btn" [mat-dialog-close]="false">Cancelar</button>
+                <table class="dataTable">
+                    <tr>
+                        <td>
+                            <span style="font-size: 15px;"><i>Os campos marcados com * são de preenchimento obrigatório.</i></span>
+                        </td>
+                        <td>
+                            <mat-dialog-actions align="end">
+                                <button mat-stroked-button class="dialog-btn"
+                                    [mat-dialog-close]="false">Cancelar</button>
 
-                    <ng-container *ngIf="update; else elseBlockButton">
-                        <button mat-stroked-button color="warn" class="dialog-btn" [mat-dialog-close]="zone"
-                            cdkFocusInitial>Atualizar</button>
-                    </ng-container>
+                                <ng-container *ngIf="update; else elseBlockButton">
+                                    <button type="submit" mat-stroked-button color="warn" class="dialog-btn"
+                                        cdkFocusInitial>Atualizar</button>
+                                </ng-container>
 
-                    <ng-template #elseBlockButton>
-                        <button mat-stroked-button color="warn" class="dialog-btn" [mat-dialog-close]="zone"
-                            cdkFocusInitial>Registar</button>
-                    </ng-template>
-
-                </mat-dialog-actions>
+                                <ng-template #elseBlockButton>
+                                    <button type="submit" mat-stroked-button color="warn" class="dialog-btn"
+                                        cdkFocusInitial>Registar</button>
+                                </ng-template>
+                            </mat-dialog-actions>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>

@@ -6,15 +6,15 @@
     <h1 mat-dialog-title>Adicionar novo método de pagamento</h1>
 </ng-template>
 
-<form class="example-form">
-    <table class="table-form">
+<form class="example-form" [formGroup]="paymentForm" (ngSubmit)="submitForm()" #formDir="ngForm">
+    <table class="dataTable">
         <tr>
-            <td class="category-form">
+            <td class="cellAvatar">
                 <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
             </td>
         <tr>
         <tr>
-            <td class="category-form">
+            <td>
                 <input type="file" class="file" style="display: none;" (change)="onFileSelected($event)" #fileUpload>
                 <div class="file-upload" (click)="fileUpload.click()">
                     <button mat-mini-fab color="primary" class="upload-btn">
@@ -25,44 +25,56 @@
             </td>
         </tr>
         <tr>
-            <td class="category-form">
-                <table>
+            <td>
+                <table class="dataTable">
                     <tr>
-                        <td class="category-form">
+                        <td>
                             <br>
                             <mat-form-field class="example-full-width" appearance="fill">
                                 <mat-label>Nome</mat-label>
                                 <input matInput (click)="openKeyboard('name', 'text', paymentMethod.name)"
-                                    [(ngModel)]="paymentMethod.name" [ngModelOptions]="{standalone: true}">
+                                    formControlName="name">
+                                    <div *ngIf="name.invalid && formDir.submitted">
+                                        <div *ngIf="name.errors?.['minlength'] || name.errors?.['maxlength']">
+                                            <span class="labelError">O nome deve ter entre 3 e 50 caracteres</span>
+                                        </div>
+                                    </div>
                             </mat-form-field>
-
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="category-form">
+                        <td>
                             <br>
                             <mat-form-field class="example-full-width" appearance="fill">
                                 <mat-label>Descrição</mat-label>
                                 <input matInput (click)="openKeyboard('description', 'text', paymentMethod.description)"
-                                    [(ngModel)]="paymentMethod.description" [ngModelOptions]="{standalone: true}">
+                                formControlName="description">
                             </mat-form-field>
 
                         </td>
                     </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="100%">
+                <table class="dataTable">
                     <tr>
-                        <td class="category-form" width="100%">
+                        <td>
+                            <span style="font-size: 15px;"><i>Os campos marcados com * são de preenchimento
+                                    obrigatório.</i></span>
+                        </td>
+                        <td>
                             <mat-dialog-actions align="end">
                                 <button mat-stroked-button class="dialog-btn"
                                     [mat-dialog-close]="false">Cancelar</button>
 
                                 <ng-container *ngIf="update; else elseBlockButton">
-                                    <button mat-stroked-button color="warn" class="dialog-btn"
-                                        [mat-dialog-close]="paymentMethod" cdkFocusInitial>Atualizar</button>
+                                    <button type="submit" mat-stroked-button color="warn" class="dialog-btn"
+                                        cdkFocusInitial>Atualizar</button>
                                 </ng-container>
 
                                 <ng-template #elseBlockButton>
-                                    <button mat-stroked-button color="warn" class="dialog-btn"
-                                        [mat-dialog-close]="paymentMethod" cdkFocusInitial>Registar</button>
+                                    <button type="submit" mat-stroked-button color="warn" class="dialog-btn"
+                                        cdkFocusInitial>Registar</button>
                                 </ng-template>
 
                             </mat-dialog-actions>

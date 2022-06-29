@@ -7,7 +7,6 @@ export class Artigo {
     image: string;
     id_category: number;
     abbreviation: string;
-    
     price: number;
     pvp1: number;
     pvp2: number;
@@ -16,9 +15,6 @@ export class Artigo {
     pvp5: number;
     pvp6: number;
     iva: number;
-    
     sub_unity: string;
-    
-    name_category?: string;
     synchronized?: boolean = false;
 }

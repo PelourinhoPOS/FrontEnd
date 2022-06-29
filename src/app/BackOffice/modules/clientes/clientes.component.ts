@@ -24,7 +24,7 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   public header: any
   public sticky: any;
 
-  constructor(public dialog: MatDialog, private clientesService: ClientesService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService) { }
+  constructor(public dialog: MatDialog, private clientesService: ClientesService, private toastr: ToastrService) { }
 
   //public cliente: Cliente = new Cliente();
   public clientes!: Observable<Cliente[]>; //save the clients returned from the API
@@ -79,7 +79,6 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   //update data in API or local storage
   async update(cliente: Cliente) {
     await this.clientesService.update(cliente).then(() => {
-      console.log();
       this.toastr.success('Cliente atualizado com sucesso.');
     }).catch((err) => {
       err
@@ -215,7 +214,7 @@ export class ClientesComponent implements OnInit, AfterViewInit {
           const dialogRef = this.dialog.open(DeleteModalComponent, {
             height: '30%',
             width: '50%',
-            data: { values: data }
+            data: { values: data, component: 'Utilizador' }
           });
           dialogRef.afterClosed().subscribe(cliente => {
             if (cliente) {
@@ -273,19 +272,20 @@ export class ClientesComponent implements OnInit, AfterViewInit {
 
 export class CreateClientModalComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private fb: FormBuilder, public dialogRefCreate: MatDialogRef<CreateClientModalComponent>, public toastr: ToastrService) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, public dialogRefCreate: MatDialogRef<CreateClientModalComponent>, public toastr: ToastrService) { }
 
   public cliente: Cliente = new Cliente(); //save the client data
   public dialogRef: any; //save the dialog reference
   public update: boolean = false; //save if is update or create
 
-  myForm: FormGroup; //save the form
+  clientsForm: FormGroup; //save the form
 
   postalCodeInputMask = createMask('9999-999'); //create the input mask for the postal code
 
   ngOnInit(): void {
 
-    this.myForm = new FormGroup({
+    this.clientsForm = new FormGroup({
+      id: new FormControl(''),
       name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
       phone: new FormControl('', [Validators.required, Validators.maxLength(9), Validators.minLength(9), Validators.pattern('[0-9]*')]),
       nif: new FormControl('', [Validators.required, Validators.maxLength(9), Validators.minLength(9), Validators.pattern('[0-9]*')]),
@@ -296,56 +296,66 @@ export class CreateClientModalComponent implements OnInit {
     })
     //get the data from client and set it in the form
     if (this.data) {
-      this.update = true; //set update to true, to know if is update or create
-      this.cliente.id = this.data.values.id;
-      this.myForm.get('name').setValue(this.data.values.name);
-      this.myForm.get('phone').setValue(this.data.values.phone);
-      this.myForm.get('nif').setValue(this.data.values.nif);
-      this.myForm.get('address').setValue(this.data.values.address);
-      this.myForm.get('postalCode').setValue(this.data.values.postalCode);
-      this.myForm.get('parish').setValue(this.data.values.parish);
-      this.myForm.get('county').setValue(this.data.values.county);
-      ; //set the data in the form
+      this.update = true;
+      this.cliente = this.data.values;
+
+      this.id.setValue(this.cliente.id);
+      this.name.setValue(this.cliente.name);
+      this.name.setValue(this.cliente.name);
+      this.phone.setValue(this.cliente.phone);
+      this.nif.setValue(this.cliente.nif);
+      this.address.setValue(this.cliente.address);
+      this.postalCode.setValue(this.cliente.postalCode);
+      this.parish.setValue(this.cliente.parish);
+      this.county.setValue(this.cliente.county);
+      //set the data in the form
     }
   }
 
+  get id(){
+    return this.clientsForm.get('id');
+  }
+
   get name() {
-    this.cliente.name = this.myForm.get('name').value;
-    return this.myForm.get('name');
+    return this.clientsForm.get('name');
   }
 
   get phone() {  //get the phone number
-    this.cliente.phone = this.myForm.get('phone').value;
-    return this.myForm.get('phone');
+    return this.clientsForm.get('phone');
   }
 
   get nif() { //get the nif
-    this.cliente.nif = this.myForm.get('nif').value;
-    return this.myForm.get('nif');
+    return this.clientsForm.get('nif');
   }
 
   get address() {   //get the address
-    this.cliente.address = this.myForm.get('address').value;
-    return this.myForm.get('address');
+    return this.clientsForm.get('address');
   }
 
-  get codPostal() {  //get the postal code
-    this.cliente.postalCode = this.myForm.get('postalCode').value;
-    return this.myForm.get('postalCode');
+  get postalCode() {  //get the postal code
+    return this.clientsForm.get('postalCode');
   }
 
   get parish() {  //get the parish
-    this.cliente.parish = this.myForm.get('parish').value;
-    return this.myForm.get('parish');
+    return this.clientsForm.get('parish');
   }
 
   get county() {  //get the county
-    this.cliente.county = this.myForm.get('county').value;
-    return this.myForm.get('county');
+    return this.clientsForm.get('county');
   }
 
   submitForm() {
-    if (this.myForm.valid) {
+    this.cliente = this.clientsForm.value; //get the data from the form
+    this.cliente.phone = parseInt(this.phone.value); //convert the phone number to integer
+    this.cliente.nif = parseInt(this.nif.value); //convert the nif to integer
+
+    if (this.update) {
+      this.cliente.lastUpdate = new Date().toJSON().slice(0,10); //set the last update
+    } else {
+      this.cliente.registerDate = new Date().toJSON().slice(0,10); //set the register date
+    }
+
+    if (this.clientsForm.valid) {
       this.dialogRefCreate.close(this.cliente);
     } else {
       this.toastr.error('Existem erros no formulário.', 'Aviso');
@@ -373,25 +383,25 @@ export class CreateClientModalComponent implements OnInit {
       //switch to know which input is changed
       switch (result[1][0]) {
         case 'name':
-          this.myForm.get('name').setValue(result[0]);
+          this.name.setValue(result[0]);
           break;
         case 'phone':
-          this.myForm.get('phone').setValue(result[0]);
+          this.phone.setValue(result[0]);
           break;
         case 'nif':
-          this.myForm.get('nif').setValue(result[0]);
+          this.nif.setValue(result[0]);
           break;
         case 'address':
-          this.myForm.get('address').setValue(result[0]);
+          this.address.setValue(result[0]);
           break;
         case 'postalCode':
-          this.myForm.get('postalCode').setValue(result[0]);
+          this.postalCode.setValue(result[0]);
           break;
         case 'parish':
-          this.myForm.get('parish').setValue(result[0]);
+          this.parish.setValue(result[0]);
           break;
         case 'county':
-          this.myForm.get('county').setValue(result[0]);
+          this.county.setValue(result[0]);
           break;
       }
     });

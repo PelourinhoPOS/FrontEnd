@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, Inject, ViewChild, AfterViewInit } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
@@ -20,7 +21,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   public header: any
   public sticky: any;
 
-  constructor(public dialog: MatDialog, private usersService: UsersService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService) { }
+  constructor(public dialog: MatDialog, private usersService: UsersService, private toastr: ToastrService) { }
 
   //public cliente: empregado = new Empregado();
   public empregados!: Observable<User[]>; //save the employees returned from the API
@@ -62,8 +63,10 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //register data in API or local storage
   async register(empregado: User) {
-    await this.usersService.register(empregado).then(() => {
-      this.toastr.success('Utilizador registado com sucesso!');
+    await this.usersService.register(empregado).then((user: any) => {
+      if (user) {
+        this.toastr.success('Utilizador registado com sucesso!');
+      }
     }).catch((err) => {
       err
     });
@@ -211,7 +214,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
           const dialogRef = this.dialog.open(DeleteModalComponent, {
             height: '30%',
             width: '50%',
-            data: { values: data }
+            data: { values: data, component: 'Utilizador' }
           });
           dialogRef.afterClosed().subscribe(data => {
             if (data) {
@@ -272,7 +275,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
 export class CreateEmployeeModalComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, public dialogRefCreate: MatDialogRef<CreateEmployeeModalComponent>, public toastr: ToastrService) { }
 
   public user: User = new User(); //save the client data
   public dialogRef: any; //save the dialog reference
@@ -283,13 +286,41 @@ export class CreateEmployeeModalComponent implements OnInit {
   levelSelected = 'Empregado';
   stateSelected = 'true';
 
+  usersForm: FormGroup; //save the form
+
   ngOnInit(): void {
+
+    this.user.avatar = this.url; //set the default avatar
+
+    this.usersForm = new FormGroup({
+      id: new FormControl(),
+      name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
+      nif: new FormControl('', [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern('[0-9]*')]),
+      address: new FormControl('', [Validators.required, Validators.minLength(5)]),
+      phone: new FormControl('', [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern('[0-9]*')]),
+      function: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4), Validators.pattern('[0-9]*')]),
+      active: new FormControl('', [Validators.required]),
+      avatar: new FormControl(this.url),
+    })
+
     //get the data from client and set it in the form
     if (this.data) {
-      this.update = true; //set update to true, to know if is update or create
+      this.update = true;
       this.user = this.data.values; //set the data in the form
       this.fileName = 'Alterar imagem'; //set the file name
       this.url = this.user.avatar; //set the photo in the form
+
+      this.id.setValue(this.user.id);
+      this.name.setValue(this.user.name);
+      this.nif.setValue(this.user.nif);
+      this.address.setValue(this.user.address);
+      this.phone.setValue(this.user.phone);
+      this.function.setValue(this.user.function);
+      this.password.setValue(this.user.password);
+      this.active.setValue(this.user.active);
+      this.avatar.setValue(this.url);
+
       this.levelSelected = this.user.function; //set the level in the form
       this.stateSelected = (this.user.active).toString(); //set the state in the form
     } else {
@@ -298,17 +329,72 @@ export class CreateEmployeeModalComponent implements OnInit {
     }
   }
 
-  
+  get id(){
+    return this.usersForm.get('id');
+  }
+
+  get name() {
+    return this.usersForm.get('name');
+  }
+
+  get nif() {
+    return this.usersForm.get('nif');
+  }
+
+  get address() {
+    return this.usersForm.get('address');
+  }
+
+  get phone() {
+    return this.usersForm.get('phone');
+  }
+
+  get function() {
+    return this.usersForm.get('function');
+  }
+
+  get avatar() {
+    return this.usersForm.get('avatar');
+  }
+
+  get password() {
+    return this.usersForm.get('password');
+  }
+
+  get active() {
+    // let state = this.usersForm.get('active').value;
+    // if (state == 'true') {
+    //   this.user.active = true;
+    //   this.active.setValue(true);
+    // } else if (state == 'false') {
+    //   this.user.active = false;
+    //   this.active.setValue(false);
+    // }
+    return this.usersForm.get('active');
+  }
 
   levelSelect() {
-    this.user.function = this.levelSelected;
+    this.function.setValue(this.levelSelected);
   }
 
   stateSelect() {
     if (this.stateSelected == "true") {
-      this.user.active = true;
+      this.active.setValue(true);
     } else if (this.stateSelected == "false") {
-      this.user.active = false;
+      this.active.setValue(false);
+    }
+  }
+
+  submitForm() {
+    this.user = this.usersForm.value;
+    this.user.phone = parseInt(this.phone.value);
+    this.user.nif = parseInt(this.nif.value);
+    this.user.password = parseInt(this.password.value);
+
+    if (this.usersForm.valid) {
+      this.dialogRefCreate.close(this.user);
+    } else {
+      this.toastr.error('Existem erros no formulário.', 'Aviso');
     }
   }
 
@@ -321,9 +407,9 @@ export class CreateEmployeeModalComponent implements OnInit {
       reader.readAsDataURL(file)
       reader.onload = (event: any) => {
         this.url = event.target.result;
-        this.user.avatar = this.url;
+        this.avatar.setValue(this.url);
       }
-      // this.fileName = file.name;
+      this.fileName = (file.name).substring(0,20,) + '...';
       // const formData = new FormData();
       // formData.append("thumbnail", file);
       // console.log(file);
@@ -353,13 +439,19 @@ export class CreateEmployeeModalComponent implements OnInit {
       //switch to know which input is changed
       switch (result[1][0]) {
         case 'name':
-          this.user.name = result[0];
+          this.name.setValue(result[0]);
           break;
         case 'phone':
-          this.user.phone = result[0];
+          this.phone.setValue(result[0]);
+          break;
+        case 'nif':
+          this.nif.setValue(result[0]);
+          break;
+        case 'address':
+          this.address.setValue(result[0]);
           break;
         case 'password':
-          this.user.password = result[0];
+          this.password.setValue(result[0]);
           break;
       }
     });

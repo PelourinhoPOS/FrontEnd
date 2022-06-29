@@ -11,9 +11,12 @@ export class DeleteModalComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog) { }
 
   public register: any;
+  public component: any;
 
   ngOnInit(): void {
     this.register = this.data.values;
+    this.component = this.data.component
+    console.log(this.register);
   }
 
 }

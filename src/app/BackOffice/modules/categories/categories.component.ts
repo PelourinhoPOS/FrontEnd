@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
@@ -21,7 +22,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
   public header: any
   public sticky: any;
 
-  constructor(public dialog: MatDialog, private categoriesService: CategoriesService, private onlineOfflineService: OnlineOfflineService, private toastr: ToastrService) { }
+  constructor(public dialog: MatDialog, private categoriesService: CategoriesService, private toastr: ToastrService) { }
 
   public categories!: Observable<Categories[]>; //save the clients returned from the API
   public categoriesOff!: Observable<Categories[]>; //save the clients returned from the local storage
@@ -177,7 +178,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
     this.unselectRow();
 
     const dialogRef = this.dialog.open(CreateCategorieModalComponent, {
-      height: '690px',
+      height: '600px',
       width: '770px',
     });
     dialogRef.afterClosed().subscribe(category => {
@@ -194,7 +195,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
       if (dataOff.length > 0) {
         if (data) {
           const dialogRef = this.dialog.open(CreateCategorieModalComponent, {
-            height: '690px',
+            height: '600px',
             width: '770px',
             data: { values: data, update: true }
           });
@@ -276,32 +277,67 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
 
 export class CreateCategorieModalComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private categoriesService: CategoriesService) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private categoriesService: CategoriesService, public dialogRefCreate: MatDialogRef<CreateCategorieModalComponent>, private toastr: ToastrService) { }
 
   public categorie: Categories = new Categories(); //save the client data
   public dialogRef: any; //save the dialog reference
   public update: boolean = false; //save if is update or create
 
   fileName = '';
-  url = './assets/images/user.png';
+  url = './assets/images/categoryDefault.jpg';
   categoryItems: any;
   subcategorySelected: any;
 
+  categoriesForm: FormGroup;
+
   ngOnInit(): void {
+    
     this.getCategories();
-    this.subcategorySelected = '0';
+    this.subcategorySelected = 0;
+
+    this.categoriesForm = new FormGroup({
+      id: new FormControl(''),
+      name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      id_category: new FormControl(this.subcategorySelected, [Validators.required]),
+      image : new FormControl(''),
+    });
+
+    this.image.setValue(this.url);
+    
     //get the data from client and set it in the form
     if (this.data) {
-      this.update = true; //set update to true, to know if is update or create
       this.categorie = this.data.values; //set the data in the form
       this.fileName = 'Alterar imagem'; //set the file name
       this.url = this.categorie.image; //set the photo in the form
+
+      this.id.setValue(this.categorie.id);
+      this.name.setValue(this.categorie.name);
+      this.id_category.setValue(this.categorie.id_category);
+      this.image.setValue(this.url);
+
       if (this.categorie.id_category == 0) {
         this.subcategorySelected = '0';
       } else {
         this.subcategorySelected = this.categorie.id_category;
       }
+
     }
+  }
+
+  get id() {
+    return this.categoriesForm.get('id');
+  }
+
+  get name(){
+    return this.categoriesForm.get('name');
+  }
+
+  get id_category(){
+    return this.categoriesForm.get('id_category');
+  }
+
+  get image(){
+    return this.categoriesForm.get('image');
   }
 
   getCategories() {
@@ -313,6 +349,15 @@ export class CreateCategorieModalComponent implements OnInit {
 
   categorySelect() {
     this.categorie.id_category = parseInt(this.subcategorySelected);
+  }
+
+  submitForm() {
+    this.categorie = this.categoriesForm.value;
+    if (this.categoriesForm.valid) {
+      this.dialogRefCreate.close(this.categorie);
+    } else {
+      this.toastr.error('Existem erros no formulário.', 'Aviso');
+    }
   }
 
   //open the modal keyboard
@@ -336,7 +381,7 @@ export class CreateCategorieModalComponent implements OnInit {
       //switch to know which input is changed
       switch (result[1][0]) {
         case 'name':
-          this.categorie.name = result[0];
+          this.name.setValue(result[0]);
       }
     });
   }
@@ -344,15 +389,14 @@ export class CreateCategorieModalComponent implements OnInit {
   onFileSelected(event) {
 
     const file: File = event.target.files[0];
-
     if (file) {
       var reader = new FileReader();
       reader.readAsDataURL(file)
       reader.onload = (event: any) => {
         this.url = event.target.result;
-        this.categorie.image = this.url;
+        this.image.setValue(this.url);
       }
-      // this.fileName = file.name;
+      this.fileName = (file.name).substring(0,15) + '(...)' + file.type.split('/')[1];
       // const formData = new FormData();
       // formData.append("thumbnail", file);
       // console.log(file);
