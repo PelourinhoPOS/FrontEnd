@@ -22,6 +22,7 @@ export class VirtualKeyboardComponent implements OnInit {
   dataLength = 0;
   backSpacePressed = false;
 
+  
   ngAfterViewInit() {
     if (this.data) {
 
@@ -83,7 +84,6 @@ export class VirtualKeyboardComponent implements OnInit {
 
   onInputChange = (event: any) => {
     this.keyboard.setInput(event.target.value);
-
   };
 
   handleShift = () => {

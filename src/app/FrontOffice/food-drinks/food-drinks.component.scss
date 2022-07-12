@@ -375,3 +375,29 @@ button#pay {
     background-color: #f7e083;
     border-radius: 15px;
 }
+
+mat-form-field#actions {
+    width: 120px;
+    height: 35px;
+    margin-top: -25px;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex  {
+    background-color: #f7e083;
+    font-weight: bold;
+    font-family: Ubuntu;
+}
+
+.mat-form-field-type-mat-select:not(.mat-form-field-disabled) .mat-form-field-flex{
+    border-radius: 10px 10px 0 0;
+}
+
+.mat-form-field-hide-placeholder .mat-select-placeholder {
+    margin-top: -10px;
+}
+
+.setPosition{
+    position: absolute;
+    bottom: 5%;
+    left: 30%;
+}

@@ -60,7 +60,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
     this.db.version(1).stores({
       cliente: 'id, registerDate',
       empregado: 'id',
-      mesa: 'id, id_zone',
+      mesa: 'id, id_zone, boardType',
       zone: 'id',
       artigo: 'id, id_category',
       categories: 'id, id_category',

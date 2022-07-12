@@ -9,6 +9,7 @@ export class Mesa {
     total?: number;
     type?: string;
     synchronized?: boolean;
+    boardType?: string;
     dragPosition?: {
         x: number,
         y: number,

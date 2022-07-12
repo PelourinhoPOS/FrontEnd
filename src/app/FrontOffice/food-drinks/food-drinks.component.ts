@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { KeyboardDialogComponent } from '../keyboard-dialog/keyboard-dialog.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd } from '@angular/router';
 import { ChangeProductDialogComponent } from '../change-product-dialog/change-product-dialog.component';
 import { CookieService } from 'ngx-cookie-service';
 import { authenticationService } from '../authentication-dialog/authentication-dialog.service';
@@ -12,7 +12,7 @@ import { Mesa } from 'src/app/BackOffice/models/mesa';
 import { Subscription, map } from 'rxjs';
 import SwiperCore, { FreeMode, Pagination } from 'swiper';
 import { CategoriesService } from 'src/app/BackOffice/modules/categories/categories.service';
-
+import { Router } from '@angular/router';
 
 SwiperCore.use([FreeMode, Pagination]);
 
@@ -49,6 +49,7 @@ export class FoodDrinksComponent implements OnInit {
   public changedprice;
   public selfid;
   public productbyid;
+  public asked;
 
   constructor(
     private empregadosService: UsersService,
@@ -56,6 +57,7 @@ export class FoodDrinksComponent implements OnInit {
     private mesasService: MesasService,
     public dialog: MatDialog,
     private route: ActivatedRoute,
+    private router: Router,
     private cookieService: CookieService,
     private authService: authenticationService,
     private categoryService: CategoriesService,
@@ -295,6 +297,22 @@ export class FoodDrinksComponent implements OnInit {
     return id;
   }
 
+  openAsk() {
+    let MesaPedido: any = {
+      boardType: 'Pedidos',
+      cart: [],
+    }
+
+    this.mesasService.getLocalDataFromId('boardType', 'Pedidos').then((data) => {
+      if (data.length == 0) {
+        this.mesasService.registerDataOffline(MesaPedido);
+      } else {
+        this.asked = data[0].id;
+      }
+      this.router.navigate(['/food&drinks/' + this.asked]);
+    });
+  }
+
   selectCategory(id: number) {
     this.id = 0;
 
@@ -360,6 +378,19 @@ export class FoodDrinksComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        let id = parseInt(this.route.snapshot.paramMap.get('id'));
+        this.boardId = id;
+        this.getCategories();
+        //this.addNewProduct();
+        this.getBoard();
+        this.getProducts();
+        this.selectCategory(0);
+        this.getCookies();
+        this.getAuthTime();
+      }
+    });
     let id = parseInt(this.route.snapshot.paramMap.get('id'));
     this.boardId = id;
     this.getCategories();

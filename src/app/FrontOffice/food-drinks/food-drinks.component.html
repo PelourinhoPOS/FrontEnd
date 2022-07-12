@@ -3,7 +3,8 @@
     <div class="profileEmp">
       <img class="avatar" src="{{ this.userData?.avatar }}" alt="avatar" />
       <div class="userActivity">
-        <span class="username" id="board">Board #{{ this.board?.number }}</span>
+        <span class="username" id="board" *ngIf="!this.board.boardType">Board #{{ this.board?.number }}</span>
+        <span class="username" id="board" *ngIf="this.board.boardType">Ordered</span>
         <span class="username">{{ this.userData?.name }}</span>
         <span>{{ this.time }}</span>
       </div>
@@ -11,6 +12,7 @@
     </div>
     <ng-container *ngIf="cart.length == 0; else elseBlock">
       <p class="empty">The Cart Is Empty!</p>
+      <button class="setPosition" id="pay" (click)="openAsk()" *ngIf="!this.board.boardType">ASK</button>
     </ng-container>
     <ng-template #elseBlock>
       <span class="name_card">NAME</span>
@@ -35,7 +37,14 @@
           <span class="totalPrice">Total: {{ this.total }}€</span>
           <span class="iva">Tax: {{ this.totalIva }}</span>
         </div>
-        <button id="pay" routerLink="/payment">PAY</button>
+        <mat-form-field id="actions" appearance="fill" *ngIf="!this.board.boardType">
+          <mat-label>Actions</mat-label>
+          <mat-select>
+            <mat-option routerLink="/payment">PAY</mat-option>
+            <mat-option (click)="openAsk()">ASK</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button id="pay" routerLink="/payment" *ngIf="this.board.boardType">PAY</button>
       </div>
     </ng-template>
   </div>

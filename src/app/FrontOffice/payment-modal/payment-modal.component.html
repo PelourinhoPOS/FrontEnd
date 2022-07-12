@@ -31,7 +31,7 @@
             <div class="methods" (click)="payment(); resetMethod()">
                 <button>Money</button>
             </div>
-            <div class="methods" (click)="resetMethod()">
+            <div class="methods" (click)="resetMethod(); paymentMethods()">
                 <button>MB</button>
             </div>
             <div class="methods" id="noMargin" (click)="paymentMethods()" *ngIf="!this.method">

@@ -40,6 +40,7 @@ import { LongPressDirective } from './FrontOffice/board/long-press.directive';
 import { InputMaskModule } from '@ngneat/input-mask';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { PaymentMethodsComponent } from './FrontOffice/payment-methods/payment-methods.component';
+import { SharedModule } from './BackOffice/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,7 @@ import { PaymentMethodsComponent } from './FrontOffice/payment-methods/payment-m
     SplitMoneyDialogComponent,
     MoneyDialogComponent,
     LongPressDirective,
-    PaymentMethodsComponent 
+    PaymentMethodsComponent,
   ],
   imports: [
     HttpClientModule,
@@ -94,6 +95,7 @@ import { PaymentMethodsComponent } from './FrontOffice/payment-methods/payment-m
       registrationStrategy: 'registerWhenStable:30000'
     }),
     InputMaskModule,
+    SharedModule,
   ],
   providers: [CookieService, authenticationService, OnlineOfflineService],
   bootstrap: [AppComponent]

@@ -159,9 +159,7 @@ export class PaymentModalComponent implements OnInit {
       if (item.product.id === this.productid) {
         if (item.quantity > 1) {
           item.quantity -= 1;
-          if (this.done.includes(item) === false) {
-            this.done.push(item);
-          }
+          this.done.push(item);
           this.totalPrice();
           this.eachPrice();
         } else {
