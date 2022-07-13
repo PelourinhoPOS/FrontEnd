@@ -86,7 +86,7 @@
 
 .alignGrid {
     margin-top: 40px;
-    margin-left: 30px;
+    margin-left: 50px;
 }
 
 .productName {
@@ -137,7 +137,7 @@ span {
 
 .height {
     position: fixed;
-    width: 320px;
+    width: 345px;
     height: 100%;
     border: 1px solid rgb(211, 211, 211);
     background-color: #f7f7f7;
@@ -290,7 +290,7 @@ button#pay {
 @import "~swiper/css/pagination";
 
 .swiper {
-    margin-left: 30px;
+    margin-left: 50px;
     width: 1140px;
     height: 110px;
 }
@@ -376,24 +376,14 @@ button#pay {
     border-radius: 15px;
 }
 
-mat-form-field#actions {
-    width: 120px;
-    height: 35px;
-    margin-top: -25px;
-}
-
-.mat-form-field-appearance-fill .mat-form-field-flex  {
-    background-color: #f7e083;
+.actionBtn{
+    width: 75px;
+    height: 40px;
+    background-color: #fdbc18;
     font-weight: bold;
-    font-family: Ubuntu;
-}
-
-.mat-form-field-type-mat-select:not(.mat-form-field-disabled) .mat-form-field-flex{
-    border-radius: 10px 10px 0 0;
-}
-
-.mat-form-field-hide-placeholder .mat-select-placeholder {
-    margin-top: -10px;
+    font-size: 18px;
+    border-radius: 10px;
+    margin-left: 10px;
 }
 
 .setPosition{

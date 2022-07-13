@@ -13,16 +13,22 @@
 <div class="centerCDK" cdkDropListGroup>
     <div class="example-containerP">
         <h2>Items:</h2>
+        <span class="namePosition">Name</span>
+        <span class="pricePosition">Price</span>
+        <span class="ivaPosition">Iva%</span>
+        <span class="iva2Position">Iva</span>
+        <span class="unityPosition">Unity</span>
+        <span class="quantityPosition">Qtd</span>
         <div class="example-list">
             <div class="example-box" *ngFor="let items of todo; let i = index"
                 [ngClass]="{'active': clickedIndex == i }" (click)="clickedIndex = i; changeClick1()"
                 (click)="getId(items.product.id)">
                 <span>{{items.product.name}}</span>
-                <span>{{items.product.price}}€</span>
-                <span>{{items.product.iva * 100}}%</span>
-                <span>{{this.iva}}€</span>
-                <span *ngIf="items.product.unity_value">{{items.product.unity_value }}{{items.product.sub_unity}}</span>
-                <span *ngIf="!items.product.unity_value">1{{items.product.sub_unity}}</span>
+                <span class="pricePos">{{items.product.price}}€</span>
+                <span class="priceIvaPos">{{items.product.iva * 100}}%</span>
+                <span class="priceIva2Pos">{{(items.product.price * items.product.iva).toFixed(2)}}€</span>
+                <span class="unityPos" *ngIf="items.product.unity_value">{{items.product.unity_value }}{{items.product.sub_unity}}</span>
+                <span class="unityPos" *ngIf="!items.product.unity_value">1{{items.product.sub_unity}}</span>
                 <span>{{items.quantity}}</span>
             </div>
         </div>
@@ -31,7 +37,7 @@
             <div class="methods" (click)="payment(); resetMethod()">
                 <button>Money</button>
             </div>
-            <div class="methods" (click)="resetMethod(); paymentMethods()">
+            <div class="methods" (click)="resetMethod();">
                 <button>MB</button>
             </div>
             <div class="methods" id="noMargin" (click)="paymentMethods()" *ngIf="!this.method">
@@ -69,15 +75,22 @@
     </div>
     <div class="example-containerP">
         <h2>Selected:</h2>
-
+        <span class="namePosition">Name</span>
+        <span class="pricePosition">Price</span>
+        <span class="ivaPosition">Iva%</span>
+        <span class="iva2Position">Iva</span>
+        <span class="unityPosition">Unity</span>
+        <span class="quantityPosition">Qtd</span>
         <div class="example-list">
             <div class="example-box" *ngFor="let items of done; let j = index"
                 [ngClass]="{'active': clickedIndexJ == j }" (click)="clickedIndexJ = j; changeClick2()"
                 (click)="getId(items.product.id)">
                 <span>{{items.product.name}}</span>
-                <span>{{items.product.price}}</span>
-                <span>{{items.product.iva * 100}}%</span>
-                <span>{{items.product.unity_value }}{{items.product.sub_unity}}</span>
+                <span class="pricePos">{{items.product.price}}</span>
+                <span class="priceIvaPos">{{items.product.iva * 100}}%</span>
+                <span class="priceIva2Pos">{{(items.product.price * items.product.iva).toFixed(2)}}€</span>
+                <span class="unityPos" *ngIf="items.product.unity_value">{{items.product.unity_value }}{{items.product.sub_unity}}</span>
+                <span class="unityPos" *ngIf="!items.product.unity_value">1{{items.product.sub_unity}}</span>
                 <span>{{items.quantity}}</span>
             </div>
         </div>

@@ -37,13 +37,10 @@
           <span class="totalPrice">Total: {{ this.total }}€</span>
           <span class="iva">Tax: {{ this.totalIva }}</span>
         </div>
-        <mat-form-field id="actions" appearance="fill" *ngIf="!this.board.boardType">
-          <mat-label>Actions</mat-label>
-          <mat-select>
-            <mat-option routerLink="/payment">PAY</mat-option>
-            <mat-option (click)="openAsk()">ASK</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div *ngIf="!this.board.boardType">
+          <button class="actionBtn" routerLink="/payment">PAY</button>
+          <button class="actionBtn" (click)="openAsk()">ASK</button>
+        </div>
         <button id="pay" routerLink="/payment" *ngIf="this.board.boardType">PAY</button>
       </div>
     </ng-template>
