@@ -3,6 +3,10 @@ import { map } from 'rxjs';
 import { Cliente } from '../../models/cliente';
 import { ClientesService } from '../clientes/clientes.service';
 
+import {SelectionModel} from '@angular/cdk/collections';
+import {MatTableDataSource} from '@angular/material/table';
+
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -11,6 +15,7 @@ import { ClientesService } from '../clientes/clientes.service';
 export class DashboardComponent implements OnInit {
 
   constructor(private clientesService: ClientesService) { }
+
 
   nClientes: any;
   totalClientes: any;

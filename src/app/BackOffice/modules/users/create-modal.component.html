@@ -12,10 +12,8 @@
             <td>
                 <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
                 <input type="file" class="file" style="display: none;" (change)="onFileSelected($event)" #fileUpload>
-                <div class="file-upload" (click)="fileUpload.click()">
-                    <button mat-mini-fab color="primary" class="upload-btn">
-                        <mat-icon>attach_file</mat-icon>
-                    </button>
+                <div class="file-upload" (click)="fileUpload.click()" class="upload-div">
+                    <mat-icon>attach_file</mat-icon>
                     <p class="input-text"> {{fileName || "Sem imagem"}} </p>
                 </div>
             </td>
@@ -26,10 +24,11 @@
                             <tr>
                                 <td>
                                     <br>
-                                    
+
                                     <mat-form-field class="example-full-width" appearance="fill">
                                         <mat-label>Nome</mat-label>
-                                        <input matInput (click)="openKeyboard('name', 'text', user.name)" formControlName="name">
+                                        <input matInput (click)="openKeyboard('name', 'text', user.name)"
+                                            formControlName="name">
                                         <div *ngIf="name.invalid && formDir.submitted">
                                             <div *ngIf="name.errors?.['minlength'] || name.errors?.['maxlength']">
                                                 <span class="labelError">O nome deve ter entre 3 e 50 caracteres</span>
@@ -42,16 +41,21 @@
                                             <td>
                                                 <mat-form-field class="example-full-width" appearance="fill">
                                                     <mat-label>Telefone</mat-label>
-                                                    <input matInput (click)="openKeyboard('phone', 'number', user.phone, 9)"
-                                                        #telefone placeholder="Ex. 2715443890" maxlength="9" formControlName="phone">
-                                                        <div *ngIf="phone.invalid && formDir.submitted">
-                                                            <div *ngIf="phone.errors?.['minlength'] || phone.errors?.['maxlength']">
-                                                                <span class="labelError">O nº de telefone deve ter 9 dígitos</span>
-                                                            </div>
-                                                            <div *ngIf="phone.errors?.['pattern']">
-                                                                <span class="labelError">O nº telefone só deve conter números</span>
-                                                            </div>
+                                                    <input matInput
+                                                        (click)="openKeyboard('phone', 'number', user.phone, 9)"
+                                                        #telefone placeholder="Ex. 2715443890" maxlength="9"
+                                                        formControlName="phone">
+                                                    <div *ngIf="phone.invalid && formDir.submitted">
+                                                        <div
+                                                            *ngIf="phone.errors?.['minlength'] || phone.errors?.['maxlength']">
+                                                            <span class="labelError">O nº de telefone deve ter 9
+                                                                dígitos</span>
                                                         </div>
+                                                        <div *ngIf="phone.errors?.['pattern']">
+                                                            <span class="labelError">O nº telefone só deve conter
+                                                                números</span>
+                                                        </div>
+                                                    </div>
                                                     <mat-hint align="end">{{telefone.value.length}} / 9</mat-hint>
                                                 </mat-form-field>
                                             </td>
@@ -60,15 +64,17 @@
                                                 <mat-form-field class="example-full-width" appearance="fill">
                                                     <mat-label>NIF</mat-label>
                                                     <input matInput (click)="openKeyboard('nif', 'number', user.nif, 9)"
-                                                        #nifData placeholder="Ex. 2715443890" maxlength="9" formControlName="nif">
-                                                        <div *ngIf="nif.invalid && formDir.submitted">
-                                                            <div *ngIf="nif.errors?.['minlength'] || nif.errors?.['maxlength']">
-                                                                <span class="labelError">O NIF deve ter 9 dígitos</span>
-                                                            </div>
-                                                            <div *ngIf="nif.errors?.['pattern']">
-                                                                <span class="labelError">O NIF só deve conter números</span>
-                                                            </div>
+                                                        #nifData placeholder="Ex. 2715443890" maxlength="9"
+                                                        formControlName="nif">
+                                                    <div *ngIf="nif.invalid && formDir.submitted">
+                                                        <div
+                                                            *ngIf="nif.errors?.['minlength'] || nif.errors?.['maxlength']">
+                                                            <span class="labelError">O NIF deve ter 9 dígitos</span>
                                                         </div>
+                                                        <div *ngIf="nif.errors?.['pattern']">
+                                                            <span class="labelError">O NIF só deve conter números</span>
+                                                        </div>
+                                                    </div>
                                                     <mat-hint align="end">{{nifData.value.length}} / 9</mat-hint>
                                                 </mat-form-field>
                                             </td>
@@ -79,26 +85,28 @@
                                         <mat-label>Morada</mat-label>
                                         <textarea matInput (click)="openKeyboard('description', 'text', user.address)"
                                             placeholder="Ex. Rua da Liberdade" formControlName="address"></textarea>
-                                            <div *ngIf="address.invalid && formDir.submitted">
-                                                <div *ngIf="address.errors?.['minlength']">
-                                                    <span class="labelError">A morada deve ter pelo menos 5 caracteres</span>
-                                                </div>
+                                        <div *ngIf="address.invalid && formDir.submitted">
+                                            <div *ngIf="address.errors?.['minlength']">
+                                                <span class="labelError">A morada deve ter pelo menos 5
+                                                    caracteres</span>
                                             </div>
+                                        </div>
                                     </mat-form-field>
 
                                     <mat-form-field class="example-full-width" appearance="fill">
                                         <mat-label>Password</mat-label>
                                         <input type="password" matInput
-                                            (click)="openKeyboard('password', 'number', user.password, 9)"
-                                            #passwordData placeholder="Ex. 2715443890" maxlength="4" formControlName="password">
-                                            <div *ngIf="password.invalid && formDir.submitted">
-                                                <div *ngIf="password.errors?.['minlength'] || password.errors?.['maxlength']">
-                                                    <span class="labelError">A password deve ter 4 dígitos</span>
-                                                </div>
-                                                <div *ngIf="password.errors?.['pattern']">
-                                                    <span class="labelError">A password só pode conter números</span>
-                                                </div>
+                                            (click)="openKeyboard('password', 'number', user.password, 9)" #passwordData
+                                            placeholder="Ex. 2715443890" maxlength="4" formControlName="password">
+                                        <div *ngIf="password.invalid && formDir.submitted">
+                                            <div
+                                                *ngIf="password.errors?.['minlength'] || password.errors?.['maxlength']">
+                                                <span class="labelError">A password deve ter 4 dígitos</span>
                                             </div>
+                                            <div *ngIf="password.errors?.['pattern']">
+                                                <span class="labelError">A password só pode conter números</span>
+                                            </div>
+                                        </div>
                                         <mat-hint align="end">{{passwordData.value.length}} / 4</mat-hint>
                                     </mat-form-field>
                                 </td>
@@ -113,16 +121,18 @@
                                     <br>
                                     <mat-form-field class="example-full-width" appearance="fill">
                                         <mat-label>Função</mat-label>
-                                        <mat-select [(value)]="levelSelected" (selectionChange)="levelSelect()" formControlName="function">
+                                        <mat-select [(value)]="levelSelected" (selectionChange)="levelSelect()"
+                                            formControlName="function">
                                             <mat-option value="Admin">Administrador</mat-option>
                                             <mat-option value="Gerente">Gerente</mat-option>
                                             <mat-option value="Empregado">Empregado</mat-option>
                                         </mat-select>
                                     </mat-form-field>
-            
+
                                     <mat-form-field class="example-full-width" appearance="fill">
                                         <mat-label>Estado</mat-label>
-                                        <mat-select [(value)]="stateSelected" (selectionChange)="stateSelect()" formControlName="active">
+                                        <mat-select [(value)]="stateSelected" (selectionChange)="stateSelect()"
+                                            formControlName="active">
                                             <mat-option [value]=true>Ativo</mat-option>
                                             <mat-option [value]=false>Inativo</mat-option>
                                         </mat-select>
@@ -139,20 +149,24 @@
                 <table class="dataTable">
                     <tr>
                         <td>
-                            <span style="font-size: 15px;"><i>Os campos marcados com * são de preenchimento obrigatório.</i></span>
+                            <span style="font-size: 15px;"><i>Os campos marcados com * são de preenchimento
+                                    obrigatório.</i></span>
                         </td>
                         <td>
                             <mat-dialog-actions align="end">
-                                <button mat-stroked-button class="dialog-btn" [mat-dialog-close]="false">Cancelar</button>
-            
+                                <button mat-stroked-button class="dialog-btn"
+                                    [mat-dialog-close]="false">Cancelar</button>
+
                                 <ng-container *ngIf="update; else elseBlockButton">
-                                    <button type="submit" mat-stroked-button color="warn" class="dialog-btn" cdkFocusInitial>Atualizar</button>
+                                    <button type="submit" mat-stroked-button color="warn" class="dialog-btn"
+                                        cdkFocusInitial>Atualizar</button>
                                 </ng-container>
-            
+
                                 <ng-template #elseBlockButton>
-                                    <button type="submit" mat-stroked-button color="warn" class="dialog-btn"cdkFocusInitial>Registar</button>
+                                    <button type="submit" mat-stroked-button color="warn" class="dialog-btn"
+                                        cdkFocusInitial>Registar</button>
                                 </ng-template>
-            
+
                             </mat-dialog-actions>
                         </td>
                     </tr>

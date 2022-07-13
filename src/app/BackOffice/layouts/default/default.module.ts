@@ -35,6 +35,8 @@ import { InputMaskModule } from '@ngneat/input-mask';
 import { MatGridListModule } from '@angular/material/grid-list';
 import {MatCardModule} from '@angular/material/card';
 
+import {MatCheckboxModule} from '@angular/material/checkbox';
+
 
 @NgModule({
   declarations: [
@@ -75,7 +77,8 @@ import {MatCardModule} from '@angular/material/card';
     ReactiveFormsModule,
     InputMaskModule.forRoot({ inputSelector: 'input', isAsync: true }),
     MatGridListModule,
-    MatCardModule
+    MatCardModule,
+    MatCheckboxModule
   ],
   providers: [CookieService, OnlineOfflineService, PaymentMethodsService],
 })

@@ -27,7 +27,7 @@ const routes: Routes = [
       { path: "", redirectTo: "dashboard", pathMatch: "full" },
       { path: "dashboard", component: DashboardComponent }, 
       { path: "clientes", component: ClientesComponent }, 
-      { path: "empregados", component: UsersComponent },
+      { path: "users", component: UsersComponent },
       { path: "artigos", component: ArtigosComponent },
       { path: "categorias", component: CategoriesComponent },
       { path: "mesas", component: MesasComponent },

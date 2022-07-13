@@ -1,7 +1,18 @@
-<h2 mat-dialog-title>Deseja eliminar o registo selecionado?</h2>
+<ng-container *ngIf="register.length > 1; else elseBlock">
+    <h2 mat-dialog-title>Deseja eliminar os registos selecionados?</h2>
+</ng-container>
+<ng-template #elseBlock>
+    <h2 mat-dialog-title>Deseja eliminar o registo selecionado?</h2>
+</ng-template>
+
 <mat-dialog-content class="mat-typography">
-    <h3>{{component}} nº{{register.id}} - {{register.name}}</h3>
+    <div class="scroll">
+        <ng-container *ngFor="let data of register">
+            <h3>{{component}} nº{{data.id}} - {{data.name}}</h3>
+        </ng-container>
+    </div>
 </mat-dialog-content>
+
 <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close cdkFocusInitial>Não</button>
     <button mat-button [mat-dialog-close]="register" color="warn">Sim</button>

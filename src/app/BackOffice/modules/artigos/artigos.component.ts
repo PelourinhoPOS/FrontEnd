@@ -1,4 +1,5 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -33,13 +34,14 @@ export class ArtigosComponent implements OnInit {
 
   selectedRowIndex = -1; //save the selected index from the table
 
-  displayedColumns: string[] = ['image', 'name', 'category', 'iva', 'price', 'state']; //declare columns of the table
+  displayedColumns: string[] = ['select', 'image', 'name', 'category', 'iva', 'price', 'state']; //declare columns of the table
   orderBy = 'name'; //save the order by selected
 
   showProgressBar = false;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   dataSource = new MatTableDataSource<Artigo>();
+  selection = new SelectionModel<Artigo>(true, []);
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -54,9 +56,39 @@ export class ArtigosComponent implements OnInit {
     //subscribe to refresh data, when data is changed
     this.subscriptionData = this.artigosService.refreshData.subscribe(() => {
       this.listLocalData();
+      this.selection.clear();
+      this.unselectRow();
       // this.listAPIdata();
       // this.listAllData();
     });
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+    this.selection.select(...this.dataSource.data);
+    this.unselectRow();
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: Artigo): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    if (this.selection.selected.length > 1) {
+      this.unselectRow();
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
 
   //register data in API or local storage
@@ -171,6 +203,8 @@ export class ArtigosComponent implements OnInit {
 
   //function that opens the create client modal
   openCreateModal() {
+    this.unselectRow();
+    this.selection.clear();
     this.categorieServive.getDataOffline().subscribe(data => {
       if (data.length > 0) {
         this.unselectRow();
@@ -192,38 +226,48 @@ export class ArtigosComponent implements OnInit {
 
   //function that opens the update client modal
   openUpdateModal(data: any) {
-    this.artigosOff.subscribe(dataOff => {
-      if (dataOff.length > 0) {
-        if (data) {
-          const dialogRef = this.dialog.open(CreateArticleModalComponent, {
-            height: '710px',
-            width: '870px',
-            data: { values: data, update: true }
-          });
-          dialogRef.afterClosed().subscribe(artigo => {
-            if (artigo) {
-              this.update(artigo);
-            }
-          });
+    if (data) {
+      this.selection.select(data);
+    }
+    if (this.selection.selected.length == 1) {
+      this.artigosOff.subscribe(dataOff => {
+        if (dataOff.length > 0) {
+          if (data) {
+            const dialogRef = this.dialog.open(CreateArticleModalComponent, {
+              height: '710px',
+              width: '870px',
+              data: { values: data, update: true }
+            });
+            dialogRef.afterClosed().subscribe(artigo => {
+              if (artigo) {
+                this.update(artigo);
+              }
+            });
+          } else {
+            this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
+          }
         } else {
-          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
+          this.toastr.warning('Não existem artigos para editar.', 'Aviso');
         }
+      });
+    } else {
+      if (this.selection.selected.length == 0) {
+        this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
       } else {
-        this.toastr.warning('Não existem artigos para editar.', 'Aviso');
+        this.toastr.warning('Apenas pode selecionar um registo para atualizar!');
       }
-    })
-
+    }
   }
 
   //function that opens the delete client modal
-  openDeleteModal(data: any) {
+  openDeleteModal() {
     this.artigosOff.subscribe(dataOff => {
       if (dataOff.length > 0) {
-        if (data) {
+        if (this.selection.selected.length > 0) {
           const dialogRef = this.dialog.open(DeleteModalComponent, {
-            height: '30%',
+            height: '40%',
             width: '50%',
-            data: { values: data, component: 'Artigo' }
+            data: { values: this.selection.selected, component: 'Artigo' }
           });
           dialogRef.afterClosed().subscribe(artigo => {
             if (artigo) {
@@ -247,8 +291,17 @@ export class ArtigosComponent implements OnInit {
 
   //function to know which line is selected
   onRowClicked(row: any) {
+    if (this.selectedRowIndex != row.id) {
+      this.selection.clear();
+    }
     this.selectedRowIndex = row.id;
     this.dataRow = row;
+    this.selection.toggle(row);
+  }
+
+  onCheckBoxClicked() {
+    this.dataRow = this.selection.selected.length > 0 ? this.selection.selected[0] : null;
+    this.selectedRowIndex = this.dataRow ? this.dataRow.id : null;
   }
 
   //function event to change the order by
@@ -261,6 +314,45 @@ export class ArtigosComponent implements OnInit {
   unselectRow() {
     this.selectedRowIndex = -1;
     this.dataRow = null;
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  value: any;
+  dialogRef: any;
+
+  @ViewChild('input') input: ElementRef;
+
+  openKeyboard(inputName: string, type: string, data: any, maxLength?: number) {
+    //verify if type is number or text to open the respective keyboard
+    if (type == 'text') { //if text
+      this.dialogRef = this.dialog.open(VirtualKeyboardComponent, {
+        height: '57%',
+        width: '48%',
+        data: [inputName, type, data, maxLength]
+      });
+    } else { //else is number
+      this.dialogRef = this.dialog.open(VirtualKeyboardComponent, {
+        height: '72%',
+        width: '48%',
+        data: [inputName, type, data, maxLength]
+      });
+    }
+
+    this.dialogRef.afterClosed().subscribe((result: any) => {
+      //switch to know which input is changed
+      switch (result[1][0]) {
+        case 'search':
+          this.value = result[0];
+      }
+    });
   }
 
   //when component is closed, unsubscribe from the observable to avoid memory leaks
@@ -299,11 +391,11 @@ export class CreateArticleModalComponent implements OnInit {
 
   unitySelected = "peso";
   subUnitySelected = "kg";
-  
+
   formProducts: FormGroup;
-  
+
   ngOnInit(): void {
-    
+
     //get the data from client and set it in the form
     this.getCategories();
 
@@ -331,7 +423,7 @@ export class CreateArticleModalComponent implements OnInit {
       this.artigo = this.data.values; //set the data in the form
       this.fileName = 'Alterar imagem'; //set the file name
       this.url = this.artigo.image; //set the photo in the form
-      
+
       //set the data in the formcontrols
       this.id.setValue(this.artigo.id);
       this.name.setValue(this.artigo.name);
@@ -341,7 +433,6 @@ export class CreateArticleModalComponent implements OnInit {
       this.iva.setValue(this.artigo.iva.toString());
       this.price.setValue(this.artigo.price);
       this.id_category.setValue(this.artigo.id_category);
-      this.pvp1.setValue(this.artigo.pvp1);
       this.pvp2.setValue(this.artigo.pvp2);
       this.pvp3.setValue(this.artigo.pvp3);
       this.pvp4.setValue(this.artigo.pvp4);
@@ -362,8 +453,8 @@ export class CreateArticleModalComponent implements OnInit {
   }
 
   //get value of id in form
-  get id () { 
-    return this.formProducts.get('id'); 
+  get id() {
+    return this.formProducts.get('id');
   }
 
   //get value of name in form
@@ -371,7 +462,7 @@ export class CreateArticleModalComponent implements OnInit {
     return this.formProducts.get('name');
   }
 
-  get image(){
+  get image() {
     return this.formProducts.get('image');
   }
 
@@ -403,11 +494,6 @@ export class CreateArticleModalComponent implements OnInit {
   //get value of sub_unity in form
   get sub_unity() {
     return this.formProducts.get('sub_unity');
-  }
-
-  //get value of pvp1 in form
-  get pvp1() {
-    return this.formProducts.get('pvp1');
   }
 
   //get value of pvp2 in form
@@ -485,7 +571,7 @@ export class CreateArticleModalComponent implements OnInit {
         this.url = event.target.result;
         this.image.setValue(this.url);
       }
-      this.fileName = (file.name).substring(0,15) + '(...)' + file.type.split('/')[1];
+      this.fileName = (file.name).substring(0, 15) + '(...)' + file.type.split('/')[1];
       // const formData = new FormData();
       // formData.append("thumbnail", file);
       // console.log(file);
@@ -498,8 +584,8 @@ export class CreateArticleModalComponent implements OnInit {
   submitForm() {
     this.artigo = this.formProducts.value; //get the data from the form
     this.artigo.iva = parseFloat(this.iva.value); //set the iva in the form
-    
-    if (this.artigo === this.compareData){
+
+    if (this.artigo === this.compareData) {
       this.toastr.info('Não foram efetuadas alterações.', 'Aviso'); //show error message
     } else {
       if (this.formProducts.valid) {
@@ -541,9 +627,6 @@ export class CreateArticleModalComponent implements OnInit {
           break;
         case 'price':
           this.price.setValue(result[0]);
-          break;
-        case 'pvp1':
-          this.pvp1.setValue(result[0]);
           break;
         case 'pvp2':
           this.pvp2.setValue(result[0]);

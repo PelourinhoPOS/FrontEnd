@@ -101,7 +101,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
         data.id = 1;
       }
 
-      this.validateData(data, 'register');
+      return this.validateData(data, 'register');
 
     } catch (error) {
       this.toastr.error('Erro ao guardar ' + this.dataName + ' localmente', 'Aviso');
@@ -125,14 +125,15 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
 
                   await this.table.add(data);
                   resolve(data);
-                  this.refreshData.next();
 
                 } else if (method === 'update') {
 
                   await this.table.update(data.id, data);
                   resolve(data);
-                  this.refreshData.next();
                 }
+
+                
+                this.refreshData.next();
 
               } else {
                 reject(this.toastr.warning('Já existe um cliente registado com estes dados', 'Aviso'));
@@ -246,7 +247,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
   //update data in LocalStorage
   async updateDataOffline(data: T) {
     try {
-      this.validateData(data, 'update');
+      return this.validateData(data, 'update');
     } catch (error) {
       this.toastr.error('Erro ao atualizar ' + this.dataName + ' localmente', 'Aviso');
       //console.log('erro ao atualizar data offline ' + error);
@@ -268,8 +269,9 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
               reject(this.toastr.warning('Não pode eliminar o seu próprio utilizador', 'Aviso'));
             } else {
               await this.table.delete(data.id);
-              this.refreshData.next();
               resolve(data);
+
+              this.refreshData.next();
             }
           } catch (error) {
             reject(this.toastr.error('Erro ao eliminar empregado localmente', 'Aviso'));

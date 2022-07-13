@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy, Inject, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy, Inject, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable, Subscription, combineLatest, map, of } from 'rxjs';
 import { Cliente } from '../../models/cliente';
 import { OnlineOfflineService } from '../../services/online-offline.service';
@@ -9,8 +9,11 @@ import { ToastrService } from 'ngx-toastr';
 import { DeleteModalComponent } from '../../shared/components/delete-modal/delete-modal.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { createMask } from '@ngneat/input-mask';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatSort, Sort } from '@angular/material/sort';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-clientes',
@@ -24,7 +27,7 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   public header: any
   public sticky: any;
 
-  constructor(public dialog: MatDialog, private clientesService: ClientesService, private toastr: ToastrService) { }
+  constructor(private _liveAnnouncer: LiveAnnouncer, public dialog: MatDialog, private clientesService: ClientesService, private toastr: ToastrService) { }
 
   //public cliente: Cliente = new Cliente();
   public clientes!: Observable<Cliente[]>; //save the clients returned from the API
@@ -34,22 +37,22 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   public subscriptionData!: Subscription; //subscription to refresh data
   public dataRow: any; //save data os selected row of table
 
+  public dialogRef: any; //save the dialog reference
+
   selectedRowIndex = -1; //save the selected index from the table
 
-  displayedColumns: string[] = ['name', 'nif', 'phone', 'county', 'state']; //declare columns of the table
+  displayedColumns: string[] = ['select', 'name', 'nif', 'phone', 'county', 'state']; //declare columns of the table
   orderBy = 'name'; //save the order by selected
 
   showProgressBar = false;
 
-  teste = false;
-
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   dataSource = new MatTableDataSource<Cliente>();
+  selection = new SelectionModel<Cliente>(true, []);
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
-
 
   ngOnInit(): void {
     //list data on init
@@ -63,14 +66,47 @@ export class ClientesComponent implements OnInit, AfterViewInit {
     this.subscriptionData = this.clientesService.refreshData.subscribe(() => {
       // this.listAPIdata();
       this.listLocalData();
+      this.selection.clear();
+      this.unselectRow();
       // this.listAllData();
     });
   }
 
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+    this.selection.select(...this.dataSource.data);
+    this.unselectRow();
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: Cliente): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    if (this.selection.selected.length > 1) {
+      this.unselectRow();
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
+
   //register data in API or local storage
   async register(cliente: Cliente) {
-    await this.clientesService.register(cliente).then(() => {
-      this.toastr.success('Cliente registado com sucesso.');
+    await this.clientesService.register(cliente).then((cliente) => {
+      if (cliente) {
+        this.toastr.success('Cliente registado com sucesso.');
+      }
     }).catch((err) => {
       err
     });
@@ -78,16 +114,20 @@ export class ClientesComponent implements OnInit, AfterViewInit {
 
   //update data in API or local storage
   async update(cliente: Cliente) {
-    await this.clientesService.update(cliente).then(() => {
-      this.toastr.success('Cliente atualizado com sucesso.');
+    await this.clientesService.update(cliente).then((cliente) => {
+      if (cliente) {
+        this.toastr.success('Cliente atualizado com sucesso.');
+      }
     }).catch((err) => {
       err
     });
   }
 
   async delete(cliente: Cliente) {
-    await this.clientesService.delete(cliente).then(() => {
-      this.toastr.success('Cliente eliminado com sucesso.');
+    await this.clientesService.delete(cliente).then((cliente) => {
+      if (cliente) {
+        this.toastr.success('Cliente eliminado com sucesso.');
+      }
     }).catch((err) => {
       err
     });
@@ -168,9 +208,11 @@ export class ClientesComponent implements OnInit, AfterViewInit {
     this.clientesService.sendDatatoAPI();
   }
 
+
   //function that opens the create client modal
   openCreateModal() {
     this.unselectRow();
+    this.selection.clear();
     const dialogRef = this.dialog.open(CreateClientModalComponent, {
       height: '690px',
       width: '790px',
@@ -184,41 +226,54 @@ export class ClientesComponent implements OnInit, AfterViewInit {
 
   //function that opens the update client modal
   openUpdateModal(data: any) {
-    this.clientesOff.subscribe(dataOff => {
-      if (dataOff.length > 0) {
-        if (data) {
-          const dialogRef = this.dialog.open(CreateClientModalComponent, {
-            height: '690px',
-            width: '770px',
-            data: { values: data, update: true }
-          });
-          dialogRef.afterClosed().subscribe(cliente => {
-            if (cliente) {
-              this.update(cliente);
-            }
-          });
+    if (data) {
+      this.selection.select(data);
+    }
+    if (this.selection.selected.length == 1) {
+      this.clientesOff.subscribe(dataOff => {
+        if (dataOff.length > 0) {
+          if (data) {
+            const dialogRef = this.dialog.open(CreateClientModalComponent, {
+              height: '690px',
+              width: '770px',
+              data: { values: data, update: true }
+            });
+            dialogRef.afterClosed().subscribe(cliente => {
+              if (cliente) {
+                this.update(cliente);
+              }
+            });
+          } else {
+            this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
+          }
         } else {
-          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
+          this.toastr.warning('Não existem clientes para editar', 'Aviso');
         }
+      });
+    } else {
+      if (this.selection.selected.length == 0) {
+        this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
       } else {
-        this.toastr.warning('Não existem clientes para editar', 'Aviso');
+        this.toastr.warning('Apenas pode selecionar um registo para atualizar!');
       }
-    });
+    }
   }
 
   //function that opens the delete client modal
-  openDeleteModal(data: any) {
+  openDeleteModal() {
     this.clientesOff.subscribe(dataOff => {
       if (dataOff.length > 0) {
-        if (data) {
+        if (this.selection.selected.length > 0) {
           const dialogRef = this.dialog.open(DeleteModalComponent, {
-            height: '30%',
+            height: '40%',
             width: '50%',
-            data: { values: data, component: 'Utilizador' }
+            data: { values: this.selection.selected, component: 'Cliente' }
           });
           dialogRef.afterClosed().subscribe(cliente => {
             if (cliente) {
-              this.delete(cliente);
+              cliente.forEach(data => {
+                this.delete(data);
+              });
             }
           });
         } else {
@@ -230,15 +285,34 @@ export class ClientesComponent implements OnInit, AfterViewInit {
     })
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
   //function to know which line is selected
   onRowClicked(row: any) {
+    if (this.selectedRowIndex != row.id) {
+      this.selection.clear();
+    }
     this.selectedRowIndex = row.id;
     this.dataRow = row;
+    this.selection.toggle(row);
+  }
+
+  onCheckBoxClicked() {
+    this.dataRow = this.selection.selected.length > 0 ? this.selection.selected[0] : null;
+    this.selectedRowIndex = this.dataRow ? this.dataRow.id : null;
   }
 
   //function event to change the order by
   onOptionsSelected() {
     this.listLocalData();
+    //this.listAllData();
   }
 
   //function to unselect the selected row
@@ -253,6 +327,35 @@ export class ClientesComponent implements OnInit, AfterViewInit {
     paginator._intl.nextPageLabel = 'Próxima Página';	//next page label
     paginator._intl.previousPageLabel = 'Página Anterior';  //previous page label
     paginator._intl.itemsPerPageLabel = 'Itens por página'; //items per page label
+  }
+
+  value: any;
+
+  @ViewChild('input') input: ElementRef;
+
+  openKeyboard(inputName: string, type: string, data: any, maxLength?: number) {
+    //verify if type is number or text to open the respective keyboard
+    if (type == 'text') { //if text
+      this.dialogRef = this.dialog.open(VirtualKeyboardComponent, {
+        height: '57%',
+        width: '48%',
+        data: [inputName, type, data, maxLength]
+      });
+    } else { //else is number
+      this.dialogRef = this.dialog.open(VirtualKeyboardComponent, {
+        height: '72%',
+        width: '48%',
+        data: [inputName, type, data, maxLength]
+      });
+    }
+
+    this.dialogRef.afterClosed().subscribe((result: any) => {
+      //switch to know which input is changed
+      switch (result[1][0]) {
+        case 'search':
+          this.value = result[0];
+      }
+    });
   }
 
   //when component is closed, unsubscribe from the observable to avoid memory leaks
@@ -294,6 +397,7 @@ export class CreateClientModalComponent implements OnInit {
       parish: new FormControl('', [Validators.required, Validators.minLength(3)]),
       county: new FormControl('', [Validators.required, Validators.minLength(3)]),
     })
+    
     //get the data from client and set it in the form
     if (this.data) {
       this.update = true;
@@ -312,7 +416,7 @@ export class CreateClientModalComponent implements OnInit {
     }
   }
 
-  get id(){
+  get id() {
     return this.clientsForm.get('id');
   }
 
@@ -350,9 +454,9 @@ export class CreateClientModalComponent implements OnInit {
     this.cliente.nif = parseInt(this.nif.value); //convert the nif to integer
 
     if (this.update) {
-      this.cliente.lastUpdate = new Date().toJSON().slice(0,10); //set the last update
+      this.cliente.lastUpdate = new Date().toJSON().slice(0, 10); //set the last update
     } else {
-      this.cliente.registerDate = new Date().toJSON().slice(0,10); //set the register date
+      this.cliente.registerDate = new Date().toJSON().slice(0, 10); //set the register date
     }
 
     if (this.clientsForm.valid) {

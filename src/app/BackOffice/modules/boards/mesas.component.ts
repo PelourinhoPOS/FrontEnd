@@ -89,8 +89,10 @@ export class MesasComponent implements OnInit, AfterViewInit {
 
   //register data in API or local storage
   async register(zone: Zone) {
-    await this.zonesService.register(zone).then(() => {
-      this.toastr.success('Zona registada com sucesso.');
+    await this.zonesService.register(zone).then((zone) => {
+      if (zone) {
+        this.toastr.success('Zona registada com sucesso.');
+      }
     }).catch((err) => {
       err
     });
@@ -98,8 +100,10 @@ export class MesasComponent implements OnInit, AfterViewInit {
 
   //update data in API or local storage
   async update(zone: Zone) {
-    await this.zonesService.update(zone).then(() => {
-      this.toastr.success('Zona atualizada com sucesso.');
+    await this.zonesService.update(zone).then((zone) => {
+      if (zone) {
+        this.toastr.success('Zona atualizada com sucesso.');
+      }
     }).catch((err) => {
       err
     });
@@ -107,8 +111,10 @@ export class MesasComponent implements OnInit, AfterViewInit {
 
   //function to delete a employee
   async delete(zone: Zone) {
-    await this.zonesService.delete(zone).then(() => {
-      this.toastr.success('Zona eliminada com sucesso.');
+    await this.zonesService.delete(zone).then((zone) => {
+      if (zone) {
+        this.toastr.success('Zona eliminada com sucesso.');
+      }
     }).catch((err) => {
       err
     });
@@ -214,7 +220,7 @@ export class MesasComponent implements OnInit, AfterViewInit {
       const dialogRef = this.dialog.open(DeleteModalComponent, {
         height: '30%',
         width: '50%',
-        data: { values: data[0] }
+        data: { values: data[0], component: 'Zona'  }
       });
       dialogRef.afterClosed().subscribe(data => {
         // console.log(data)
@@ -395,11 +401,11 @@ export class CreateBoardModalComponent implements OnInit {
       this.id.setValue(this.zone.id);
       this.name.setValue(this.zone.name);
       this.image.setValue(this.zone.image);
-      
+
     }
   }
 
-  get id(){
+  get id() {
     return this.formZones.get('id');
   }
 
@@ -430,7 +436,7 @@ export class CreateBoardModalComponent implements OnInit {
         this.url = event.target.result;
         this.image.setValue(this.url);
       }
-      this.fileName = (file.name).substring(0,15) + '(...)' + file.type.split('/')[1];
+      this.fileName = (file.name).substring(0, 15) + '(...)' + file.type.split('/')[1];
       // const formData = new FormData();
       // formData.append("thumbnail", file);
       // console.log(file);

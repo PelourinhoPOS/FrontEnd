@@ -12,10 +12,8 @@
             <td class="rowStyle">
                 <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
                 <input type="file" class="file" style="display: none;" (change)="onFileSelected($event)" #fileUpload>
-                <div class="file-upload" (click)="fileUpload.click()">
-                    <button mat-mini-fab color="primary" class="upload-btn">
-                        <mat-icon>attach_file</mat-icon>
-                    </button>
+                <div class="file-upload" (click)="fileUpload.click()" class="upload-div">
+                    <mat-icon>attach_file</mat-icon>
                     <p class="input-text"> {{fileName || "Sem imagem"}} </p>
                 </div>
             </td>

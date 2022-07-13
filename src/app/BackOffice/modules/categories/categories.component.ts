@@ -1,3 +1,4 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -37,7 +38,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
 
   selectedRowIndex = -1; //save the selected index from the table
 
-  displayedColumnsCategory: string[] = ['image', 'name', 'categorie', 'state']; //declare columns of the categories table
+  displayedColumnsCategory: string[] = ['select', 'image', 'name', 'categorie', 'state']; //declare columns of the categories table
   orderBy = 'name'; //save the order by selected
 
   public tabIndex = 0 //save the index of the tab
@@ -47,12 +48,11 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
   @ViewChild('paginatorCategories', { static: true }) paginator: MatPaginator;
   @ViewChild('paginatorSubCategories', { static: true }) paginator1: MatPaginator;
 
-  dataSourceCategories = new MatTableDataSource<Categories>();
-  dataSourceSubCategories = new MatTableDataSource<SubCategories>();
+  dataSource = new MatTableDataSource<Categories>();
+  selection = new SelectionModel<Categories>(true, []);
 
   ngAfterViewInit() {
-    this.dataSourceCategories.paginator = this.paginator;
-    this.dataSourceSubCategories.paginator = this.paginator1;
+    this.dataSource.paginator = this.paginator;
   }
 
   ngOnInit(): void {
@@ -65,15 +65,47 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
     //subscribe to refresh data, when data is changed
     this.subscriptionData = this.categoriesService.refreshData.subscribe(() => {
       this.listLocalData();
+      this.selection.clear();
+      this.unselectRow();
       // this.listAPIdata();
       // this.listAllData();
     });
   }
 
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+    this.selection.select(...this.dataSource.data);
+    this.unselectRow();
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: Categories): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    if (this.selection.selected.length > 1) {
+      this.unselectRow();
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
+
   //register data in API or local storage
   async register(categorie: Categories) {
-    await this.categoriesService.register(categorie).then(() => {
-      this.toastr.success('Categoria registada com sucesso');
+    await this.categoriesService.register(categorie).then((category) => {
+      if (category) {
+        this.toastr.success('Categoria registada com sucesso');
+      }
     }).catch((err) => {
       err
     });
@@ -81,16 +113,21 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
 
   //update data in API or local storage
   async update(categorie: Categories) {
-    await this.categoriesService.update(categorie).then(() => {
-      this.toastr.success('Categoria atualizada com sucesso');
+    await this.categoriesService.update(categorie).then((category) => {
+      console.log(category);
+      if (category) {
+        this.toastr.success('Categoria atualizada com sucesso');
+      }
     }).catch((err) => {
       err
     });
   }
 
   async delete(categorie: Categories) {
-    await this.categoriesService.delete(categorie).then(() => {
-      this.toastr.success('Categoria eliminada com sucesso');
+    await this.categoriesService.delete(categorie).then((category) => {
+      if (category) {
+        this.toastr.success('Categoria eliminada com sucesso');
+      }
     }).catch((err) => {
       err
     });
@@ -123,10 +160,10 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
             this.getCategoryName(data[i].id, data[i].id_category);
           }
           this.categoriesOff = of(data);
-          this.dataSourceCategories.data = data
+          this.dataSource.data = data
         });
         break;
-        
+
       case 'id':
         this.categoriesService.getDataOffline().pipe(
           map(arr => arr.sort((a, b) => a.id - b.id))
@@ -135,7 +172,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
             this.getCategoryName(data[i].id, data[i].id_category);
           }
           this.categoriesOff = of(data);
-          this.dataSourceCategories.data = data
+          this.dataSource.data = data
         });
         break;
     }
@@ -174,9 +211,8 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
 
   //function that opens the create client modal
   openCreateModal() {
-
     this.unselectRow();
-
+    this.selection.clear();
     const dialogRef = this.dialog.open(CreateCategorieModalComponent, {
       height: '600px',
       width: '770px',
@@ -184,49 +220,60 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(category => {
       //console.log(category)
       if (category) {
-        this.categoriesService.register(category);
+        this.register(category);
       }
     });
   }
 
   //function that opens the update client modal
   openUpdateModal(data: any) {
-    this.categoriesOff.subscribe(dataOff => {
-      if (dataOff.length > 0) {
-        if (data) {
-          const dialogRef = this.dialog.open(CreateCategorieModalComponent, {
-            height: '600px',
-            width: '770px',
-            data: { values: data, update: true }
-          });
-          dialogRef.afterClosed().subscribe(category => {
-            // console.log(category)
-            if (category) {
-              this.categoriesService.update(category);
-            }
-          });
+    if (data) {
+      this.selection.select(data);
+    }
+    if (this.selection.selected.length == 1) {
+      this.categoriesOff.subscribe(dataOff => {
+        if (dataOff.length > 0) {
+          if (data) {
+            const dialogRef = this.dialog.open(CreateCategorieModalComponent, {
+              height: '600px',
+              width: '770px',
+              data: { values: data, update: true }
+            });
+            dialogRef.afterClosed().subscribe(category => {
+              // console.log(category)
+              if (category) {
+                this.update(category);
+              }
+            });
+          } else {
+            this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
+          }
         } else {
-          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
+          this.toastr.warning('Não existem categorias para editar.', 'Aviso');
         }
+      });
+    } else {
+      if (this.selection.selected.length == 0) {
+        this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
       } else {
-        this.toastr.warning('Não existem categorias para editar.', 'Aviso');
+        this.toastr.warning('Apenas pode selecionar um registo para atualizar!');
       }
-    })
+    }
   }
 
   //function that opens the delete client modal
-  openDeleteModal(data: any) {
+  openDeleteModal() {
     this.categoriesOff.subscribe(dataOff => {
       if (dataOff.length > 0) {
-        if (data) {
+        if (this.selection.selected.length > 0) {
           const dialogRef = this.dialog.open(DeleteModalComponent, {
-            height: '30%',
+            height: '40%',
             width: '50%',
-            data: { values: data }
+            data: { values: this.selection.selected, component: 'Categoria' }
           });
           dialogRef.afterClosed().subscribe(data => {
             if (data) {
-              this.categoriesService.delete(data);
+              this.delete(data);
             }
           });
         } else {
@@ -240,8 +287,17 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
 
   //function to know which line is selected
   onRowClicked(row: any) {
+    if (this.selectedRowIndex != row.id) {
+      this.selection.clear();
+    }
     this.selectedRowIndex = row.id;
     this.dataRow = row;
+    this.selection.toggle(row);
+  }
+
+  onCheckBoxClicked() {
+    this.dataRow = this.selection.selected.length > 0 ? this.selection.selected[0] : null;
+    this.selectedRowIndex = this.dataRow ? this.dataRow.id : null;
   }
 
   //function to unselect the selected row
@@ -291,7 +347,7 @@ export class CreateCategorieModalComponent implements OnInit {
   categoriesForm: FormGroup;
 
   ngOnInit(): void {
-    
+
     this.getCategories();
     this.subcategorySelected = 0;
 
@@ -299,13 +355,14 @@ export class CreateCategorieModalComponent implements OnInit {
       id: new FormControl(''),
       name: new FormControl('', [Validators.required, Validators.minLength(3)]),
       id_category: new FormControl(this.subcategorySelected, [Validators.required]),
-      image : new FormControl(''),
+      image: new FormControl(''),
     });
 
     this.image.setValue(this.url);
-    
+
     //get the data from client and set it in the form
     if (this.data) {
+      this.update = true;
       this.categorie = this.data.values; //set the data in the form
       this.fileName = 'Alterar imagem'; //set the file name
       this.url = this.categorie.image; //set the photo in the form
@@ -328,15 +385,15 @@ export class CreateCategorieModalComponent implements OnInit {
     return this.categoriesForm.get('id');
   }
 
-  get name(){
+  get name() {
     return this.categoriesForm.get('name');
   }
 
-  get id_category(){
+  get id_category() {
     return this.categoriesForm.get('id_category');
   }
 
-  get image(){
+  get image() {
     return this.categoriesForm.get('image');
   }
 
@@ -396,7 +453,7 @@ export class CreateCategorieModalComponent implements OnInit {
         this.url = event.target.result;
         this.image.setValue(this.url);
       }
-      this.fileName = (file.name).substring(0,15) + '(...)' + file.type.split('/')[1];
+      this.fileName = (file.name).substring(0, 15) + '(...)' + file.type.split('/')[1];
       // const formData = new FormData();
       // formData.append("thumbnail", file);
       // console.log(file);

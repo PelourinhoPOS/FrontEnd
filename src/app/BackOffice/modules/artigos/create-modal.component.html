@@ -12,10 +12,8 @@
             <td>
                 <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
                 <input type="file" class="file" style="display: none;" (change)="onFileSelected($event)" #fileUpload>
-                <div class="file-upload" (click)="fileUpload.click()">
-                    <button mat-mini-fab color="primary" class="upload-btn">
-                        <mat-icon>attach_file</mat-icon>
-                    </button>
+                <div class="file-upload" (click)="fileUpload.click()" class="upload-div">
+                    <mat-icon>attach_file</mat-icon>
                     <p class="input-text"> {{fileName || "Sem imagem"}} </p>
                 </div>
             </td>
@@ -82,8 +80,9 @@
                             <tr>
                                 <td>
                                     <br>
+
                                     <mat-form-field class="example-full-width" appearance="fill">
-                                        <mat-label>Preço</mat-label>
+                                        <mat-label>PVP1</mat-label>
                                         <input matInput type="number"
                                             (click)="openKeyboard('price', 'number', artigo.price, 9)"
                                             placeholder="Ex. 1.90" formControlName="price">
@@ -93,17 +92,17 @@
                                         <tr>
                                             <td>
                                                 <mat-form-field class="example-full-width" appearance="fill">
-                                                    <mat-label>PVP 1</mat-label>
+                                                    <mat-label>PVP 2</mat-label>
                                                     <input matInput type="number"
-                                                        (click)="openKeyboard('pvp1', 'number', artigo.pvp1, 9)"
+                                                        (click)="openKeyboard('pvp2', 'number', artigo.pvp2, 9)"
                                                         placeholder="Ex. 1.90" formControlName="pvp1">
                                                 </mat-form-field>
                                             </td>
                                             <td>
                                                 <mat-form-field class="example-full-width" appearance="fill">
-                                                    <mat-label>PVP 2</mat-label>
+                                                    <mat-label>PVP 3</mat-label>
                                                     <input matInput type="number"
-                                                        (click)="openKeyboard('pvp2', 'number', artigo.pvp2, 9)"
+                                                        (click)="openKeyboard('pvp3', 'number', artigo.pvp3, 9)"
                                                         placeholder="Ex. 1.90" formControlName="pvp2">
                                                 </mat-form-field>
                                             </td>
@@ -111,17 +110,17 @@
                                         <tr>
                                             <td>
                                                 <mat-form-field class="example-full-width" appearance="fill">
-                                                    <mat-label>PVP 3</mat-label>
+                                                    <mat-label>PVP 4</mat-label>
                                                     <input matInput type="number"
-                                                        (click)="openKeyboard('pvp3', 'number', artigo.pvp3, 9)"
+                                                        (click)="openKeyboard('pvp4', 'number', artigo.pvp4, 9)"
                                                         placeholder="Ex. 1.90" formControlName="pvp3">
                                                 </mat-form-field>
                                             </td>
                                             <td>
                                                 <mat-form-field class="example-full-width" appearance="fill">
-                                                    <mat-label>PVP 4</mat-label>
+                                                    <mat-label>PVP 5</mat-label>
                                                     <input matInput type="number"
-                                                        (click)="openKeyboard('pvp4', 'number', artigo.pvp4, 9)"
+                                                        (click)="openKeyboard('pvp5', 'number', artigo.pvp5, 9)"
                                                         placeholder="Ex. 1.90" formControlName="pvp4">
                                                 </mat-form-field>
                                             </td>
@@ -129,17 +128,17 @@
                                         <tr>
                                             <td>
                                                 <mat-form-field class="example-full-width" appearance="fill">
-                                                    <mat-label>PVP 5</mat-label>
+                                                    <mat-label>PVP 6</mat-label>
                                                     <input matInput type="number"
-                                                        (click)="openKeyboard('pvp5', 'number', artigo.pvp5, 9)"
+                                                        (click)="openKeyboard('pvp6', 'number', artigo.pvp6, 9)"
                                                         placeholder="Ex. 1.90" formControlName="pvp5">
                                                 </mat-form-field>
                                             </td>
                                             <td>
                                                 <mat-form-field class="example-full-width" appearance="fill">
-                                                    <mat-label>PVP 6</mat-label>
+                                                    <mat-label>PVP 7</mat-label>
                                                     <input matInput type="number"
-                                                        (click)="openKeyboard('pvp6', 'number', artigo.pvp6, 9)"
+                                                        (click)="openKeyboard('pvp7', 'number', artigo.pvp7, 9)"
                                                         placeholder="Ex. 1.90" formControlName="pvp6">
                                                 </mat-form-field>
                                             </td>

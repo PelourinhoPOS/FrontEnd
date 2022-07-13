@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -10,6 +10,7 @@ import { OnlineOfflineService } from '../../services/online-offline.service';
 import { DeleteModalComponent } from '../../shared/components/delete-modal/delete-modal.component';
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
 import { UsersService } from './users.service';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-empregados',
@@ -33,13 +34,43 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectedRowIndex = -1; //save the selected index from the table
 
-  displayedColumns: string[] = ['avatar', 'name', 'function', 'phone', 'stateActivity', 'state']; //declare columns of the table
+  displayedColumns: string[] = ['select', 'avatar', 'name', 'function', 'phone', 'stateActivity', 'state']; //declare columns of the table
   orderBy = 'name'; //save the order by selected
 
   showProgressBar = false;
 
+  @ViewChild('btnAtualizar') btnAtualizar;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   dataSource = new MatTableDataSource<User>();
+  selection = new SelectionModel<User>(true, []);
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+    this.selection.select(...this.dataSource.data);
+    this.unselectRow();
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: User): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    if (this.selection.selected.length > 1) {
+      this.unselectRow();
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -56,6 +87,8 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     //subscribe to refresh data, when data is changed
     this.subscriptionData = this.usersService.refreshData.subscribe(() => {
       this.listLocalData();
+      this.selection.clear();
+      this.unselectRow();
       // this.listAPIdata();
       // this.listAllData();
     });
@@ -63,7 +96,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //register data in API or local storage
   async register(empregado: User) {
-    await this.usersService.register(empregado).then((user: any) => {
+    await this.usersService.register(empregado).then((user) => {
       if (user) {
         this.toastr.success('Utilizador registado com sucesso!');
       }
@@ -74,8 +107,10 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //update data in API or local storage
   async update(empregado: User) {
-    await this.usersService.update(empregado).then(() => {
-      this.toastr.success('Utilizador atualizado com sucesso!');
+    await this.usersService.update(empregado).then((user) => {
+      if (user) {
+        this.toastr.success('Utilizador atualizado com sucesso!');
+      }
     }).catch((err) => {
       err
     });
@@ -83,8 +118,10 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //function to delete a employee
   async delete(empregado: User) {
-    await this.usersService.delete(empregado).then(() => {
-      this.toastr.success('Utilizador eliminado com sucesso!');
+    await this.usersService.delete(empregado).then((user) => {
+      if (user) {
+        this.toastr.success('Utilizador eliminado com sucesso!');
+      }
     }).catch((err) => {
       err
     });
@@ -169,12 +206,12 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   //function that opens the create client modal
   openCreateModal() {
     this.unselectRow();
+    this.selection.clear();
     const dialogRef = this.dialog.open(CreateEmployeeModalComponent, {
       height: '710px',
       width: '870px',
     });
     dialogRef.afterClosed().subscribe(empregado => {
-      //console.log(empregado)
       if (empregado) {
         this.register(empregado);
       }
@@ -183,42 +220,53 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //function that opens the update client modal
   openUpdateModal(data: any) {
-    this.empregadosOff.subscribe(dataOff => {
-      if (dataOff.length > 0) {
-        if (data) {
-          const dialogRef = this.dialog.open(CreateEmployeeModalComponent, {
-            height: '710px',
-            width: '870px',
-            data: { values: data, update: true }
-          });
-          dialogRef.afterClosed().subscribe(data => {
-            // console.log(data)
-            if (data) {
-              this.update(data);
-            }
-          });
+    if (data) {
+      this.selection.select(data);
+    }
+    if (this.selection.selected.length == 1) {
+      this.empregadosOff.subscribe(dataOff => {
+        if (dataOff.length > 0) {
+          if (data) {
+            const dialogRef = this.dialog.open(CreateEmployeeModalComponent, {
+              height: '710px',
+              width: '870px',
+              data: { values: data, update: true }
+            });
+            dialogRef.afterClosed().subscribe(data => {
+              // console.log(data)
+              if (data) {
+                this.update(data);
+              }
+            });
+          }
         } else {
-          this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
+          this.toastr.warning('Não existem utilizadores para editar.', 'Aviso');
         }
+      });
+    } else {
+      if (this.selection.selected.length == 0) {
+        this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
       } else {
-        this.toastr.warning('Não existem utilizadores para editar.', 'Aviso');
+        this.toastr.warning('Apenas pode selecionar um registo para atualizar!');
       }
-    })
+    }
   }
 
   //function that opens the delete client modal
-  openDeleteModal(data: any) {
+  openDeleteModal() {
     this.empregadosOff.subscribe(dataOff => {
       if (dataOff.length > 0) {
-        if (data) {
+        if (this.selection.selected.length > 0) {
           const dialogRef = this.dialog.open(DeleteModalComponent, {
-            height: '30%',
+            height: '40%',
             width: '50%',
-            data: { values: data, component: 'Utilizador' }
+            data: { values: this.selection.selected, component: 'Utilizador' }
           });
           dialogRef.afterClosed().subscribe(data => {
             if (data) {
-              this.delete(data);
+              data.forEach(user => {
+                this.delete(user);
+              });
             }
             this.dataRow = null;
           });
@@ -233,8 +281,17 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //function to know which line is selected
   onRowClicked(row: any) {
+    if (this.selectedRowIndex != row.id) {
+      this.selection.clear();
+    }
     this.selectedRowIndex = row.id;
     this.dataRow = row;
+    this.selection.toggle(row);
+  }
+
+  onCheckBoxClicked() {
+    this.dataRow = this.selection.selected.length > 0 ? this.selection.selected[0] : null;
+    this.selectedRowIndex = this.dataRow ? this.dataRow.id : null;
   }
 
   //function event to change the order by
@@ -329,7 +386,7 @@ export class CreateEmployeeModalComponent implements OnInit {
     }
   }
 
-  get id(){
+  get id() {
     return this.usersForm.get('id');
   }
 
@@ -409,7 +466,7 @@ export class CreateEmployeeModalComponent implements OnInit {
         this.url = event.target.result;
         this.avatar.setValue(this.url);
       }
-      this.fileName = (file.name).substring(0,20,) + '...';
+      this.fileName = (file.name).substring(0, 20,) + '...';
       // const formData = new FormData();
       // formData.append("thumbnail", file);
       // console.log(file);
