@@ -1,120 +1,217 @@
-<div class="flexI">
-    <button class="top" [routerLink]="['/food&drinks', this.id]">
-        <mat-icon>arrow_back_ios</mat-icon>
-        BACK
-    </button>
-    <h2>PAYMENT</h2>
-    <button class="top">
-        VALIDATE
-        <mat-icon>arrow_forward_ios</mat-icon>
-    </button>
-</div>
-<hr>
-<div class="centerCDK" cdkDropListGroup>
-    <div class="example-containerP">
-        <h2>Items:</h2>
-        <span class="namePosition">Name</span>
-        <span class="pricePosition">Price</span>
-        <span class="ivaPosition">Iva%</span>
-        <span class="iva2Position">Iva</span>
-        <span class="unityPosition">Unity</span>
-        <span class="quantityPosition">Qtd</span>
-        <div class="example-list">
-            <div class="example-box" *ngFor="let items of todo; let i = index"
-                [ngClass]="{'active': clickedIndex == i }" (click)="clickedIndex = i; changeClick1()"
-                (click)="getId(items.product.id)">
-                <span>{{items.product.name}}</span>
-                <span class="pricePos">{{items.product.price}}€</span>
-                <span class="priceIvaPos">{{items.product.iva * 100}}%</span>
-                <span class="priceIva2Pos">{{(items.product.price * items.product.iva).toFixed(2)}}€</span>
-                <span class="unityPos" *ngIf="items.product.unity_value">{{items.product.unity_value }}{{items.product.sub_unity}}</span>
-                <span class="unityPos" *ngIf="!items.product.unity_value">1{{items.product.sub_unity}}</span>
-                <span>{{items.quantity}}</span>
+<mat-drawer-container class="example-container-side" autosize>
+    <mat-drawer #drawer class="example-sidenav" mode="side" position="end">
+        <body>
+            <div class="container">
+                <header class="clearfix">
+                    <div id="logo">
+                        <img src="../../../assets/images/logo.png">
+                    </div>
+                    <h1>FATURA SIMPLIFICADA</h1>
+                    <div id="company" class="clearfix">
+                        <div>PRi Coffe</div>
+                        <div>R. Dr. Mário Cal Brandão 833 <br> 4440-452 Valongo</div>
+                        <div>224 219 494</div>
+                        <div>geral@pri.pt</div>
+                    </div>
+                    <div id="project">
+                        <div><span>FATURA Nº</span><strong>#01</strong></div>
+                        <div *ngIf="this.name"><span>CLIENTE</span>{{this.name}}</div>
+                        <div *ngIf="!this.name"><span>CLIENTE</span>Consumidor Final</div>
+                        <div><span>MORADA</span> Avenida Liberdade, 17, 4580-222, Paredes</div>
+                        <div><span>NIF</span>911111111</div>
+                        <div><span>DATA</span>17 julho 2021</div>
+                    </div>
+                </header>
+                <main>
+                    <div id="centerZone">
+                        <div><span>ATENDIDO POR</span>Jorge Gomes</div>
+                        <div><span>ZONA</span>Esplanada</div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="service">PRODUTOS</th>
+                                <th class="iva">IVA</th>
+                                <th>PREÇO</th>
+                                <th>QUANT.</th>
+                                <th>TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="service">Design</td>
+                                <td class="iva">23%</td>
+                                <td class="unit">$40.00</td>
+                                <td class="qty">26</td>
+                                <td class="total">$1,040.00</td>
+                            </tr>
+                            <tr>
+                                <td class="service">Development</td>
+                                <td class="iva">23%</td>
+                                <td class="unit">$40.00</td>
+                                <td class="qty">80</td>
+                                <td class="total">$3,200.00</td>
+                            </tr>
+                            <tr>
+                                <td class="service">SEO</td>
+                                <td class="iva">23%</td>
+                                <td class="unit">$40.00</td>
+                                <td class="qty">20</td>
+                                <td class="total">$800.00</td>
+                            </tr>
+                            <tr>
+                                <td class="service">Training</td>
+                                <td class="iva">23%</td>
+                                <td class="unit">$40.00</td>
+                                <td class="qty">4</td>
+                                <td class="total">$160.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">SUBTOTAL</td>
+                                <td class="total">$5,200.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">IVA</td>
+                                <td class="total">$1,300.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="grand total">GRAND TOTAL</td>
+                                <td class="grand total">$6,500.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </main>
+                <footer>
+                    Processado por computador
+                </footer>
             </div>
+        </body>
+    </mat-drawer>
+
+    <div class="example-sidenav-content">
+        <div class="flexI">
+            <button class="top" [routerLink]="['/food&drinks', this.id]">
+                <mat-icon>arrow_back_ios</mat-icon>
+                BACK
+            </button>
+            <h2>PAYMENT</h2>
+            <button class="top" (click)="drawer.toggle()">
+                VALIDATE
+                <mat-icon>arrow_forward_ios</mat-icon>
+            </button>
         </div>
-        <p>Total: {{this.total}}€</p>
-        <div style="display: flex;">
-            <div class="methods" (click)="payment(); resetMethod()">
-                <button>Money</button>
+        <mat-divider></mat-divider>
+        <div class="centerCDK" cdkDropListGroup>
+            <div class="example-containerP">
+                <h2>Items:</h2>
+                <span class="namePosition">Name</span>
+                <span class="pricePosition">Price</span>
+                <span class="ivaPosition">Iva%</span>
+                <span class="iva2Position">Iva</span>
+                <span class="unityPosition">Unity</span>
+                <span class="quantityPosition">Qtd</span>
+                <div class="example-list">
+                    <div class="example-box" *ngFor="let items of todo; let i = index"
+                        [ngClass]="{'active': clickedIndex == i }" (click)="clickedIndex = i; changeClick1()"
+                        (click)="getId(items.product.id)">
+                        <span>{{items.product.name}}</span>
+                        <span class="pricePos">{{items.product.price}}€</span>
+                        <span class="priceIvaPos">{{items.product.iva * 100}}%</span>
+                        <span class="priceIva2Pos">{{(items.product.price * items.product.iva).toFixed(2)}}€</span>
+                        <span class="unityPos" *ngIf="items.product.unity_value">{{items.product.unity_value
+                            }}{{items.product.sub_unity}}</span>
+                        <span class="unityPos" *ngIf="!items.product.unity_value">1{{items.product.sub_unity}}</span>
+                        <span>{{items.quantity}}</span>
+                    </div>
+                </div>
+                <p>Total: {{this.total}}€</p>
+                <div style="display: flex;">
+                    <div class="methods" (click)="payment(); resetMethod()">
+                        <button>Money</button>
+                    </div>
+                    <div class="methods" (click)="resetMethod();">
+                        <button>MB</button>
+                    </div>
+                    <div class="methods" id="noMargin" (click)="paymentMethods()" *ngIf="!this.method">
+                        <button>...</button>
+                    </div>
+                    <div class="methods" id="noMargin2" (click)="paymentMethods()" *ngIf="this.method">
+                        <button class="noMargin">{{this.method}}</button>
+                    </div>
+                </div>
+                <div class="splitColumn">
+                    <span class="toPay">To Pay:</span>
+                    <span class="toPay" id="val"
+                        *ngIf="!this.splited && this.result != number">{{this.eachtotal}}€</span>
+                    <span class="toPay" id="val"
+                        *ngIf="this.splited && this.splited[1] > 0 && this.done.length > 0">{{this.splited[1]}} x
+                        {{this.splited[0]}}€</span>
+                    <span class="toPay" id="val" *ngIf="this.splited && this.splited[1] === 0 "> 0€</span>
+                    <span class="toPay" id="val" *ngIf="this.result >= 0">{{this.result}}€</span>
+                </div>
             </div>
-            <div class="methods" (click)="resetMethod();">
-                <button>MB</button>
+            <div class="margins">
+                <div class="actions" (click)="receiveDone()">
+                    <mat-icon id="change">arrow_forward</mat-icon>
+                </div>
+                <div class="actions" id="todo" (click)="receiveTodo()">
+                    <mat-icon id="change">arrow_back</mat-icon>
+                </div>
+                <div class="actions" id="done" (click)="changeRight()">
+                    <mat-icon id="change">keyboard_arrow_right</mat-icon>
+                    <mat-icon id="changed">keyboard_arrow_right</mat-icon>
+                </div>
+                <div class="actions" id="left" (click)="changeLeft()">
+                    <mat-icon id="change">keyboard_arrow_left</mat-icon>
+                    <mat-icon id="changed">keyboard_arrow_left</mat-icon>
+                </div>
             </div>
-            <div class="methods" id="noMargin" (click)="paymentMethods()" *ngIf="!this.method">
-                <button>...</button>
+            <div class="example-containerP">
+                <h2>Selected:</h2>
+                <span class="namePosition">Name</span>
+                <span class="pricePosition">Price</span>
+                <span class="ivaPosition">Iva%</span>
+                <span class="iva2Position">Iva</span>
+                <span class="unityPosition">Unity</span>
+                <span class="quantityPosition">Qtd</span>
+                <div class="example-list">
+                    <div class="example-box" *ngFor="let items of done; let j = index"
+                        [ngClass]="{'active': clickedIndexJ == j }" (click)="clickedIndexJ = j; changeClick2()"
+                        (click)="getId(items.product.id)">
+                        <span>{{items.product.name}}</span>
+                        <span class="pricePos">{{items.product.price}}</span>
+                        <span class="priceIvaPos">{{items.product.iva * 100}}%</span>
+                        <span class="priceIva2Pos">{{(items.product.price * items.product.iva).toFixed(2)}}€</span>
+                        <span class="unityPos" *ngIf="items.product.unity_value">{{items.product.unity_value
+                            }}{{items.product.sub_unity}}</span>
+                        <span class="unityPos" *ngIf="!items.product.unity_value">1{{items.product.sub_unity}}</span>
+                        <span>{{items.quantity}}</span>
+                    </div>
+                </div>
+                <p>Total: {{this.eachtotal}}€</p>
+                <div style="display:flex;">
+                    <div class="customer" (click)="openDialog()">
+                        <mat-icon>person</mat-icon>
+                        <button *ngIf="!this.name">Select Customer</button>
+                        <button *ngIf="this.name">{{this.name}}</button>
+                    </div>
+                    <div class="createUser" (click)="createUser()">
+                        <mat-icon>add_circle_outline</mat-icon>
+                        <button>Add</button>
+                    </div>
+                </div>
+                <div style="display:flex;">
+                    <div class="customer" id="invoice" (click)="getInvoice()">
+                        <mat-icon> insert_drive_file</mat-icon>
+                        <button id="button">Simplified Invoice</button>
+                    </div>
+                    <div class="createUser" (click)="splitDialog()">
+                        <mat-icon>horizontal_split</mat-icon>
+                        <button>Split</button>
+                    </div>
+                </div>
             </div>
-            <div class="methods" id="noMargin2" (click)="paymentMethods()" *ngIf="this.method">
-                <button class="noMargin">{{this.method}}</button>
-            </div>
-        </div>
-        <div class="splitColumn">
-            <span class="toPay">To Pay:</span>
-            <span class="toPay" id="val" *ngIf="!this.splited && this.result != number">{{this.eachtotal}}€</span>
-            <span class="toPay" id="val"
-                *ngIf="this.splited && this.splited[1] > 0 && this.done.length > 0">{{this.splited[1]}} x
-                {{this.splited[0]}}€</span>
-            <span class="toPay" id="val" *ngIf="this.splited && this.splited[1] === 0 "> 0€</span>
-            <span class="toPay" id="val" *ngIf="this.result >= 0">{{this.result}}€</span>
         </div>
     </div>
-    <div class="margins">
-        <div class="actions" (click)="receiveDone()">
-            <mat-icon id="change">arrow_forward</mat-icon>
-        </div>
-        <div class="actions" id="todo" (click)="receiveTodo()">
-            <mat-icon id="change">arrow_back</mat-icon>
-        </div>
-        <div class="actions" id="done" (click)="changeRight()">
-            <mat-icon id="change">keyboard_arrow_right</mat-icon>
-            <mat-icon id="changed">keyboard_arrow_right</mat-icon>
-        </div>
-        <div class="actions" id="left" (click)="changeLeft()">
-            <mat-icon id="change">keyboard_arrow_left</mat-icon>
-            <mat-icon id="changed">keyboard_arrow_left</mat-icon>
-        </div>
-    </div>
-    <div class="example-containerP">
-        <h2>Selected:</h2>
-        <span class="namePosition">Name</span>
-        <span class="pricePosition">Price</span>
-        <span class="ivaPosition">Iva%</span>
-        <span class="iva2Position">Iva</span>
-        <span class="unityPosition">Unity</span>
-        <span class="quantityPosition">Qtd</span>
-        <div class="example-list">
-            <div class="example-box" *ngFor="let items of done; let j = index"
-                [ngClass]="{'active': clickedIndexJ == j }" (click)="clickedIndexJ = j; changeClick2()"
-                (click)="getId(items.product.id)">
-                <span>{{items.product.name}}</span>
-                <span class="pricePos">{{items.product.price}}</span>
-                <span class="priceIvaPos">{{items.product.iva * 100}}%</span>
-                <span class="priceIva2Pos">{{(items.product.price * items.product.iva).toFixed(2)}}€</span>
-                <span class="unityPos" *ngIf="items.product.unity_value">{{items.product.unity_value }}{{items.product.sub_unity}}</span>
-                <span class="unityPos" *ngIf="!items.product.unity_value">1{{items.product.sub_unity}}</span>
-                <span>{{items.quantity}}</span>
-            </div>
-        </div>
-        <p>Total: {{this.eachtotal}}€</p>
-        <div style="display:flex;">
-            <div class="customer" (click)="openDialog()">
-                <mat-icon>person</mat-icon>
-                <button *ngIf="!this.name">Select Customer</button>
-                <button *ngIf="this.name">{{this.name}}</button>
-            </div>
-            <div class="createUser" (click)="createUser()">
-                <mat-icon>add_circle_outline</mat-icon>
-                <button>Add</button>
-            </div>
-        </div>
-        <div style="display:flex;">
-            <div class="customer" id="invoice" (click)="getInvoice()">
-                <mat-icon> insert_drive_file</mat-icon>
-                <button id="button">Simplified Invoice</button>
-            </div>
-            <div class="createUser" (click)="splitDialog()">
-                <mat-icon>horizontal_split</mat-icon>
-                <button>Split</button>
-            </div>
-        </div>
-    </div>
-</div>
+
+</mat-drawer-container>

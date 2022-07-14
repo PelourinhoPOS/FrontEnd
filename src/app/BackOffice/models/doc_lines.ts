@@ -1,6 +1,6 @@
 export class doc_lines {
     id: number;
-	subtotal_no_iva: number; ;
+	subtotal_no_iva: number;
 	iva_tax: number; 
 	price: number; ;
 	quantity: number; 

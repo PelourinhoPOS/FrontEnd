@@ -4,6 +4,9 @@ import { ArtigosService } from 'src/app/BackOffice/modules/artigos/artigos.servi
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { VirtualKeyboardComponent } from 'src/app/BackOffice/shared/components/virtual-keyboard/virtual-keyboard.component';
+import { MesasService } from 'src/app/BackOffice/modules/boards/mesas.service';
+import { Mesa } from 'src/app/BackOffice/models/mesa';
+import { CookieService } from 'ngx-cookie-service';
 
 export interface DialogData {
   id: number,
@@ -18,7 +21,8 @@ export interface DialogData {
 export class ChangeProductDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<ChangeProductDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData, public ArtigosService: ArtigosService, private fb: FormBuilder, public dialog: MatDialog,) { }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData, public ArtigosService: ArtigosService, private fb: FormBuilder,
+    public dialog: MatDialog, public mesasService: MesasService, public CookieService: CookieService) { }
 
   Form = this.fb.group({
     price: new FormControl('', [Validators.required]),
@@ -29,6 +33,8 @@ export class ChangeProductDialogComponent implements OnInit {
   public item;
   public quantity;
   public promotion: number = 1;
+  public boardId;
+  public total;
 
   dialogKeyboard: any;
 
@@ -107,10 +113,6 @@ export class ChangeProductDialogComponent implements OnInit {
     }
 
     this.dialogRef.close(this.item.price);
-  }
-
-  updateData(){
-    this.updateProduct(this.item.id);
   }
 
   ngOnInit(): void {

@@ -2,6 +2,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    margin-top: -25px;
 }
 
 .top {
@@ -155,7 +157,7 @@ button {
     background-color: #fdbc18;
 }
 
-button.noMargin{
+button.noMargin {
     background-color: #fdbc18;
 }
 
@@ -180,67 +182,248 @@ button.noMargin{
     margin-left: 10px;
 }
 
-.toPay#eur{
+.toPay#eur {
     margin-left: 0;
 }
 
-.namePosition{
+.namePosition {
     margin-left: 10px;
     font-family: Ubuntu;
     font-weight: bold;
 }
 
-.pricePosition{
+.pricePosition {
     margin-left: 95px;
     font-family: Ubuntu;
     font-weight: bold;
 }
 
-.ivaPosition{
+.ivaPosition {
     margin-left: 65px;
     font-family: Ubuntu;
     font-weight: bold;
 }
 
-.iva2Position{
+.iva2Position {
     margin-left: 60px;
     font-family: Ubuntu;
     font-weight: bold;
 }
 
-.unityPosition{
+.unityPosition {
     margin-left: 70px;
     font-family: Ubuntu;
     font-weight: bold;
 }
 
-.quantityPosition{
+.quantityPosition {
     margin-left: 45px;
     font-family: Ubuntu;
     font-weight: bold;
 }
 
-.pricePos{
+.pricePos {
     position: absolute;
     left: 27%;
 }
 
-.priceIvaPos{
+.priceIvaPos {
     position: absolute;
     left: 46%;
 }
 
-.priceIva2Pos{
+.priceIva2Pos {
     position: absolute;
     left: 62%;
 }
 
-.unityPos{
+.unityPos {
     position: absolute;
     left: 78%;
 }
 
-.unityPos{
+.unityPos {
     position: absolute;
     left: 80%;
 }
+
+.example-container-side {
+    width: 100%;
+    height: 100%;
+}
+
+.example-sidenav-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+
+.mat-drawer-inner-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.example-sidenav {
+    padding: 1px;
+    width: 520px;
+}
+
+mat-divider {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/////////////////////////////////Invoice////////////////////////////////
+
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+a {
+    color: #5D6975;
+    text-decoration: underline;
+}
+
+header {
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+#logo {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#logo img {
+    width: 90px;
+}
+
+h1 {
+    border-top: 1px solid #5D6975;
+    border-bottom: 1px solid #5D6975;
+    color: #5D6975;
+    font-size: 2.4em;
+    line-height: 1.4em;
+    font-weight: normal;
+    text-align: center;
+    margin: 0 0 20px 0;
+    background: ("../../../assets/images/dimension.png");
+}
+
+#project {
+    float: left;
+}
+
+#project span {
+    color: #5D6975;
+    text-align: right;
+    width: 52px;
+    margin-right: 10px;
+    display: inline-block;
+    font-size: 0.8em;
+}
+
+#company {
+    float: right;
+    text-align: right;
+}
+
+#project div,
+#company div #centerZone div {
+    white-space: nowrap;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 20px;
+}
+
+table tr:nth-child(2n-1) td {
+    background: #F5F5F5;
+}
+
+table th,
+table td {
+    text-align: center;
+}
+
+table th {
+    padding: 5px 20px;
+    color: #5D6975;
+    border-bottom: 1px solid #C1CED9;
+    white-space: nowrap;
+    font-weight: normal;
+}
+
+table .service,
+table .iva {
+    text-align: left;
+}
+
+table td {
+    padding: 20px;
+    text-align: right;
+}
+
+table td.service,
+table td.iva {
+    vertical-align: top;
+}
+
+table td.unit,
+table td.qty,
+table td.total {
+    font-size: 1.2em;
+}
+
+table td.grand {
+    border-top: 1px solid #5D6975;
+    ;
+}
+
+footer {
+    color: #5D6975;
+    width: 100%;
+    border-top: 1px solid #C1CED9;
+    padding: 8px 0;
+    text-align: center;
+}
+
+.container {
+    padding: 2px;
+    width: 100%;
+    border: 2px solid black;
+}
+
+#centerZone {
+    display: flex;
+    margin-bottom: 15px;
+    flex-direction: column;
+    align-items: center;
+}
+
+#centerZone span {
+    color: #5D6975;
+    text-align: right;
+    margin-right: 5px;
+    display: inline-block;
+    font-size: 0.8em;
+}
+
+body {
+    position: relative;
+    width: 13cm;
+    color: #001028;
+    background: #FFFFFF; 
+    font-family: Arial, sans-serif; 
+    font-size: 12px; 
+    font-family: Arial;
+  }

@@ -31,6 +31,7 @@ export class PaymentModalComponent implements OnInit {
   ) { }
 
   public id;
+  public id_customer;
   public new;
   public total;
   public eachtotal: number = 0;
@@ -49,16 +50,18 @@ export class PaymentModalComponent implements OnInit {
   public result;
   public iva;
   public method;
+  public showFiller = false;
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CustomerDialogComponent, {
       width: '1300px',
       height: '660px',
-      data: { name: this.name },
+      data: { name: this.name, id: this.id },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.name = result;
+      this.name = result[0];
+      this.id_customer = result[1];
     });
   }
 

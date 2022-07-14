@@ -102,6 +102,7 @@ export class FoodDrinksComponent implements OnInit {
         } else if (element.product.id == id) {
           element.product.price = result;
           this.changedprice = result;
+          this.totalPrice();
 
           let mesa: Mesa = {
             id: this.boardId,
@@ -112,7 +113,6 @@ export class FoodDrinksComponent implements OnInit {
           this.mesasService.updateDataOffline(mesa)
         }
       });
-      this.totalPrice();
     });
   }
 
@@ -186,15 +186,21 @@ export class FoodDrinksComponent implements OnInit {
               (data => {
                 this.productbyid = data;
                 console.log(data);
-
                 if (this.cart[i].product.id == id && this.productbyid[0].price == this.cart[i].product.price) {
                   this.cart[i].quantity++;
+                  this.totalPrice();
+                  let mesa: Mesa = {
+                    id: this.boardId,
+                    cart: this.cart,
+                    total: this.total
+                  }
+
+                  this.mesasService.updateDataOffline(mesa);
                 } else if (this.cart[i].product.id == id && this.productbyid[0].price != this.cart[i].product.price) {
-                  // this.cart.push({ product: product[0], quantity: 1 });
+                  this.cart.push({ product: product[0], quantity: 1 });
                 }
               })
             );
-
           }
         }
         this.totalPrice();
@@ -298,6 +304,7 @@ export class FoodDrinksComponent implements OnInit {
   }
 
   openAsk() {
+
     let MesaPedido: any = {
       boardType: 'Pedidos',
       cart: [],
@@ -308,6 +315,7 @@ export class FoodDrinksComponent implements OnInit {
         this.mesasService.registerDataOffline(MesaPedido);
       } else {
         this.asked = data[0].id;
+        this.cookieService.set('boardId', this.asked);
       }
       this.router.navigate(['/food&drinks/' + this.asked]);
     });

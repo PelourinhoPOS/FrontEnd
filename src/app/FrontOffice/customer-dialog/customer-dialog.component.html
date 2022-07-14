@@ -1,7 +1,7 @@
 <div class="top">
   <div>
-    <button mat-raised-button class="btnOptions" [mat-dialog-close]="name">Select</button>
-    <button mat-raised-button class="btnOptions">Update</button>
+    <button mat-raised-button class="btnOptions" [mat-dialog-close]="[name, id]">Select</button>
+    <button mat-raised-button class="btnOptions" (click)="openUpdateModal();">Update</button>
   </div>
 
   <mat-form-field appearance="fill">
@@ -48,7 +48,7 @@
 
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row (click)="onRowClicked(row)" *matRowDef="let row; columns: displayedColumns;"
+    <tr mat-row (click)="onRowClicked(row); getUser(row)" *matRowDef="let row; columns: displayedColumns;"
       [ngClass]="{'highlight': selectedRowIndex == row.id}"></tr>
   </table>
 </div>

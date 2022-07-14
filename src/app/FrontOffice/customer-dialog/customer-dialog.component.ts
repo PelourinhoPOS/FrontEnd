@@ -1,12 +1,14 @@
-import { Component, OnInit, Inject} from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { ClientesService } from 'src/app/BackOffice/modules/clientes/clientes.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map, of, Observable, Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { Cliente } from 'src/app/BackOffice/models/cliente';
+import { CreateClientModalComponent } from 'src/app/BackOffice/modules/clientes/clientes.component';
 
 export interface DialogData {
   name: string;
+  id: string;
 }
 
 @Component({
@@ -21,12 +23,14 @@ export class CustomerDialogComponent implements OnInit {
   public selectedRowIndex;
   public dataRow;
   public name;
+  public id;
   public orderBy = 'name';
+  public customerData;
   dataSource = new MatTableDataSource<Cliente>();
 
   constructor(private clientesService: ClientesService, public dialogRef: MatDialogRef<CustomerDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
-    public subscriptionData!: Subscription; 
+    @Inject(MAT_DIALOG_DATA) public data: DialogData, public dialog: MatDialog) { }
+  public subscriptionData!: Subscription;
 
   getCustomer() {
     this.clientesService.getDataOffline().subscribe(data => {
@@ -38,18 +42,17 @@ export class CustomerDialogComponent implements OnInit {
     this.selectedRowIndex = row.id;
     this.dataRow = row;
     this.name = row.name;
+    this.id = row.id;
   }
 
   listLocalData() {
 
-    console.log(this.orderBy);
-
     switch (this.orderBy) { //order by
       case 'name'://order by name
         this.clientesService.getDataOffline().pipe(
-          map(arr => arr.sort((a, b) => a.name.localeCompare(b.name))) 
+          map(arr => arr.sort((a, b) => a.name.localeCompare(b.name)))
         ).subscribe(data => {
-          this.customer= of(data);
+          this.customer = of(data);
           this.dataSource.data = data
         })
         break;
@@ -74,6 +77,18 @@ export class CustomerDialogComponent implements OnInit {
     }
   }
 
+  openUpdateModal() {
+    if (this.customerData) {
+      this.dialog.open(CreateClientModalComponent, {
+        height: '690px',
+        width: '770px',
+      });
+    }
+  }
+
+  getUser(id) {
+    this.customerData = id;
+  }
 
   onOptionsSelected() {
     this.listLocalData();
