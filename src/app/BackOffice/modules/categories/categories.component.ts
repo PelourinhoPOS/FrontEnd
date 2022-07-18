@@ -37,8 +37,10 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
   public dataRow: any; //save data os selected row of table
 
   selectedRowIndex = -1; //save the selected index from the table
+  selectedRowIds: Set<number> = new Set<number>(); //save data of selected rows
+  selectedId: string; //save the selected row id
 
-  displayedColumnsCategory: string[] = ['select', 'image', 'name', 'categorie', 'state']; //declare columns of the categories table
+  displayedColumns: string[] = ['select', 'image', 'name', 'categorie', 'state']; //declare columns of the categories table
   orderBy = 'name'; //save the order by selected
 
   public tabIndex = 0 //save the index of the tab
@@ -65,39 +67,9 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
     //subscribe to refresh data, when data is changed
     this.subscriptionData = this.categoriesService.refreshData.subscribe(() => {
       this.listLocalData();
-      this.selection.clear();
-      this.unselectRow();
       // this.listAPIdata();
       // this.listAllData();
     });
-  }
-
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-      return;
-    }
-    this.selection.select(...this.dataSource.data);
-    this.unselectRow();
-  }
-
-  /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: Categories): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-    }
-    if (this.selection.selected.length > 1) {
-      this.unselectRow();
-    }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
 
   //register data in API or local storage
@@ -178,6 +150,10 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
     }
 
 
+    this.selection.clear();
+    this.selectedRowIds.clear();
+    this.unselectRow();
+
     setInterval(() => {
       this.showProgressBar = false;
     }, 1300); //wait 1,30 seconds to show progress bar
@@ -211,8 +187,9 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
 
   //function that opens the create client modal
   openCreateModal() {
-    this.unselectRow();
     this.selection.clear();
+    this.selectedRowIds.clear();
+    this.unselectRow();
     const dialogRef = this.dialog.open(CreateCategorieModalComponent, {
       height: '600px',
       width: '770px',
@@ -229,6 +206,7 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
   openUpdateModal(data: any) {
     if (data) {
       this.selection.select(data);
+      this.selectedRowIds.add(data.id);
     }
     if (this.selection.selected.length == 1) {
       this.categoriesOff.subscribe(dataOff => {
@@ -285,17 +263,65 @@ export class CategoriesComponent implements OnInit, AfterViewInit {
     })
   }
 
-  //function to know which line is selected
-  onRowClicked(row: any) {
-    if (this.selectedRowIndex != row.id) {
-      this.selection.clear();
-    }
-    this.selectedRowIndex = row.id;
-    this.dataRow = row;
-    this.selection.toggle(row);
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
   }
 
-  onCheckBoxClicked() {
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      this.selectedRowIds.clear();
+      return;
+    }
+    this.selection.select(...this.dataSource.data);
+    for (let i = 0; i < this.dataSource.data.length; i++) {
+      this.selectedRowIds.add(this.dataSource.data[i].id);
+    }
+    this.unselectRow();
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: Categories): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    if (this.selection.selected.length > 1) {
+      this.unselectRow();
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
+
+  //function to know which line is selected
+  onRowClicked(row: Categories) {
+    if (this.selectedRowIndex != row.id) {
+      this.selection.clear();
+      this.selectedRowIds.clear();
+    }
+    if (this.selectedRowIds.has(row.id)) {
+      this.selectedRowIds.delete(row.id);
+      this.selection.toggle(row);
+    } else {
+      this.selectedRowIds.add(row.id);
+      this.selectedRowIndex = row.id;
+      this.dataRow = row;
+      this.selection.toggle(row);
+    }
+  }
+
+  rowIsSelected(id: number) {
+    return this.selectedRowIds.has(id);
+  }
+
+  onCheckBoxClicked(row: Categories) {
+    if (this.selectedRowIds.has(row.id)) {
+      this.selectedRowIds.delete(row.id);
+    } else {
+      this.selectedRowIds.add(row.id);
+    }
     this.dataRow = this.selection.selected.length > 0 ? this.selection.selected[0] : null;
     this.selectedRowIndex = this.dataRow ? this.dataRow.id : null;
   }

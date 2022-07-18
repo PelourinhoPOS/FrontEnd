@@ -33,6 +33,8 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   public dataRow: any; //save data os selected row of table
 
   selectedRowIndex = -1; //save the selected index from the table
+  selectedRowIds: Set<number> = new Set<number>(); //save data of selected rows
+  selectedId: string; //save the selected row id
 
   displayedColumns: string[] = ['select', 'avatar', 'name', 'function', 'phone', 'stateActivity', 'state']; //declare columns of the table
   orderBy = 'name'; //save the order by selected
@@ -43,34 +45,6 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   dataSource = new MatTableDataSource<User>();
   selection = new SelectionModel<User>(true, []);
-
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-      return;
-    }
-    this.selection.select(...this.dataSource.data);
-    this.unselectRow();
-  }
-
-  /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: User): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-    }
-    if (this.selection.selected.length > 1) {
-      this.unselectRow();
-    }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
-  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -87,8 +61,6 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     //subscribe to refresh data, when data is changed
     this.subscriptionData = this.usersService.refreshData.subscribe(() => {
       this.listLocalData();
-      this.selection.clear();
-      this.unselectRow();
       // this.listAPIdata();
       // this.listAllData();
     });
@@ -164,6 +136,10 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
     }
 
+    this.selection.clear();
+    this.selectedRowIds.clear();
+    this.unselectRow();
+
     setInterval(() => {
       this.showProgressBar = false;
     }, 1300);
@@ -205,8 +181,9 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //function that opens the create client modal
   openCreateModal() {
-    this.unselectRow();
     this.selection.clear();
+    this.selectedRowIds.clear();
+    this.unselectRow();
     const dialogRef = this.dialog.open(CreateEmployeeModalComponent, {
       height: '710px',
       width: '870px',
@@ -222,6 +199,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   openUpdateModal(data: any) {
     if (data) {
       this.selection.select(data);
+      this.selectedRowIds.add(data.id);
     }
     if (this.selection.selected.length == 1) {
       this.empregadosOff.subscribe(dataOff => {
@@ -279,17 +257,65 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  //function to know which line is selected
-  onRowClicked(row: any) {
-    if (this.selectedRowIndex != row.id) {
-      this.selection.clear();
-    }
-    this.selectedRowIndex = row.id;
-    this.dataRow = row;
-    this.selection.toggle(row);
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
   }
 
-  onCheckBoxClicked() {
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      this.selectedRowIds.clear();
+      return;
+    }
+    this.selection.select(...this.dataSource.data);
+    for (let i = 0; i < this.dataSource.data.length; i++) {
+      this.selectedRowIds.add(this.dataSource.data[i].id);
+    }
+    this.unselectRow();
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: User): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    if (this.selection.selected.length > 1) {
+      this.unselectRow();
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
+
+  //function to know which line is selected
+  onRowClicked(row: User) {
+    if (this.selectedRowIndex != row.id) {
+      this.selection.clear();
+      this.selectedRowIds.clear();
+    }
+    if (this.selectedRowIds.has(row.id)) {
+      this.selectedRowIds.delete(row.id);
+      this.selection.toggle(row);
+    } else {
+      this.selectedRowIds.add(row.id);
+      this.selectedRowIndex = row.id;
+      this.dataRow = row;
+      this.selection.toggle(row);
+    }
+  }
+
+  rowIsSelected(id: number) {
+    return this.selectedRowIds.has(id);
+  }
+
+  onCheckBoxClicked(row: User) {
+    if (this.selectedRowIds.has(row.id)) {
+      this.selectedRowIds.delete(row.id);
+    } else {
+      this.selectedRowIds.add(row.id);
+    }
     this.dataRow = this.selection.selected.length > 0 ? this.selection.selected[0] : null;
     this.selectedRowIndex = this.dataRow ? this.dataRow.id : null;
   }
@@ -455,26 +481,6 @@ export class CreateEmployeeModalComponent implements OnInit {
     }
   }
 
-  onFileSelected(event) {
-
-    const file: File = event.target.files[0];
-
-    if (file) {
-      var reader = new FileReader();
-      reader.readAsDataURL(file)
-      reader.onload = (event: any) => {
-        this.url = event.target.result;
-        this.avatar.setValue(this.url);
-      }
-      this.fileName = (file.name).substring(0, 20,) + '...';
-      // const formData = new FormData();
-      // formData.append("thumbnail", file);
-      // console.log(file);
-      // const upload$ = this.http.post("/api/thumbnail-upload", formData);
-      // upload$.subscribe();
-    }
-  }
-
   //open the modal keyboard
   openKeyboard(inputName: string, type: string, data: any, maxLength?: number) {
     //verify if type is number or text to open the respective keyboard
@@ -512,5 +518,24 @@ export class CreateEmployeeModalComponent implements OnInit {
           break;
       }
     });
+  }
+
+  onFileSelected(event) {
+    const file: File = event.target.files[0];
+
+    if (file) {
+      var reader = new FileReader();
+      reader.readAsDataURL(file)
+      reader.onload = (event: any) => {
+        this.url = event.target.result;
+        this.avatar.setValue(this.url);
+      }
+      this.fileName = (file.name).substring(0, 20,) + '...';
+      // const formData = new FormData();
+      // formData.append("thumbnail", file);
+      // console.log(file);
+      // const upload$ = this.http.post("/api/thumbnail-upload", formData);
+      // upload$.subscribe();
+    }
   }
 }

@@ -33,6 +33,8 @@ export class ArtigosComponent implements OnInit {
   public dataRow: any; //save data os selected row of table
 
   selectedRowIndex = -1; //save the selected index from the table
+  selectedRowIds: Set<number> = new Set<number>(); //save data of selected rows
+  selectedId: string; //save the selected row id
 
   displayedColumns: string[] = ['select', 'image', 'name', 'category', 'iva', 'price', 'state']; //declare columns of the table
   orderBy = 'name'; //save the order by selected
@@ -56,39 +58,9 @@ export class ArtigosComponent implements OnInit {
     //subscribe to refresh data, when data is changed
     this.subscriptionData = this.artigosService.refreshData.subscribe(() => {
       this.listLocalData();
-      this.selection.clear();
-      this.unselectRow();
       // this.listAPIdata();
       // this.listAllData();
     });
-  }
-
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-      return;
-    }
-    this.selection.select(...this.dataSource.data);
-    this.unselectRow();
-  }
-
-  /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: Artigo): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-    }
-    if (this.selection.selected.length > 1) {
-      this.unselectRow();
-    }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
 
   //register data in API or local storage
@@ -170,6 +142,11 @@ export class ArtigosComponent implements OnInit {
         break;
     }
 
+
+    this.selection.clear();
+    this.selectedRowIds.clear();
+    this.unselectRow();
+
     setInterval(() => {
       this.showProgressBar = false;
     }, 1300); //wait 1,30 seconds to show progress bar
@@ -203,8 +180,9 @@ export class ArtigosComponent implements OnInit {
 
   //function that opens the create client modal
   openCreateModal() {
-    this.unselectRow();
     this.selection.clear();
+    this.selectedRowIds.clear();
+    this.unselectRow();
     this.categorieServive.getDataOffline().subscribe(data => {
       if (data.length > 0) {
         this.unselectRow();
@@ -289,17 +267,65 @@ export class ArtigosComponent implements OnInit {
     // }
   }
 
-  //function to know which line is selected
-  onRowClicked(row: any) {
-    if (this.selectedRowIndex != row.id) {
-      this.selection.clear();
-    }
-    this.selectedRowIndex = row.id;
-    this.dataRow = row;
-    this.selection.toggle(row);
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
   }
 
-  onCheckBoxClicked() {
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      this.selectedRowIds.clear();
+      return;
+    }
+    this.selection.select(...this.dataSource.data);
+    for (let i = 0; i < this.dataSource.data.length; i++) {
+      this.selectedRowIds.add(this.dataSource.data[i].id);
+    }
+    this.unselectRow();
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: Artigo): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    if (this.selection.selected.length > 1) {
+      this.unselectRow();
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
+
+  //function to know which line is selected
+  onRowClicked(row: Artigo) {
+    if (this.selectedRowIndex != row.id) {
+      this.selection.clear();
+      this.selectedRowIds.clear();
+    }
+    if (this.selectedRowIds.has(row.id)) {
+      this.selectedRowIds.delete(row.id);
+      this.selection.toggle(row);
+    } else {
+      this.selectedRowIds.add(row.id);
+      this.selectedRowIndex = row.id;
+      this.dataRow = row;
+      this.selection.toggle(row);
+    }
+  }
+
+  rowIsSelected(id: number) {
+    return this.selectedRowIds.has(id);
+  }
+
+  onCheckBoxClicked(row: Artigo) {
+    if (this.selectedRowIds.has(row.id)) {
+      this.selectedRowIds.delete(row.id);
+    } else {
+      this.selectedRowIds.add(row.id);
+    }
     this.dataRow = this.selection.selected.length > 0 ? this.selection.selected[0] : null;
     this.selectedRowIndex = this.dataRow ? this.dataRow.id : null;
   }

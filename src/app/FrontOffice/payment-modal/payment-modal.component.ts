@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef  } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { MesasService } from 'src/app/BackOffice/modules/boards/mesas.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +10,10 @@ import { ToastrService } from 'ngx-toastr';
 import { MoneyDialogComponent } from '../money-dialog/money-dialog.component';
 import { PaymentMethodsComponent } from '../payment-methods/payment-methods.component';
 import { Mesa } from 'src/app/BackOffice/models/mesa';
+import { ZonasService } from 'src/app/BackOffice/modules/boards/zonas.service';
+import { UsersService } from 'src/app/BackOffice/modules/users/users.service';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export interface DialogData {
   value: number;
@@ -27,6 +31,8 @@ export class PaymentModalComponent implements OnInit {
     private cookieService: CookieService,
     public dialog: MatDialog,
     private clientesService: ClientesService,
+    private zonasService: ZonasService,
+    private usersService: UsersService,
     private toastr: ToastrService
   ) { }
 
@@ -51,6 +57,31 @@ export class PaymentModalComponent implements OnInit {
   public iva;
   public method;
   public showFiller = false;
+  public formattedToday;
+  public formattedTime;
+  public boardId;
+  public boardInfo;
+  public zoneName;
+  public client;
+  public nif;
+  public address;
+  public user;
+  public userId;
+  public username;
+  public totalPriceWithoutIva;
+
+  public openPDF(): void {
+    let DATA: any = document.getElementById('htmlData');
+    html2canvas(DATA).then((canvas) => {
+      let fileWidth = 105;
+      let fileHeight = (canvas.height * fileWidth) / canvas.width;
+      const FILEURI = canvas.toDataURL('image/png');
+      let PDF = new jsPDF('p', 'mm', 'a6');
+      let position = 0;
+      PDF.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight);
+      PDF.save('invoice.pdf');
+    });
+  }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CustomerDialogComponent, {
@@ -286,6 +317,81 @@ export class PaymentModalComponent implements OnInit {
       divData.style.backgroundColor = 'white';
       buttonData.style.backgroundColor = 'white';
       this.number = 0;
+    }
+  }
+
+  getZone() {
+    this.boardId = this.cookieService.get('boardId');
+    this.mesasService.getDataOffline().subscribe((data: any) => {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].id == this.boardId) {
+          this.boardInfo = data[i];
+        }
+      }
+      this.zonasService.getDataOffline().subscribe((data: any) => {
+        data.find(x => x.id === this.boardInfo.id_zone);
+        this.zoneName = data[0].name;
+      })
+    });
+  }
+
+  getClient() {
+    this.clientesService.getDataOffline().subscribe((data: any) => {
+      this.client = data.find(x => x.id === this.id);
+      this.nif = this.client.nif;
+      this.address = this.client.address;
+    })
+  }
+
+  getUser() {
+    this.userId = this.cookieService.get('userId');
+
+    this.usersService.getDataOffline().subscribe((data: any) => {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].id == this.userId) {
+          this.user = data[i];
+          this.username = this.user.name;
+        }
+      }
+    });
+  }
+
+  getPriceWithoutIva() {
+    let price = 0;
+    this.done.forEach((item) => {
+      price += item.product.price * item.quantity;
+    });
+    this.totalPriceWithoutIva = parseFloat(price.toFixed(2));
+  }
+
+  getDate() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm: any = today.getMonth() + 1;
+    let dd: any = today.getDate();
+    let hh: any = today.getHours();
+    let min: any = today.getMinutes();
+    let sec: any = today.getSeconds();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+    if (hh < 10) hh = '0' + hh;
+    if (min < 10) min = '0' + min;
+    if (sec < 10) sec = '0' + sec;
+
+    this.formattedToday = dd + '/' + mm + '/' + yyyy;
+    this.formattedTime = hh + ':' + min + ':' + sec;
+  }
+
+  verifyCheckout() {
+    if(this.done.length > 0){
+      this.getDate(); 
+      this.getZone(); 
+      this.getClient(); 
+      this.getUser(); 
+      this.getPriceWithoutIva();
+    } else {
+      this.toastr.error('Nothing To Pay!');
     }
   }
 

@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, OnDestroy, Inject, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable, Subscription, combineLatest, map, of } from 'rxjs';
 import { Cliente } from '../../models/cliente';
-import { OnlineOfflineService } from '../../services/online-offline.service';
 import { ClientesService } from './clientes.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
@@ -12,7 +11,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { createMask } from '@ngneat/input-mask';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 @Component({
@@ -40,6 +38,8 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   public dialogRef: any; //save the dialog reference
 
   selectedRowIndex = -1; //save the selected index from the table
+  selectedRowIds: Set<number> = new Set<number>();
+  selectedId: string;
 
   displayedColumns: string[] = ['select', 'name', 'nif', 'phone', 'county', 'state']; //declare columns of the table
   orderBy = 'name'; //save the order by selected
@@ -66,39 +66,8 @@ export class ClientesComponent implements OnInit, AfterViewInit {
     this.subscriptionData = this.clientesService.refreshData.subscribe(() => {
       // this.listAPIdata();
       this.listLocalData();
-      this.selection.clear();
-      this.unselectRow();
       // this.listAllData();
     });
-  }
-
-
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-      return;
-    }
-    this.selection.select(...this.dataSource.data);
-    this.unselectRow();
-  }
-
-  /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: Cliente): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-    }
-    if (this.selection.selected.length > 1) {
-      this.unselectRow();
-    }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
 
   //register data in API or local storage
@@ -169,7 +138,12 @@ export class ClientesComponent implements OnInit, AfterViewInit {
         break;
     }
 
+    this.selection.clear();
+    this.selectedRowIds.clear();
+    this.unselectRow();
+
     setInterval(() => {
+      this
       this.showProgressBar = false;
     }, 1300); //wait 1,30 seconds to show progress bar
 
@@ -208,11 +182,11 @@ export class ClientesComponent implements OnInit, AfterViewInit {
     this.clientesService.sendDatatoAPI();
   }
 
-
   //function that opens the create client modal
   openCreateModal() {
-    this.unselectRow();
     this.selection.clear();
+    this.selectedRowIds.clear();
+    this.unselectRow();
     const dialogRef = this.dialog.open(CreateClientModalComponent, {
       height: '690px',
       width: '790px',
@@ -228,6 +202,7 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   openUpdateModal(data: any) {
     if (data) {
       this.selection.select(data);
+      this.selectedRowIds.add(data.id);
     }
     if (this.selection.selected.length == 1) {
       this.clientesOff.subscribe(dataOff => {
@@ -295,16 +270,73 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   }
 
   //function to know which line is selected
-  onRowClicked(row: any) {
-    if (this.selectedRowIndex != row.id) {
-      this.selection.clear();
-    }
-    this.selectedRowIndex = row.id;
-    this.dataRow = row;
-    this.selection.toggle(row);
+  // onRowClicked(row: any) {
+  //   if (this.selectedRowIndex != row.id) {
+  //     this.selection.clear();
+  //   }
+  //   this.selectedRowIndex = row.id;
+  //   this.dataRow = row;
+  //   this.selection.toggle(row);
+  // }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
   }
 
-  onCheckBoxClicked() {
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      this.selectedRowIds.clear();
+      return;
+    }
+    this.selection.select(...this.dataSource.data);
+    for (let i = 0; i < this.dataSource.data.length; i++) {
+      this.selectedRowIds.add(this.dataSource.data[i].id);
+    }
+    this.unselectRow();
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: Cliente): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    if (this.selection.selected.length > 1) {
+      this.unselectRow();
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
+
+  onRowClicked(row: Cliente) {
+    if (this.selectedRowIndex != row.id) {
+      this.selection.clear();
+      this.selectedRowIds.clear();
+    }
+    if (this.selectedRowIds.has(row.id)) {
+      this.selectedRowIds.delete(row.id);
+      this.selection.toggle(row);
+    } else {
+      this.selectedRowIds.add(row.id);
+      this.selectedRowIndex = row.id;
+      this.dataRow = row;
+      this.selection.toggle(row);
+    }
+  }
+
+  rowIsSelected(id: number) {
+    return this.selectedRowIds.has(id);
+  }
+
+  onCheckBoxClicked(row: Cliente) {
+    if (this.selectedRowIds.has(row.id)) {
+      this.selectedRowIds.delete(row.id);
+    } else {
+      this.selectedRowIds.add(row.id);
+    }
     this.dataRow = this.selection.selected.length > 0 ? this.selection.selected[0] : null;
     this.selectedRowIndex = this.dataRow ? this.dataRow.id : null;
   }
@@ -397,7 +429,7 @@ export class CreateClientModalComponent implements OnInit {
       parish: new FormControl('', [Validators.required, Validators.minLength(3)]),
       county: new FormControl('', [Validators.required, Validators.minLength(3)]),
     })
-    
+
     //get the data from client and set it in the form
     if (this.data) {
       this.update = true;

@@ -1,7 +1,8 @@
 <mat-drawer-container class="example-container-side" autosize>
     <mat-drawer #drawer class="example-sidenav" mode="side" position="end">
-        <body>
-            <div class="container">
+
+        <body id="inv">
+            <div class="containerInvoice" id="htmlData">
                 <header class="clearfix">
                     <div id="logo">
                         <img src="../../../assets/images/logo.png">
@@ -17,66 +18,50 @@
                         <div><span>FATURA Nº</span><strong>#01</strong></div>
                         <div *ngIf="this.name"><span>CLIENTE</span>{{this.name}}</div>
                         <div *ngIf="!this.name"><span>CLIENTE</span>Consumidor Final</div>
-                        <div><span>MORADA</span> Avenida Liberdade, 17, 4580-222, Paredes</div>
-                        <div><span>NIF</span>911111111</div>
-                        <div><span>DATA</span>17 julho 2021</div>
+                        <div *ngIf="this.id_customer !== undefined"><span>MORADA</span>{{this.address}}</div>
+                        <div *ngIf="this.id_customer !== undefined"><span>NIF</span>{{this.nif}}</div>
+                        <div><span>DATA</span>{{this.formattedToday}} , {{this.formattedTime}}</div>
                     </div>
                 </header>
                 <main>
                     <div id="centerZone">
-                        <div><span>ATENDIDO POR</span>Jorge Gomes</div>
-                        <div><span>ZONA</span>Esplanada</div>
+                        <div><span>ATENDIDO POR</span>{{this.username}}</div>
+                        <div *ngIf="this.method"><span>PAGO POR</span>{{this.method}}</div>
+                        <div *ngIf="!this.method"><span>PAGO EM</span>Numerário</div>
+                        <div><span>ZONA</span>{{this.zoneName}}</div>
                     </div>
                     <table>
                         <thead>
                             <tr>
                                 <th class="service">PRODUTOS</th>
-                                <th class="iva">IVA</th>
-                                <th>PREÇO</th>
+                                <th class="iva">IVA%</th>
+                                <th>TOTAL</th>
+                                <th>IVA</th>
                                 <th>QUANT.</th>
                                 <th>TOTAL</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="service">Design</td>
-                                <td class="iva">23%</td>
-                                <td class="unit">$40.00</td>
-                                <td class="qty">26</td>
-                                <td class="total">$1,040.00</td>
+                            <tr *ngFor="let item of done">
+                                <td class="service">{{item.product.name}}</td>
+                                <td class="iva">{{item.product.iva * 100}}%</td>
+                                <td class="unit">{{item.product.price}}€</td>
+                                <td class="iva">{{(item.product.price * item.product.iva).toFixed(2)}}€</td>
+                                <td class="qty">{{item.quantity}}</td>
+                                <td class="total">{{((item.product.price * item.quantity) * item.product.iva +
+                                    (item.product.price * item.quantity)).toFixed(2)}}</td>
                             </tr>
                             <tr>
-                                <td class="service">Development</td>
-                                <td class="iva">23%</td>
-                                <td class="unit">$40.00</td>
-                                <td class="qty">80</td>
-                                <td class="total">$3,200.00</td>
+                                <td colspan="5">SUBTOTAL</td>
+                                <td class="total">{{this.totalPriceWithoutIva}}€</td>
                             </tr>
                             <tr>
-                                <td class="service">SEO</td>
-                                <td class="iva">23%</td>
-                                <td class="unit">$40.00</td>
-                                <td class="qty">20</td>
-                                <td class="total">$800.00</td>
+                                <td colspan="5">IVA</td>
+                                <td class="total">{{(this.eachtotal - this.totalPriceWithoutIva).toFixed(2)}}€</td>
                             </tr>
                             <tr>
-                                <td class="service">Training</td>
-                                <td class="iva">23%</td>
-                                <td class="unit">$40.00</td>
-                                <td class="qty">4</td>
-                                <td class="total">$160.00</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">SUBTOTAL</td>
-                                <td class="total">$5,200.00</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">IVA</td>
-                                <td class="total">$1,300.00</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="grand total">GRAND TOTAL</td>
-                                <td class="grand total">$6,500.00</td>
+                                <td colspan="5" class="grand total">TOTAL</td>
+                                <td class="grand total">{{this.eachtotal}}€</td>
                             </tr>
                         </tbody>
                     </table>
@@ -86,6 +71,7 @@
                 </footer>
             </div>
         </body>
+        <button class="pdf" (click)="openPDF()">Print</button>
     </mat-drawer>
 
     <div class="example-sidenav-content">
@@ -95,7 +81,11 @@
                 BACK
             </button>
             <h2>PAYMENT</h2>
-            <button class="top" (click)="drawer.toggle()">
+            <button *ngIf="this.done.length > 0" class="top" (click)="drawer.toggle(); verifyCheckout();">
+                VALIDATE
+                <mat-icon>arrow_forward_ios</mat-icon>
+            </button>
+            <button *ngIf="this.done.length == 0" class="top" (click)="verifyCheckout();">
                 VALIDATE
                 <mat-icon>arrow_forward_ios</mat-icon>
             </button>

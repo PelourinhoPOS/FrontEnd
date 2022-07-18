@@ -268,7 +268,7 @@ button.noMargin {
 
 .example-sidenav {
     padding: 1px;
-    width: 520px;
+    width: 515px;
 }
 
 mat-divider {
@@ -397,10 +397,9 @@ footer {
     text-align: center;
 }
 
-.container {
-    padding: 2px;
+.containerInvoice {
+    padding: 5px;
     width: 100%;
-    border: 2px solid black;
 }
 
 #centerZone {
@@ -418,7 +417,10 @@ footer {
     font-size: 0.8em;
 }
 
-body {
+body#inv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
     width: 13cm;
     color: #001028;
@@ -426,4 +428,16 @@ body {
     font-family: Arial, sans-serif; 
     font-size: 12px; 
     font-family: Arial;
+  }
+
+  .pdf{
+    width: 100px;
+    height: 40px;
+    background-color: #fff;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 3%;
+    right: 5%;
+    border: 1px solid #000;
+    background-color: #c4c4c4;
   }

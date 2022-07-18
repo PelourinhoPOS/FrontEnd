@@ -43,7 +43,7 @@
                     </th>
                     <td mat-cell *matCellDef="let row">
                         <mat-checkbox (click)="$event.stopPropagation()"
-                            (change)="$event ? selection.toggle(row) : null; onCheckBoxClicked()"
+                            (change)="$event ? selection.toggle(row) : null; onCheckBoxClicked(row)"
                             [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)" color="warn">
                         </mat-checkbox>
                     </td>
@@ -66,12 +66,12 @@
 
                 <ng-container matColumnDef="categorie">
                     <th mat-header-cell *matHeaderCellDef> Categoria Pai </th>
-                    
-                    <td mat-cell *matCellDef="let element"> 
+
+                    <td mat-cell *matCellDef="let element">
                         <ng-container *ngIf="namesCategories[element.id-1]==undefined; else elseBlockElement">
                             Sem categoria pai
-                        </ng-container>  
-                        
+                        </ng-container>
+
                         <ng-template #elseBlockElement>
                             {{namesCategories[element.id-1]}}
                         </ng-template>
@@ -95,10 +95,10 @@
                     </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumnsCategory"></tr>
-                <tr mat-row (click)="onRowClicked(row)" (dblclick)="openUpdateModal(dataRow)"
-                    *matRowDef="let row; columns: displayedColumnsCategory;"
-                    [ngClass]="{'highlight': selectedRowIndex == row.id}"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row (dblclick)="openUpdateModal(dataRow)" *matRowDef="let row; columns: displayedColumns;"
+                    [class.selectedRow]="rowIsSelected(row.id)" (click)="onRowClicked(row); selectedRowIndex == row.id">
+                </tr>
             </table>
         </ng-template>
         <!-- <button (click)="synchronizeData()">Sincronizar dados</button> -->

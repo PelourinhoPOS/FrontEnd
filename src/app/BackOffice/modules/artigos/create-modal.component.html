@@ -214,12 +214,12 @@
 
                                 <ng-container *ngIf="update; else elseBlockButton">
                                     <button type="submit" mat-stroked-button color="warn" class="dialog-btn"
-                                        >Atualizar</button>
+                                    cdkFocusInitial>Atualizar</button>
                                 </ng-container>
 
                                 <ng-template #elseBlockButton>
                                     <button type="submit" mat-stroked-button color="warn" class="dialog-btn"
-                                        >Registar</button>
+                                    cdkFocusInitial>Registar</button>
                                 </ng-template>
 
                             </mat-dialog-actions>

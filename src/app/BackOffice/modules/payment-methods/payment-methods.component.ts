@@ -28,6 +28,8 @@ export class PaymentMethodsComponent implements OnInit {
   public dataRow: any; //save data os selected row of table
 
   selectedRowIndex = -1; //save the selected index from the table
+  selectedRowIds: Set<number> = new Set<number>(); //save data of selected rows
+  selectedId: string; //save the selected row id
 
   displayedColumns: string[] = ['select', 'image', 'name', 'description', 'state']; //declare the columns of the payment methods table
   orderBy = 'name'; //save the order by selected
@@ -53,40 +55,9 @@ export class PaymentMethodsComponent implements OnInit {
     //subscribe to refresh data, when data is changed
     this.subscriptionData = this.paymentMethodService.refreshData.subscribe(() => {
       this.listLocalData();
-      this.selection.clear();
-      this.unselectRow();
       // this.listAPIdata();
       // this.listAllData();
     });
-  }
-
-
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-      return;
-    }
-    this.selection.select(...this.dataSource.data);
-    this.unselectRow();
-  }
-
-  /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: PaymentMethod): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-    }
-    if (this.selection.selected.length > 1) {
-      this.unselectRow();
-    }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
 
   //register data in API or local storage
@@ -148,6 +119,10 @@ export class PaymentMethodsComponent implements OnInit {
         break;
     }
 
+    this.selection.clear();
+    this.selectedRowIds.clear();
+    this.unselectRow();
+
     setInterval(() => {
       this.showProgressBar = false;
     }, 1300); //wait 1,30 seconds to show progress bar
@@ -181,8 +156,9 @@ export class PaymentMethodsComponent implements OnInit {
 
   //function that opens the create client modal
   openCreateModal() {
-    this.unselectRow();
     this.selection.clear();
+    this.selectedRowIds.clear();
+    this.unselectRow();
     const dialogRef = this.dialog.open(CreatePaymentMethodsComponent, {
       height: '600px',
       width: '770px',
@@ -199,6 +175,7 @@ export class PaymentMethodsComponent implements OnInit {
   openUpdateModal(data: any) {
     if (data) {
       this.selection.select(data);
+      this.selectedRowIds.add(data.id);
     }
     if (this.selection.selected.length == 1) {
       this.methodsOff.subscribe(dataOff => {
@@ -241,10 +218,13 @@ export class PaymentMethodsComponent implements OnInit {
             width: '50%',
             data: { values: this.selection.selected, component: 'Método de Pagamento' }
           });
-          dialogRef.afterClosed().subscribe(paymentMethod => {
-            if (paymentMethod) {
-              this.delete(paymentMethod);
+          dialogRef.afterClosed().subscribe(data => {
+            if (data) {
+              data.forEach(paymentMethod => {
+                this.delete(paymentMethod);
+              });
             }
+            this.dataRow = null;
           });
         } else {
           this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
@@ -255,17 +235,65 @@ export class PaymentMethodsComponent implements OnInit {
     });
   }
 
-  //function to know which line is selected
-  onRowClicked(row: any) {
-    if (this.selectedRowIndex != row.id) {
-      this.selection.clear();
-    }
-    this.selectedRowIndex = row.id;
-    this.dataRow = row;
-    this.selection.toggle(row);
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
   }
 
-  onCheckBoxClicked() {
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      this.selectedRowIds.clear();
+      return;
+    }
+    this.selection.select(...this.dataSource.data);
+    for (let i = 0; i < this.dataSource.data.length; i++) {
+      this.selectedRowIds.add(this.dataSource.data[i].id);
+    }
+    this.unselectRow();
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: PaymentMethod): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    if (this.selection.selected.length > 1) {
+      this.unselectRow();
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
+
+  //function to know which line is selected
+  onRowClicked(row: PaymentMethod) {
+    if (this.selectedRowIndex != row.id) {
+      this.selection.clear();
+      this.selectedRowIds.clear();
+    }
+    if (this.selectedRowIds.has(row.id)) {
+      this.selectedRowIds.delete(row.id);
+      this.selection.toggle(row);
+    } else {
+      this.selectedRowIds.add(row.id);
+      this.selectedRowIndex = row.id;
+      this.dataRow = row;
+      this.selection.toggle(row);
+    }
+  }
+
+  rowIsSelected(id: number) {
+    return this.selectedRowIds.has(id);
+  }
+
+  onCheckBoxClicked(row: PaymentMethod) {
+    if (this.selectedRowIds.has(row.id)) {
+      this.selectedRowIds.delete(row.id);
+    } else {
+      this.selectedRowIds.add(row.id);
+    }
     this.dataRow = this.selection.selected.length > 0 ? this.selection.selected[0] : null;
     this.selectedRowIndex = this.dataRow ? this.dataRow.id : null;
   }
@@ -311,7 +339,7 @@ export class CreatePaymentMethodsComponent implements OnInit {
   public update: boolean = false; //save if is update or create
 
   fileName = '';
-  url = './assets/images/user.png';
+  url = './assets/images/paymentDefault.png';
   categorySelected = '1';
 
   paymentForm: FormGroup;
@@ -322,7 +350,7 @@ export class CreatePaymentMethodsComponent implements OnInit {
       id: new FormControl(''),
       name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
       description: new FormControl('', [Validators.required]),
-      image: new FormControl(''),
+      image: new FormControl(this.url),
     });
 
     //get the data from client and set it in the form
@@ -332,10 +360,10 @@ export class CreatePaymentMethodsComponent implements OnInit {
       this.fileName = 'Alterar imagem'; //set the file name
       this.url = this.paymentMethod.image; //set the photo in the form
 
-      this.paymentForm.get('id').setValue(this.paymentMethod.id);
-      this.paymentForm.get('name').setValue(this.paymentMethod.name);
-      this.paymentForm.get('description').setValue(this.paymentMethod.description);
-      this.paymentForm.get('image').setValue(this.url);
+      this.id.setValue(this.paymentMethod.id);
+      this.name.setValue(this.paymentMethod.name);
+      this.description.setValue(this.paymentMethod.description);
+      this.image.setValue(this.url);
     }
   }
 
@@ -357,6 +385,7 @@ export class CreatePaymentMethodsComponent implements OnInit {
 
   submitForm() {
     this.paymentMethod = this.paymentForm.value;
+
     if (this.paymentForm.valid) {
       this.dialogRefCreate.close(this.paymentMethod);
     } else {
@@ -395,7 +424,6 @@ export class CreatePaymentMethodsComponent implements OnInit {
   }
 
   onFileSelected(event) {
-
     const file: File = event.target.files[0];
 
     if (file) {
