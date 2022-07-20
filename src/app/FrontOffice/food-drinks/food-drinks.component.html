@@ -61,7 +61,7 @@
         </div>
       </ng-template>
       <ng-template swiperSlide *ngFor="let cat of categories | filter:this.item; index as i">
-        <div id="card {{cat.id}}" (click)="getCategoryItems(cat.id); selectCategory(cat.id)">
+        <div id="card {{cat.id}}" (click)="getCategoryItems(cat.id); selectCategory(cat.id); getSubcategories(cat.id)">
           <img id="image {{cat.id}}" src="{{cat.image}}" alt="categoria">
           <p class="categoryName">{{cat.name}}</p>
         </div>
@@ -70,8 +70,8 @@
 
     <swiper *ngIf="length > 0 && selectedID !== 0" [slidesPerView]="8" [spaceBetween]="30" [freeMode]="true"
       [pagination]="{clickable: true}" style="margin-top: 20px; margin-left: 50px; margin-bottom: -15px;">
-      <ng-template swiperSlide *ngFor="let sub of subCategories; index as i">
-        <div class="cardSub" id="cardSub {{sub.id}}">
+      <ng-template swiperSlide *ngFor="let sub of subcategories; index as i">
+        <div class="cardSub" id="cardSub {{sub.id}}" (click)="getSubcategories(sub.id); getCategoryItems(sub.id);">
           <img id="image {{sub.id}}" src="{{sub.image}}" alt="subcategoria">
           <p class="categoryName">{{sub.name}}</p>
         </div>

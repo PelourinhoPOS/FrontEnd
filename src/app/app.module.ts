@@ -42,6 +42,7 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { PaymentMethodsComponent } from './FrontOffice/payment-methods/payment-methods.component';
 import { SharedModule } from './BackOffice/shared/shared.module';
 import { DocumentsComponent } from './BackOffice/modules/documents/documents.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import { DocumentsComponent } from './BackOffice/modules/documents/documents.com
     MatButtonModule,
     MatSelectModule,
     Ng2SearchPipeModule,
+    MatProgressSpinnerModule,
     DefaultModule,
     MatTableModule,
     ToastrModule.forRoot({

@@ -50,6 +50,7 @@ export class FoodDrinksComponent implements OnInit {
   public selfid;
   public productbyid;
   public asked;
+  public subcategories = [];
 
   constructor(
     private empregadosService: UsersService,
@@ -296,6 +297,13 @@ export class FoodDrinksComponent implements OnInit {
   getCategories() {
     this.categoryService.getDataOffline().pipe(map(data => data.filter(item => item.id_category == 0))).subscribe(data => {
       this.categories = data;
+    });
+  }
+
+  getSubcategories(id){
+    this.categoryService.getDataOffline().pipe(map(data => data.filter(item => item.id_category == id ))).subscribe(data => {
+      this.subcategories = data;
+      this.length = this.subcategories.length;
     });
   }
 

@@ -14,6 +14,7 @@ import { MesasComponent } from './BackOffice/modules/boards/mesas.component';
 import { PaymentModalComponent } from './FrontOffice/payment-modal/payment-modal.component';
 import { PaymentMethodsComponent } from './BackOffice/modules/payment-methods/payment-methods.component';
 import { DocumentsComponent } from './BackOffice/modules/documents/documents.component';
+import { PosComponent } from './BackOffice/modules/pos/pos.component';
 
 const routes: Routes = [
   { path: "", component: AuthenticationComponent },
@@ -33,7 +34,8 @@ const routes: Routes = [
       { path: "categorias", component: CategoriesComponent },
       { path: "mesas", component: MesasComponent },
       { path: "payments", component: PaymentMethodsComponent },
-      { path: "documents", component: DocumentsComponent }
+      { path: "documents", component: DocumentsComponent },
+      { path: "pos", component: PosComponent },
     ]
   }
 ];
