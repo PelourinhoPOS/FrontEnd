@@ -6,7 +6,7 @@ import { ChangeBoardDialogComponent } from '../change-board-dialog/change-board-
 import { MesasService } from 'src/app/BackOffice/modules/boards/mesas.service';
 import { authenticationService } from '../authentication-dialog/authentication-dialog.service';
 import { CookieService } from 'ngx-cookie-service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { ZonasService } from 'src/app/BackOffice/modules/boards/zonas.service';
 import { ToastrService } from 'ngx-toastr';
 import { UsersService } from 'src/app/BackOffice/modules/users/users.service';
@@ -177,6 +177,18 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.getZones();
+        this.getBoards();
+        this.getCustomer();
+        this.subscriptionData = this.mesasService.refreshData.subscribe(() => {
+          // this.listAPIdata();
+          this.getBoards();
+          // this.listAllData();
+        });
+      }
+    });
     this.getZones();
     this.getBoards();
     this.getCustomer();
