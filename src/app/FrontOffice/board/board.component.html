@@ -1,10 +1,27 @@
-<mat-tab-group color="warn" [(selectedIndex)]="selectedTabIndex" (selectedTabChange)="onTabChanged($event)"
-    animationDuration="0ms" mat-align-tabs="center">
-    <ng-container *ngFor="let zone of zones">
-        <mat-tab [label]="zone.id + ' - ' +zone.name">
-            <br><br>
+<ng-container *ngIf="this.zones.length === 0 ; else elseBlock">
+    <div class="setLoading">
+        <h1>There is no zones created!</h1>
+        <h2>Please create or ask an admin.</h2>
+        <!-- <mat-spinner style="margin-top: 30px; margin-bottom: 50px;"></mat-spinner> -->
+        <div style="display: flex;">
+            <button class="mat-raised-button" mat-raised-button color="primary" routerLink="/"
+                (click)="logout()">Back</button>
+            <button class="mat-raised-button" mat-raised-button color="primary" routerLink="/backoffice/mesas"
+                (click)="getCustomer()">Create</button>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #elseBlock>
+    <mat-tab-group color="warn" [(selectedIndex)]="selectedTabIndex" (selectedTabChange)="onTabChanged($event)"
+        animationDuration="0ms" mat-align-tabs="center">
+        <ng-container *ngFor="let zone of zones">
+            <mat-tab [label]="zone.id + ' - ' +zone.name">
+                <br><br>
                 <div class="allBoards">
                     <div class="example-boundary" [style.background]="'url('+ zone.image +')'">
+                        <p class="txt" style="text-align: center; line-height: 20px; margin-top: 40px;" *ngIf="this.boards.length === 0 && this.customerFunction !== 'Admin'">
+                            There is no Boards, <br /> please ask a Admin to create!</p>
                         <div class="dbButtons">
                             <div class="example-button-container">
                                 <button mat-mini-fab color="primary" routerLink="/" (click)="logout()">
@@ -12,9 +29,14 @@
                                 </button>
                                 <p class="txt">Change User</p>
                             </div>
+                            <div class="example-button-container">
+                                <button mat-mini-fab color="primary" routerLink="/backoffice/mesas">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                                <p class="txt" *ngIf="this.customerFunction === 'Admin'">Create Board</p>
+                            </div>
                         </div>
-                        <div longPress (mouseLongPress)="onPress(b.id)"
-                            *ngFor="let b of boards;">
+                        <div longPress (mouseLongPress)="onPress(b.id)" *ngFor="let b of boards;">
                             <div *ngIf="b.capacity === 4 && b.type==='round'" class="example-round"
                                 cdkDragBoundary=".example-boundary" cdkDrag [cdkDragStartDelay]="10000"
                                 [cdkDragFreeDragPosition]="{x: b.dragPosition.x, y: b.dragPosition.y}"
@@ -162,6 +184,7 @@
                         </div>
                     </div>
                 </div>
-        </mat-tab>
-    </ng-container>
-</mat-tab-group>
+            </mat-tab>
+        </ng-container>
+    </mat-tab-group>
+</ng-template>

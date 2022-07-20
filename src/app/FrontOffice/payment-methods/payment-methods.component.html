@@ -1,7 +1,7 @@
 <p class="paymentTxt">Payment Methods:</p>
 <mat-grid-list cols="2" rowHeight="80px" gutterSize="10px">
     <mat-grid-tile id="test" *ngFor="let method of methods">
-        <div class="paymentBoxx" (click)="getMethod(method.name)">
+        <div class="paymentBoxx" (click)="getMethod(method)">
             <img class="paymentImg" src="{{method.image}}" alt="payment method">
             <p class="paymentName">{{method.name}}</p>
         </div>

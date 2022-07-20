@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;1,700&display=swap");
 @import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
-@import 'simple-keyboard/build/css/index.css';
+@import "simple-keyboard/build/css/index.css";
 @import url("https://fonts.googleapis.com/css?family=Roboto");
 @import "~ngx-toastr/toastr";
 
@@ -73,7 +73,7 @@ img {
 
 .mat-tab-label.mat-tab-label-active {
     //min-width: 25px !important;
-    padding: 5px;
+    // padding: 5px;
     background-color: transparent;
     color: red;
 }
@@ -117,7 +117,11 @@ mat-form-field {
 }
 
 .highlight {
-    background-color: rgba(245, 138, 72, 0.859);
+    background-color: rgb(245, 245, 245)
+}
+
+.selectedRow {
+    background-color: rgb(240, 240, 240)
 }
 
 ul {
@@ -157,12 +161,12 @@ ul {
     border-radius: 10px;
 }
 
-.noDataText{
+.noDataText {
     color: #856404;
     margin-left: 10px;
 }
 
-.dataTable{
+.dataTable {
     width: 100%;
 }
 
@@ -170,3 +174,23 @@ ul {
     display: none;
 }
 
+.cellAvatar {
+    display: flex;
+    justify-content: center;
+}
+
+.alignCell {
+    display: flex;
+    justify-content: center;
+}
+
+.upload-div {
+    background-color: #ffa67a;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100px;
+    margin: 15px;
+    width: 225px;
+}

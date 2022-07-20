@@ -8,6 +8,8 @@ import { authenticationService } from '../authentication-dialog/authentication-d
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 import { ZonasService } from 'src/app/BackOffice/modules/boards/zonas.service';
+import { ToastrService } from 'ngx-toastr';
+import { UsersService } from 'src/app/BackOffice/modules/users/users.service';
 
 export interface DialogData {
   id: string,
@@ -31,8 +33,10 @@ export class BoardComponent implements OnInit {
 
   public subscriptionData!: Subscription; //subscription to refresh data
 
-  public zones;
+  public zones: any[] = [];
   public zonesById;
+  public customerId;
+  public customerFunction;
 
   selectedTabIndex = 0
   selectIdZone = 0;
@@ -43,7 +47,8 @@ export class BoardComponent implements OnInit {
   }
 
   constructor(public dialog: MatDialog, private mesasService: MesasService, public authService: authenticationService,
-    public cookieService: CookieService, private router: Router, private zonesService: ZonasService) { }
+    public cookieService: CookieService, private router: Router, private zonesService: ZonasService,
+    private toastr: ToastrService, private usersService: UsersService) { }
 
 
   openDialog() {
@@ -137,7 +142,7 @@ export class BoardComponent implements OnInit {
       map(data => data.filter(x => x.id_zone == this.selectIdZone))
     ).subscribe(data => {
       this.boards = data
-      console.log(data);
+      console.log(this.boards)
     })
   }
 
@@ -156,13 +161,25 @@ export class BoardComponent implements OnInit {
     })
   }
 
+  getCustomer() {
+    this.customerId = this.cookieService.get('userId');
+    this.usersService.getDataOffline().subscribe(data => {
+     for (let i = 0; i < data.length; i++) {
+       if (data[i].id == parseInt(this.customerId)) {
+         this.customerFunction = (data[i].function);
+       }
+     }
+    });
+  }
+
   ngOnDestroy(): void {
     this.subscriptionData.unsubscribe();
   }
 
   ngOnInit(): void {
-    this.getBoards();
     this.getZones();
+    this.getBoards();
+    this.getCustomer();
     this.subscriptionData = this.mesasService.refreshData.subscribe(() => {
       // this.listAPIdata();
       this.getBoards();

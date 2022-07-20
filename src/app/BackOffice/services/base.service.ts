@@ -10,7 +10,7 @@ import { CookieService } from 'ngx-cookie-service';
 @Inject({
   providedIn: 'root'
 })
-export abstract class BaseService<T extends { id: number, nif?: number, phone?: number, name?: string, id_category?: number, teste?: T[] }> {
+export abstract class BaseService<T extends { id?: number, nif?: number, phone?: number, name?: string, id_category?: number, teste?: T[] }> {
 
   //variables dexie-indexedDB
   private db: Dexie = new Dexie('pos');
@@ -65,6 +65,9 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
       artigo: 'id, id_category',
       categories: 'id, id_category',
       paymentMethods: 'id',
+      doc_header: 'id, id_doc_line, id_payment_method, user_id, zone_id, board_id, costumer_id',
+      doc_line: 'id',
+      doc_product: 'id',
     });
     this.table = this.db.table(this.nomeTabela);
   }
@@ -132,7 +135,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
                   resolve(data);
                 }
 
-                
+
                 this.refreshData.next();
 
               } else {
@@ -218,7 +221,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
         break;
 
       default:
-        return new Promise(async(resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
           try {
             if (method === 'register') {
 
@@ -235,6 +238,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
             this.refreshData.next();
 
           } catch (error) {
+            console.log(error);
             reject(this.toastr.error('Erro ao validar os dados', 'Aviso'));
           }
 
@@ -311,7 +315,7 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
           }
         });
         break;
-        
+
       case 'zone':
         return new Promise(async (resolve, reject) => {
           try {
@@ -425,5 +429,5 @@ export abstract class BaseService<T extends { id: number, nif?: number, phone?: 
   list(): Observable<T[]> {
     return this.http.get<T[]>(this.urlAPI);
   }
-  
+
 }

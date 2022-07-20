@@ -216,16 +216,18 @@ export class MesasComponent implements OnInit, AfterViewInit {
 
   //function that opens the delete client modal
   openDeleteModal(data: any) {
-    if (data[0]) {
+    if (data) {
       const dialogRef = this.dialog.open(DeleteModalComponent, {
-        height: '30%',
+        height: '40%',
         width: '50%',
-        data: { values: data[0], component: 'Zona'  }
+        data: { values: data, component: 'Zona' }
       });
       dialogRef.afterClosed().subscribe(data => {
         // console.log(data)
         if (data) {
-          this.delete(data);
+          data.forEach(zone => {
+            this.delete(zone);
+          });
         }
       });
     } else {
@@ -340,10 +342,33 @@ export class MesasComponent implements OnInit, AfterViewInit {
   }
 
   deleteCollection() {
-
+    let data: any[] = [];
     this.boards.forEach(board => {
-      this.mesasService.deleteDataOffline(board);
+      data.push(board);
     });
+    if (data) {
+      const dialogRef = this.dialog.open(DeleteModalComponent, {
+        height: '40%',
+        width: '50%',
+        data: { values: data, component: 'Mesa' }
+      });
+      dialogRef.afterClosed().subscribe(data => {
+        // console.log(data)
+        if (data) {
+          data.forEach(mesa => {
+            this.mesasService.delete(mesa).then(() => {
+              this.toastr.success('Mesa eliminada com sucesso')
+            }).catch((err) => {
+              err
+            });
+          });
+        }
+      });
+    } else {
+      this.toastr.info('É necessário escolher um registo para continuar.', 'Aviso');
+    }
+
+
 
     //   db.collection('boards').delete().then(() => {
     //     window.location.reload();

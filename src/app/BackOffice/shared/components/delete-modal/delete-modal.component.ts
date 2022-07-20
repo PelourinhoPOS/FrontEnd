@@ -14,6 +14,7 @@ export class DeleteModalComponent implements OnInit {
   public component: any;
 
   ngOnInit(): void {
+    console.log(this.data);
     this.register = this.data.values;
     this.component = this.data.component
   }

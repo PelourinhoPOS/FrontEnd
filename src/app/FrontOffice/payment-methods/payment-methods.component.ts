@@ -26,8 +26,8 @@ export class PaymentMethodsComponent implements OnInit {
       });
   }
 
-  getMethod(name){
-    this.paymentMethod = name;
+  getMethod(data){
+    this.paymentMethod = data;
     this.onClose();
   }
 

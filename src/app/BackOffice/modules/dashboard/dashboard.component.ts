@@ -5,6 +5,7 @@ import { ClientesService } from '../clientes/clientes.service';
 
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatTableDataSource} from '@angular/material/table';
+import * as moment from 'moment';
 
 
 @Component({
@@ -15,7 +16,6 @@ import {MatTableDataSource} from '@angular/material/table';
 export class DashboardComponent implements OnInit {
 
   constructor(private clientesService: ClientesService) { }
-
 
   nClientes: any;
   totalClientes: any;

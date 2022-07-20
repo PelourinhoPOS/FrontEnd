@@ -41,6 +41,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   showProgressBar = false;
 
+  // @ViewChild('htmlData') htmlData!: ElementRef;
   @ViewChild('btnAtualizar') btnAtualizar;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   dataSource = new MatTableDataSource<User>();

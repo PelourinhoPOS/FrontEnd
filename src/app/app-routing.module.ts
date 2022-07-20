@@ -13,6 +13,7 @@ import { CategoriesComponent } from './BackOffice/modules/categories/categories.
 import { MesasComponent } from './BackOffice/modules/boards/mesas.component';
 import { PaymentModalComponent } from './FrontOffice/payment-modal/payment-modal.component';
 import { PaymentMethodsComponent } from './BackOffice/modules/payment-methods/payment-methods.component';
+import { DocumentsComponent } from './BackOffice/modules/documents/documents.component';
 
 const routes: Routes = [
   { path: "", component: AuthenticationComponent },
@@ -31,7 +32,8 @@ const routes: Routes = [
       { path: "artigos", component: ArtigosComponent },
       { path: "categorias", component: CategoriesComponent },
       { path: "mesas", component: MesasComponent },
-      { path: "payments", component: PaymentMethodsComponent }
+      { path: "payments", component: PaymentMethodsComponent },
+      { path: "documents", component: DocumentsComponent }
     ]
   }
 ];

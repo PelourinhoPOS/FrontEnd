@@ -41,7 +41,7 @@ import { InputMaskModule } from '@ngneat/input-mask';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { PaymentMethodsComponent } from './FrontOffice/payment-methods/payment-methods.component';
 import { SharedModule } from './BackOffice/shared/shared.module';
-import {MatDividerModule} from '@angular/material/divider';
+import { DocumentsComponent } from './BackOffice/modules/documents/documents.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +60,7 @@ import {MatDividerModule} from '@angular/material/divider';
     MoneyDialogComponent,
     LongPressDirective,
     PaymentMethodsComponent,
+    DocumentsComponent,
   ],
   imports: [
     HttpClientModule,
@@ -83,7 +84,6 @@ import {MatDividerModule} from '@angular/material/divider';
     Ng2SearchPipeModule,
     DefaultModule,
     MatTableModule,
-    MatDividerModule,
     ToastrModule.forRoot({
       timeOut: 1500,
       progressBar: true,
