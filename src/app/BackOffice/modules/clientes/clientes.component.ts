@@ -11,7 +11,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { createMask } from '@ngneat/input-mask';
 import { SelectionModel } from '@angular/cdk/collections';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-clientes',
@@ -25,7 +24,7 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   public header: any
   public sticky: any;
 
-  constructor(private _liveAnnouncer: LiveAnnouncer, public dialog: MatDialog, private clientesService: ClientesService, private toastr: ToastrService) { }
+  constructor(public dialog: MatDialog, private clientesService: ClientesService, private toastr: ToastrService) { }
 
   //public cliente: Cliente = new Cliente();
   public clientes!: Observable<Cliente[]>; //save the clients returned from the API
@@ -420,7 +419,7 @@ export class CreateClientModalComponent implements OnInit {
   ngOnInit(): void {
 
     this.clientsForm = new FormGroup({
-      id: new FormControl(''),
+      id: new FormControl(),
       name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
       phone: new FormControl('', [Validators.required, Validators.maxLength(9), Validators.minLength(9), Validators.pattern('[0-9]*')]),
       nif: new FormControl('', [Validators.required, Validators.maxLength(9), Validators.minLength(9), Validators.pattern('[0-9]*')]),

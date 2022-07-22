@@ -45,7 +45,7 @@
                             <tr *ngFor="let item of done">
                                 <td class="service">{{item.product.name}}</td>
                                 <td class="iva">{{item.product.iva * 100}}%</td>
-                                <td class="unit">{{item.product.price}}€</td>
+                                <td class="unit">{{(item.product.price).toFixed(2)}}€</td>
                                 <td class="iva">{{(item.product.price * item.product.iva).toFixed(2)}}€</td>
                                 <td class="qty">{{item.quantity}}</td>
                                 <td class="total">{{((item.product.price * item.quantity) * item.product.iva +
@@ -61,7 +61,7 @@
                             </tr>
                             <tr>
                                 <td colspan="5" class="grand total">TOTAL</td>
-                                <td class="grand total">{{this.eachtotal}}€</td>
+                                <td class="grand total">{{(this.eachtotal).toFixed(2)}}€</td>
                             </tr>
                         </tbody>
                     </table>
@@ -81,7 +81,7 @@
                 BACK
             </button>
             <h2>PAYMENT</h2>
-            <button *ngIf="this.done.length > 0" class="top" (click)="drawer.toggle(); verifyCheckout();">
+            <button *ngIf="this.done.length > 0" class="top2" (click)="drawer.toggle(); verifyCheckout();">
                 VALIDATE
                 <mat-icon>arrow_forward_ios</mat-icon>
             </button>
@@ -169,7 +169,7 @@
                         [ngClass]="{'active': clickedIndexJ == j }" (click)="clickedIndexJ = j; changeClick2()"
                         (click)="getId(items.product.id)">
                         <span>{{items.product.name}}</span>
-                        <span class="pricePos">{{items.product.price}}</span>
+                        <span class="pricePos">{{items.product.price}}€</span>
                         <span class="priceIvaPos">{{items.product.iva * 100}}%</span>
                         <span class="priceIva2Pos">{{(items.product.price * items.product.iva).toFixed(2)}}€</span>
                         <span class="unityPos" *ngIf="items.product.unity_value">{{items.product.unity_value

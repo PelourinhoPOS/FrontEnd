@@ -31,7 +31,7 @@ export class BoardDialogComponent implements OnInit {
   addBoard() {
 
     let mesa : Mesa = {
-      id: Date.now(),
+      id: null,
       id_zone: parseInt(this.data),
       name: this.Form.controls["name"].value,
       capacity: this.capacity,

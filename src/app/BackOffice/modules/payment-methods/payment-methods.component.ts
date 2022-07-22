@@ -347,7 +347,7 @@ export class CreatePaymentMethodsComponent implements OnInit {
   ngOnInit(): void {
 
     this.paymentForm = new FormGroup({
-      id: new FormControl(''),
+      id: new FormControl(),
       name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
       description: new FormControl('', [Validators.required]),
       image: new FormControl(this.url),

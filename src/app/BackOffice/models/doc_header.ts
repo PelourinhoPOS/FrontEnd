@@ -1,6 +1,5 @@
 export class DocHeader {
     id: number;
-	id_doc_line: number;
     id_payment_method: number;
     user_id: number;
 	zone_id: number;

@@ -65,7 +65,7 @@ export abstract class BaseService<T extends { id?: number, nif?: number, phone?:
       artigo: 'id, id_category',
       categories: 'id, id_category',
       paymentMethods: 'id',
-      doc_header: 'id, id_doc_line, id_payment_method, user_id, zone_id, board_id, costumer_id',
+      doc_header: 'id',
       doc_line: 'id',
       doc_product: 'id',
     });
@@ -93,15 +93,17 @@ export abstract class BaseService<T extends { id?: number, nif?: number, phone?:
 
   //register data offline in indexedDB
   async registerDataOffline(data: T) {
-
     try {
-      const allData: T[] = await this.table.toArray();
 
-      if (allData.length > 0) {
-        let lastID: any = allData[allData.length - 1].id;
-        data.id = lastID + 1;
-      } else {
-        data.id = 1;
+      if (data.id === undefined || data.id === null) {
+        const allData: T[] = await this.table.toArray();
+  
+        if (allData.length > 0) {
+          let lastID: any = allData[allData.length - 1].id;
+          data.id = lastID + 1;
+        } else {
+          data.id = 1;
+        }
       }
 
       return this.validateData(data, 'register');
@@ -125,7 +127,7 @@ export abstract class BaseService<T extends { id?: number, nif?: number, phone?:
 
               if (this.getData === undefined || this.getData.id == data.id) {
                 if (method === 'register') {
-
+                
                   await this.table.add(data);
                   resolve(data);
 

@@ -36,7 +36,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import {MatCardModule} from '@angular/material/card';
 
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { PosComponent } from '../../modules/pos/pos.component';
+import { DocumentsComponent } from '../../modules/documents/documents.component';
 
 
 @NgModule({
@@ -47,8 +47,8 @@ import { PosComponent } from '../../modules/pos/pos.component';
     UsersComponent,
     MesasComponent,
     ArtigosComponent,
+    DocumentsComponent,
     CategoriesComponent,
-    PosComponent,
     CreateClientModalComponent,
     CreateEmployeeModalComponent,
     CreateArticleModalComponent,

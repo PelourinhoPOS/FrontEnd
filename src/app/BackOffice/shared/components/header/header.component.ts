@@ -15,7 +15,8 @@ export class HeaderComponent implements OnInit {
   constructor(private cookieService: CookieService, private _router: Router, private usersService: UsersService, private authService: authenticationService ) { }
 
   public userId;
-  public data;
+  public dataName;
+  public dataAvatar;
 
   
   ngOnInit(): void {
@@ -26,8 +27,8 @@ export class HeaderComponent implements OnInit {
     this.userId = parseInt(this.cookieService.get('userId'));
 
     this.usersService.getDataOffline().subscribe(data => {
-      this.data = data.filter(item => item.id === this.userId);
-      console.log(this.data);
+      this.dataName = data.filter(item => item.id === this.userId)[0].name;
+      this.dataAvatar = data.filter(item => item.id === this.userId)[0].avatar;
     });
 
     // db.collection('empregado').doc({ id: this.userId }).get().then(user => {

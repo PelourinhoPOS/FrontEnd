@@ -41,8 +41,6 @@ export class MesasComponent implements OnInit, AfterViewInit {
   public subscriptionData!: Subscription; //subscription to refresh data
   public dataRow: any; //save data os selected row of table
 
-
-
   selectedRowIndex = -1; //save the selected index from the table
 
   orderBy = 'name'; //save the order by selected

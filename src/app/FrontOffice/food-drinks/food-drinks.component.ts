@@ -300,8 +300,8 @@ export class FoodDrinksComponent implements OnInit {
     });
   }
 
-  getSubcategories(id){
-    this.categoryService.getDataOffline().pipe(map(data => data.filter(item => item.id_category == id ))).subscribe(data => {
+  getSubcategories(id) {
+    this.categoryService.getDataOffline().pipe(map(data => data.filter(item => item.id_category == id))).subscribe(data => {
       this.subcategories = data;
       this.length = this.subcategories.length;
     });

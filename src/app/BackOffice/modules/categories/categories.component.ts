@@ -378,7 +378,7 @@ export class CreateCategorieModalComponent implements OnInit {
     this.subcategorySelected = 0;
 
     this.categoriesForm = new FormGroup({
-      id: new FormControl(''),
+      id: new FormControl(),
       name: new FormControl('', [Validators.required, Validators.minLength(3)]),
       id_category: new FormControl(this.subcategorySelected, [Validators.required]),
       image: new FormControl(''),

@@ -91,7 +91,7 @@ export class AuthenticationComponent implements OnInit {
   ngOnInit(): void {
     this.todayDate = this.date.format('LL');
     this.hourNow = this.date.format('LTS');
-    //this.register(this.userData);
+    this.register(this.userData);
     this.isAuthenticated();
     this.getUsers();
     this.subscriptionData = this.usersService.refreshData.subscribe(() => {
