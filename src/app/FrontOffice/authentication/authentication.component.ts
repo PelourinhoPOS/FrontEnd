@@ -38,10 +38,10 @@ export class AuthenticationComponent implements OnInit {
     });
   }
 
-  public userData: User = {
+  public adminData: User = {
     id: 1,
     address: "Rua da liberdade",
-    name: "Teste Admin",
+    name: "Admin",
     phone: 9100000000,
     function: "Admin",
     sessionEnded: new Date(),
@@ -49,7 +49,22 @@ export class AuthenticationComponent implements OnInit {
     active: true,
     nif: 272533030,
     password: 1234,
-    avatar: 'https://media-exp1.licdn.com/dms/image/C4E03AQGrZ_EMwgu-lw/profile-displayphoto-shrink_400_400/0/1643915772499?e=1655942400&v=beta&t=toXdH3f00wdysaFtOWM771Eiv0iw2escR3B81xAUPfc',
+    avatar: './assets/images/admin.png',
+    synchronized: false,
+  }
+
+  public userData: User = {
+    id: 2,
+    address: "Rua da liberdade",
+    name: "Guest",
+    phone: 9100001000,
+    function: "Empregado",
+    sessionEnded: new Date(),
+    sessionStarted: new Date(),
+    active: true,
+    nif: 272530030,
+    password: 1234,
+    avatar: './assets/images/guest.png',
     synchronized: false
   }
 
@@ -91,6 +106,7 @@ export class AuthenticationComponent implements OnInit {
   ngOnInit(): void {
     this.todayDate = this.date.format('LL');
     this.hourNow = this.date.format('LTS');
+    this.register(this.adminData);
     this.register(this.userData);
     this.isAuthenticated();
     this.getUsers();

@@ -81,11 +81,14 @@
                 BACK
             </button>
             <h2>PAYMENT</h2>
-            <button *ngIf="this.done.length > 0" class="top2" (click)="drawer.toggle(); verifyCheckout();">
+            <button *ngIf="this.done.length > 0 && this.method !== undefined" class="top2"
+                (click)="drawer.toggle(); verifyCheckout();">
                 VALIDATE
                 <mat-icon>arrow_forward_ios</mat-icon>
             </button>
-            <button *ngIf="this.done.length == 0" class="top" (click)="verifyCheckout();">
+            <button
+                *ngIf="this.done.length == 0 && this.method === undefined || this.done.length > 0 && this.method === undefined || this.done.length == 0 && this.method !== undefined"
+                class="top" (click)="verifyCheckout();">
                 VALIDATE
                 <mat-icon>arrow_forward_ios</mat-icon>
             </button>
