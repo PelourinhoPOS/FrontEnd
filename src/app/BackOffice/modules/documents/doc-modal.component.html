@@ -1,0 +1,85 @@
+<div class="container">
+    <header class="clearfix">
+      <div id="logo">
+        <img src="../../../assets/images/logo.png">
+      </div>
+      <h1>FATURA SIMPLIFICADA</h1>
+      <div id="company" class="clearfix">
+        <div>PRi Coffe</div>
+        <div>R. Dr. Mário Cal Brandão 833 <br> 4440-452 Valongo</div>
+        <div>224 219 494</div>
+        <div><a href="mailto:geral@pri.pt">geral@pri.pt</a></div>
+      </div>
+      <div id="project">
+        <div><span>FATURA Nº</span> <strong> #{{data.id}}</strong></div>
+        <div *ngIf="data.cliente[0].nome!=undefined"><span>CLIENTE</span> {{data.cliente[0].nome}}</div>
+        <div *ngIf="data.cliente[0].morada!=undefined"><span>MORADA</span> {{data.cliente[0].morada}}</div>
+        <div *ngIf="data.cliente[0].nif!=undefined"><span>NIF</span> {{data.cliente[0].nif}}</div>
+        <div><span>DATA</span> {{data.date}}, {{data.time}}</div>
+      </div>
+    </header>
+    <main>
+      <div id="centerZone">
+        <div><span>ATENDIDO POR</span>{{data.user}}</div>
+        <div><span>ZONA</span>{{data.zona}}</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="service">PRODUTOS</th>
+            <th class="iva">IVA%</th>
+            <th>PREÇO UNI.€</th>
+            <th>VAL. IVA€</th>
+            <th>QUANT.</th>
+            <th>TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let artigo of artigos">
+            <td class="produtos">{{artigo.name}}</td>
+            <td class="iva">{{(artigo.iva_tax_amount*100)}}%</td>
+            <td class="preco-uni">{{(artigo.total/artigo.quantity).toFixed(2)}}€</td>
+            <td class="val-iva">{{((artigo.total/artigo.quantity)*artigo.iva_tax_amount).toFixed(2)}}€</td>
+            <td class="quant">{{artigo.quantity}}</td>
+            <td class="total">{{(artigo.total+(artigo.total/artigo.quantity)*(artigo.iva_tax_amount*artigo.quantity)).toFixed(2)}}€</td>
+          </tr>
+          <!-- <tr>
+            <td class="service">Development</td>
+            <td class="iva">23%</td>
+            <td class="unit">$40.00</td>
+            <td class="qty">80</td>
+            <td class="total">$3,200.00</td>
+          </tr>
+          <tr>
+            <td class="service">SEO</td>
+            <td class="iva">23%</td>
+            <td class="unit">$40.00</td>
+            <td class="qty">20</td>
+            <td class="total">$800.00</td>
+          </tr>
+          <tr>
+            <td class="service">Training</td>
+            <td class="iva">23%</td>
+            <td class="unit">$40.00</td>
+            <td class="qty">4</td>
+            <td class="total">$160.00</td>
+          </tr> -->
+          <tr>
+            <td colspan="5">SUBTOTAL</td>
+            <td class="total">{{data.subtotal_no_iva.toFixed(2)}}€</td>
+          </tr>
+          <tr>
+            <td colspan="5">IVA</td>
+            <td class="total">{{data.subtotal_iva.toFixed(2)}}€</td>
+          </tr>
+          <tr>
+            <td colspan="5" class="grand total">TOTAL</td>
+            <td class="grand total">{{(data.subtotal_iva+data.subtotal_no_iva).toFixed(2)}}€</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <footer>
+      Processado por computador
+    </footer>
+  </div>

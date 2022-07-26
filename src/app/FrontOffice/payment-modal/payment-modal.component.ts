@@ -152,9 +152,6 @@ export class PaymentModalComponent implements OnInit {
       }).catch(err => {
         this.toastr.error(err, 'Erro');
       });
-    this.refreshItems();
-    this.done = [];
-    this.eachtotal = 0;
   }
 
   openDialog(): void {
@@ -217,18 +214,12 @@ export class PaymentModalComponent implements OnInit {
         this.result = result;
 
         if (this.result >= 0) {
-          // this.refreshItems();
-          // this.done = [];
-          // this.eachtotal = 0;
-          this.simulateClick();
+          this.refreshItems();
         }
 
         if (this.result.length > 0) {
           if (this.result[1] === 0) {
-            // this.refreshItems();
-            // this.done = [];
-            // this.eachtotal = 0;
-            this.simulateClick();
+            this.refreshItems();
           }
         }
       });
@@ -251,11 +242,6 @@ export class PaymentModalComponent implements OnInit {
     } else {
       this.toastr.warning('No products to pay!');
     }
-  }
-
-  simulateClick() {
-    let element: HTMLElement = document.getElementsByClassName('top2')[0] as HTMLElement;
-    element.click();
   }
 
   changeClick1() {
@@ -425,9 +411,9 @@ export class PaymentModalComponent implements OnInit {
   getClient() {
     this.clientesService.getDataOffline().subscribe((data: any) => {
       this.client = data.find(x => x.id == this.id_customer);
-      this.nif = this.client?.nif;
-      this.address = this.client?.address;
-      this.docHeader.costumer_id = this.client?.id;
+      this.nif = this.client.nif;
+      this.address = this.client.address;
+      this.docHeader.costumer_id = this.client.id;
     })
   }
 
@@ -478,6 +464,8 @@ export class PaymentModalComponent implements OnInit {
       this.getClient();
       this.getUser();
       this.getPriceWithoutIva();
+    } else {
+      this.toastr.error('Nothing To Pay!');
     }
   }
 

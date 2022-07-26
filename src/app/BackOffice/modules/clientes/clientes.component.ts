@@ -115,8 +115,9 @@ export class ClientesComponent implements OnInit, AfterViewInit {
         this.clientesService.getDataOffline().pipe(
           map(arr => arr.sort((a, b) => a.name.localeCompare(b.name)))
         ).subscribe(data => {
-          this.clientesOff = of(data);
-          this.dataSource.data = data
+          let dataName = data.filter(cliente => cliente.name != 'Consumidor Final');
+          this.clientesOff = of(dataName);
+          this.dataSource.data = dataName;
         })
         break;
 
@@ -124,15 +125,17 @@ export class ClientesComponent implements OnInit, AfterViewInit {
         this.clientesService.getDataOffline().pipe(
           map(arr => arr.sort((a, b) => a.county.localeCompare(b.county)))
         ).subscribe(data => {
-          this.clientesOff = of(data);
-          this.dataSource.data = data
-        })
+          let dataName = data.filter(cliente => cliente.name != 'Consumidor Final');
+          this.clientesOff = of(dataName);
+          this.dataSource.data = dataName
+        });
         break;
 
       case 'id':
         this.clientesService.getDataOffline().subscribe(data => {
-          this.clientesOff = of(data);
-          this.dataSource.data = data
+          let dataName = data.filter(cliente => cliente.name != 'Consumidor Final');
+          this.clientesOff = of(dataName);
+          this.dataSource.data = dataName
         })
         break;
     }

@@ -32,7 +32,7 @@ export class DashboardComponent implements OnInit {
     });
 
     this.clientesService.getDataOffline().subscribe(data => {
-      this.totalClientes = data.length;
+      this.totalClientes = data.length-1;
     })
   }
 

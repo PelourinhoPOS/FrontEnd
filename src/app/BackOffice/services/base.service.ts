@@ -10,7 +10,7 @@ import { CookieService } from 'ngx-cookie-service';
 @Inject({
   providedIn: 'root'
 })
-export abstract class BaseService<T extends { id?: number, nif?: number, phone?: number, name?: string, id_category?: number, teste?: T[] }> {
+export abstract class BaseService<T extends { id?: number, nif?: number, phone?: number, name?: string, id_category?: number, teste?: T[], id_doc_header?: number, doc_lines_id?: number }> {
 
   //variables dexie-indexedDB
   private db: Dexie = new Dexie('pos');
@@ -97,7 +97,7 @@ export abstract class BaseService<T extends { id?: number, nif?: number, phone?:
 
       if (data.id === undefined || data.id === null) {
         const allData: T[] = await this.table.toArray();
-  
+
         if (allData.length > 0) {
           let lastID: any = allData[allData.length - 1].id;
           data.id = lastID + 1;
@@ -127,7 +127,7 @@ export abstract class BaseService<T extends { id?: number, nif?: number, phone?:
 
               if (this.getData === undefined || this.getData.id == data.id) {
                 if (method === 'register') {
-                
+
                   await this.table.add(data);
                   resolve(data);
 
@@ -343,6 +343,29 @@ export abstract class BaseService<T extends { id?: number, nif?: number, phone?:
           }
         });
         break;
+
+      case 'doc_line':
+        return new Promise(async (resolve, reject) => {
+          try {
+            await this.table.delete(data.id);
+            this.refreshData.next();
+            resolve(data);
+          } catch {
+            reject(this.toastr.error('Erro ao eliminar linha de documento localmente', 'Aviso'));
+          }
+        });
+
+      case 'doc_product':
+        return new Promise(async (resolve, reject) => {
+          try {
+            console.log(data);
+            await this.table.delete(data.id);
+            this.refreshData.next();
+            resolve(data);
+          } catch {
+            reject(this.toastr.error('Erro ao eliminar linha de documento localmente', 'Aviso'));
+          }
+        });
 
       default:
         return new Promise(async (resolve, reject) => {

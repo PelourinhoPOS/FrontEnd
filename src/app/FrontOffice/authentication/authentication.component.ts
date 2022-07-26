@@ -73,20 +73,7 @@ export class AuthenticationComponent implements OnInit {
     await this.usersService.register(empregado);
   }
 
-  // addUser() {
-  //   db.collection('empregado').add({
-  //     id: 2,
-  //     name: 'Paulo Sousa',
-  //     password: '6996',
-  //     funcao: 'Admin',
-  //     avatar: 'https://media-exp1.licdn.com/dms/image/C4E03AQGrZ_EMwgu-lw/profile-displayphoto-shrink_400_400/0/1643915772499?e=1655942400&v=beta&t=toXdH3f00wdysaFtOWM771Eiv0iw2escR3B81xAUPfc'
-  //   });
-  // }
-
   getUsers() {
-    // db.collection('empregado').get().then(users => {
-    //   this.user = users
-    // });
     this.usersService.getDataOffline().subscribe(data => {
       this.user = data
     });

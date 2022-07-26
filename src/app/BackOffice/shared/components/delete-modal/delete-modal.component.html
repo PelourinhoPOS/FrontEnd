@@ -8,7 +8,13 @@
 <mat-dialog-content class="mat-typography">
     <div class="scroll">
         <ng-container *ngFor="let data of register">
-            <h3>{{component}} nº{{data.id}} - {{data.name}}</h3>
+            <ng-container *ngIf="component === 'Fatura'; else elseBlock">
+                <h3>{{component}} nº{{data.id}} registada em {{data.date}} com o valor total de {{(data.subtotal_no_iva+data.subtotal_iva).toFixed(2)}}€.</h3>
+            </ng-container>
+
+            <ng-template #elseBlock>
+                <h3>{{component}} nº{{data.id}} - {{data.name}}</h3>
+            </ng-template>
         </ng-container>
     </div>
 </mat-dialog-content>

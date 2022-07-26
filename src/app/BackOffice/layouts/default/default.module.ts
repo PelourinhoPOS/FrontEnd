@@ -36,7 +36,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import {MatCardModule} from '@angular/material/card';
 
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { DocumentsComponent } from '../../modules/documents/documents.component';
+import { DocModalComponent, DocumentsComponent } from '../../modules/documents/documents.component';
 
 
 @NgModule({
@@ -55,7 +55,8 @@ import { DocumentsComponent } from '../../modules/documents/documents.component'
     CreateCategorieModalComponent,
     CreateBoardModalComponent,
     PaymentMethodsComponent,
-    CreatePaymentMethodsComponent
+    CreatePaymentMethodsComponent,
+    DocModalComponent
   ],
   imports: [
     CommonModule,

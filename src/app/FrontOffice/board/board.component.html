@@ -27,11 +27,11 @@
                                 </button>
                                 <p class="txt">Change User</p>
                             </div>
-                            <div class="example-button-container">
+                            <div class="example-button-container"  *ngIf="this.customerFunction === 'Admin'">
                                 <button mat-mini-fab color="primary" routerLink="/backoffice/mesas">
                                     <mat-icon>add</mat-icon>
                                 </button>
-                                <p class="txt" *ngIf="this.customerFunction === 'Admin'">Create Board</p>
+                                <p class="txt">Create Board</p>
                             </div>
                         </div>
                         <div longPress (mouseLongPress)="onPress(b.id)" *ngFor="let b of boards;">

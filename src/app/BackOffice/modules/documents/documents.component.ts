@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { DocHeader } from '../../models/doc_header';
 import { DocLines } from '../../models/doc_lines';
 import { DocProducts } from '../../models/doc_products';
@@ -16,6 +16,9 @@ import { ClientesService } from '../clientes/clientes.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { ArtigosService } from '../artigos/artigos.service';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DeleteModalComponent } from '../../shared/components/delete-modal/delete-modal.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-documents',
@@ -35,8 +38,8 @@ export class DocumentsComponent implements OnInit {
     private zoneService: ZonasService,
     private mesasService: MesasService,
     private clientesService: ClientesService,
-    private artigosService: ArtigosService
-    ,
+    private toastr: ToastrService,
+    public dialog: MatDialog,
   ) { }
 
   public docHeader: DocHeader;
@@ -73,19 +76,36 @@ export class DocumentsComponent implements OnInit {
   public faturas: Fatura[] = [];
 
   public paymentMethod: string;
+
   public nameClient: string;
+  public addressClient: string;
+  public nifCliente: number;
+
   public nameUser: string;
   public nameBoard: string;
   public nameZone: string;
 
   public nameArticle: string;
 
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnInit(): void {
+
     this.getFatura();
+
+    this.subscriptionData = this.docHeaderService.refreshData.subscribe(() => {
+      this.subscriptionData = this.docLinesService.refreshData.subscribe(() => {
+        this.subscriptionData = this.docProductsService.refreshData.subscribe(() => {
+          setInterval(() => {
+            window.location.reload();
+          }, 1000);
+        });
+      });
+
+    });
   }
 
   getPayementMethod(id: number) {
@@ -97,6 +117,8 @@ export class DocumentsComponent implements OnInit {
   getClient(id: number) {
     return this.clientesService.getDataOffline().subscribe(data => {
       this.nameClient = data.find(x => x.id === id).name;
+      this.addressClient = data.find(x => x.id === id).address;
+      this.nifCliente = data.find(x => x.id === id).nif;
     });
   }
 
@@ -115,12 +137,6 @@ export class DocumentsComponent implements OnInit {
   getZone(id: number) {
     return this.zoneService.getDataOffline().subscribe(data => {
       this.nameZone = data.find(x => x.id === id).name;
-    });
-  }
-
-  getArticle(id: number) {
-    return this.artigosService.getDataOffline().subscribe(data => {
-      this.nameArticle = data.find(x => x.id === id).name;
     });
   }
 
@@ -151,7 +167,11 @@ export class DocumentsComponent implements OnInit {
               user: this.nameUser,
               zona: this.nameZone,
               mesa: this.nameBoard,
-              cliente: this.nameClient,
+              cliente: [{
+                nome: this.nameClient,
+                morada: this.addressClient,
+                nif: this.nifCliente,
+              }],
               date: dataHeader[i].date,
               time: dataHeader[i].time,
               artigos: [],
@@ -170,14 +190,84 @@ export class DocumentsComponent implements OnInit {
       }
       this.docsOff = of(this.faturas);
       this.dataSource.data = this.faturas;
-      console.log(this.faturas);
     })
 
     setInterval(() => {
-      this
       this.showProgressBar = false;
     }, 1300); //wait 1,30 seconds to show progress bar
 
+  }
+
+  openModal(data: any) {
+    if (data) {
+      this.selection.select(data);
+      this.selectedRowIds.add(data.id);
+    }
+    if (this.selection.selected.length > 1) {
+      this.toastr.info('Não é possível consultar mais de um registo.');
+    } else {
+      const dialogRef = this.dialog.open(DocModalComponent, {
+        height: '690px',
+        width: '700px',
+        data: data
+      });
+      dialogRef.afterClosed().subscribe(data => {
+        // if (cliente) {
+        //   this.register(cliente);
+        // }
+      });
+    }
+  }
+  remove: boolean = false;
+  openDeleteModal() {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
+      height: '40%',
+      width: '50%',
+      data: { values: this.selection.selected, component: 'Fatura' }
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      let i = 0;
+      data.forEach(element => {
+
+        this.docHeaderService.deleteDataOffline(element).then((dataHeader: any) => {
+
+          this.docLinesService.getDataOffline().subscribe(dataLines => {
+            let docLinesData = dataLines.filter(x => x.id_doc_header === dataHeader.id);
+
+            docLinesData.forEach(element => {
+              this.docLinesService.deleteDataOffline(element).then((dataLines: any) => {
+
+                this.docProductsService.getDataOffline().subscribe(dataProducts => {
+                  let docProductsData = dataProducts.filter(x => x.doc_lines_id === dataLines.id);
+
+                  docProductsData.forEach(element => {
+                    this.docProductsService.deleteDataOffline(element).then((dataProducts: any) => {
+
+                      i++;
+
+                      if (dataProducts) {
+                        this.remove = true;
+                      } else {
+                        this.remove = false;
+                      }
+
+                      if (this.remove && docProductsData.length == i) {
+                        this.toastr.success('Fatura eliminada com sucesso');
+                      }
+
+                    });
+                  });
+                });
+              }).catch((error: any) => {
+                this.toastr.error('Erro ao eliminar fatura', 'Aviso');
+              });
+            });
+          });
+        }).catch(error => {
+          this.toastr.error('Erro ao eliminar fatura', 'Aviso');
+        });
+      });
+    });
   }
 
   onOptionsSelected() {
@@ -254,3 +344,42 @@ export class DocumentsComponent implements OnInit {
 
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@Component({
+  selector: 'app-doc-modal',
+  templateUrl: './doc-modal.component.html',
+  styleUrls: ['./doc-modal.component.scss']
+})
+export class DocModalComponent implements OnInit {
+
+  public artigos: any[] = [];
+  public nameArtigo: string;
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private artigosService: ArtigosService) { }
+
+  ngOnInit(): void {
+    console.log(this.data);
+    this.getProducts();
+  }
+
+  getProducts() {
+
+    for (let i = 0; i < this.data.artigos.length; i++) {
+
+      this.artigosService.getDataOffline().subscribe(data => {
+        this.nameArtigo = data.find(x => x.id === this.data.artigos[i].id_article).name;
+
+        this.artigos[i] = {
+          id: this.data.artigos[i].id,
+          doc_lines_id: this.data.artigos[i].doc_lines_id,
+          name: this.nameArtigo,
+          quantity: this.data.artigos[i].quantity,
+          iva_tax_amount: this.data.artigos[i].iva_tax_amount,
+          total: this.data.artigos[i].total,
+        };
+      });
+    }
+    console.log(this.artigos);
+  }
+}
