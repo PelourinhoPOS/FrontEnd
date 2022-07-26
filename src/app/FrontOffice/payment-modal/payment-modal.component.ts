@@ -214,18 +214,21 @@ export class PaymentModalComponent implements OnInit {
         this.result = result;
 
         if (this.result >= 0) {
-          this.refreshItems();
+          this.simulateClick();
         }
 
         if (this.result.length > 0) {
           if (this.result[1] === 0) {
-            this.refreshItems();
+            this.simulateClick();
           }
         }
       });
-    } else {
-      this.toastr.warning('No products to pay!');
     }
+  }
+
+  simulateClick() {
+    let element: HTMLElement = document.getElementsByClassName('top2')[0] as HTMLElement;
+    element.click();
   }
 
   paymentMethods() {
