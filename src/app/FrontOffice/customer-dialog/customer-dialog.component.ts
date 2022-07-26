@@ -5,6 +5,8 @@ import { map, of, Observable, Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { Cliente } from 'src/app/BackOffice/models/cliente';
 import { CreateClientModalComponent } from 'src/app/BackOffice/modules/clientes/clientes.component';
+import { ToastrService } from 'ngx-toastr';
+
 
 export interface DialogData {
   name: string;
@@ -29,7 +31,7 @@ export class CustomerDialogComponent implements OnInit {
   dataSource = new MatTableDataSource<Cliente>();
 
   constructor(private clientesService: ClientesService, public dialogRef: MatDialogRef<CustomerDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData, public dialog: MatDialog) { }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData, public dialog: MatDialog, public toastr: ToastrService) { }
   public subscriptionData!: Subscription;
 
   getCustomer() {
@@ -79,10 +81,24 @@ export class CustomerDialogComponent implements OnInit {
 
   openUpdateModal() {
     if (this.customerData) {
-      this.dialog.open(CreateClientModalComponent, {
-        height: '690px',
-        width: '770px',
-      });
+      if (this.customerData.id === 1) {
+        this.toastr.warning('Não pode alterar estes dados', 'Erro');
+      } else {
+        const dialogRef = this.dialog.open(CreateClientModalComponent, {
+          height: '690px',
+          width: '770px',
+          data: { values: this.customerData, update: true }
+        });
+        dialogRef.afterClosed().subscribe(cliente => {
+          if (cliente) {
+            this.clientesService.update(cliente).then(data => {
+              if (data) {
+                this.toastr.success('Cliente atualizado com sucesso', 'Sucesso');
+              }
+            });
+          }
+        });
+      }
     }
   }
 
