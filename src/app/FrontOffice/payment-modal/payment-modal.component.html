@@ -81,17 +81,18 @@
                 BACK
             </button>
             <h2>PAYMENT</h2>
-            <button *ngIf="this.done.length > 0 && this.method !== undefined" class="top2"
-                (click)="drawer.toggle(); verifyCheckout();">
-                VALIDATE
-                <mat-icon>arrow_forward_ios</mat-icon>
-            </button>
             <button
-                *ngIf="this.done.length == 0 && this.method === undefined || this.done.length > 0 && this.method === undefined || this.done.length == 0 && this.method !== undefined"
-                class="top" (click)="verifyCheckout();">
+                *ngIf="this.done.length > 0 && this.method !== undefined && this.eachtotal > 100 && this.customerResult !== undefined || this.done.length > 0 && this.method !== undefined && this.eachtotal < 100; else elseBlock"
+                class="top2" (click)="drawer.toggle(); verifyCheckout();">
                 VALIDATE
                 <mat-icon>arrow_forward_ios</mat-icon>
             </button>
+            <ng-template #elseBlock>
+                <button class="top" (click)="verifyCheckout();">
+                    VALIDATE
+                    <mat-icon>arrow_forward_ios</mat-icon>
+                </button>
+            </ng-template>
         </div>
         <!-- <mat-divider></mat-divider> -->
         <div class="centerCDK" cdkDropListGroup>
@@ -139,7 +140,6 @@
                     <span class="toPay" id="val"
                         *ngIf="this.splited && this.splited[1] > 0 && this.done.length > 0">{{this.splited[1]}} x
                         {{this.splited[0]}}€</span>
-                    <span class="toPay" id="val" *ngIf="this.splited && this.splited[1] === 0 "> 0€</span>
                     <span class="toPay" id="val" *ngIf="this.result >= 0">{{this.result}}€</span>
                 </div>
             </div>
@@ -185,7 +185,7 @@
                 <div style="display:flex;">
                     <div class="customer" (click)="openDialog()">
                         <mat-icon>person</mat-icon>
-                        <button *ngIf="!this.name">Select Customer</button>
+                        <button *ngIf="this.name === undefined">Select Customer</button>
                         <button *ngIf="this.name">{{this.name}}</button>
                     </div>
                     <div class="createUser" (click)="createUser()">
@@ -194,7 +194,7 @@
                     </div>
                 </div>
                 <div style="display:flex;">
-                    <div class="customer" id="invoice" (click)="getInvoice()">
+                    <div class="customer" id="invoice">
                         <mat-icon> insert_drive_file</mat-icon>
                         <button id="button">Simplified Invoice</button>
                     </div>

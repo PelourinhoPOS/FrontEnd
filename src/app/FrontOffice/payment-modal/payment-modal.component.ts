@@ -80,6 +80,7 @@ export class PaymentModalComponent implements OnInit {
   public userId;
   public username;
   public totalPriceWithoutIva;
+  public customerResult;
 
   public docHeader: DocHeader = new DocHeader;
   public docProducts: DocProducts = new DocProducts;
@@ -162,8 +163,27 @@ export class PaymentModalComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.name = result[0];
-      this.id_customer = result[1];
+
+      this.customerResult = result;
+
+      if (result !== undefined) {
+        this.name = this.customerResult[0];
+        this.id_customer = this.customerResult[1];
+        this.getInvoice();
+      }
+
+      if (result === undefined || this.customerResult[0] === undefined && this.customerResult[1] === undefined) {
+        this.name = undefined;
+        this.id_customer = undefined;
+
+        let divData = document.getElementById('invoice');
+        let buttonData = document.getElementById('button');
+
+        if (this.name === undefined) {
+          divData.style.backgroundColor = 'white';
+          buttonData.style.backgroundColor = 'white';
+        }
+      }
     });
   }
 
@@ -189,6 +209,7 @@ export class PaymentModalComponent implements OnInit {
       });
       dialogRef.afterClosed().subscribe(result => {
         this.splited = result;
+        console.log(this.splited);
         this.split = this.eachtotal / this.splited[1];
       });
     } else {
@@ -212,8 +233,22 @@ export class PaymentModalComponent implements OnInit {
       });
       dialogRef.afterClosed().subscribe(result => {
         this.result = result;
+        console.log(this.result);
 
-        if (this.result >= 0) {
+        if (this.result >= 0 && this.eachtotal < 100) {
+          this.simulateClick();
+        }
+
+        if (this.eachtotal > 100 && this.id_customer === undefined) {
+          this.toastr.warning('This Invoice Needs To Be Simplified!');
+          this.openDialog();
+        }
+
+        if (this.eachtotal > 100 && this.id_customer !== undefined) {
+          this.simulateClick();
+        }
+
+        if (this.result >= 0 && this.eachtotal > 100 && this.id_customer !== undefined) {
           this.simulateClick();
         }
 
@@ -367,6 +402,10 @@ export class PaymentModalComponent implements OnInit {
     }
     this.total = 0;
     this.eachPrice();
+    this.splited = undefined;
+    this.nif = undefined;
+    this.id_customer = undefined;
+    this.method = undefined;
   }
 
   changeLeft() {
@@ -376,23 +415,23 @@ export class PaymentModalComponent implements OnInit {
     }
     this.totalPrice();
     this.eachtotal = 0;
+    this.splited = undefined;
+    this.nif = undefined;
+    this.id_customer = undefined;
+    this.method = undefined;
   }
 
   getInvoice() {
     let divData = document.getElementById('invoice');
     let buttonData = document.getElementById('button');
 
-    this.number++;
-
-    if (this.number === 1) {
+    if (this.name) {
       divData.style.backgroundColor = 'rgb(255, 229, 180)';
       buttonData.style.backgroundColor = 'rgb(255, 229, 180)';
-    } else if (this.number === 2) {
+    } else {
       divData.style.backgroundColor = 'white';
       buttonData.style.backgroundColor = 'white';
-      this.number = 0;
     }
-
   }
 
   getZone() {
@@ -470,6 +509,15 @@ export class PaymentModalComponent implements OnInit {
     } else {
       this.toastr.error('Nothing To Pay!');
     }
+
+    if (this.done.length > 0 && this.method === undefined) {
+      this.toastr.error('Select a Payment Method!');
+    }
+
+    if (this.eachtotal > 100 && this.name === undefined) {
+      this.toastr.error('Select a Customer!');
+    }
+
   }
 
   ngOnInit(): void {

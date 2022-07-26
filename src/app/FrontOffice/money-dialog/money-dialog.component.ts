@@ -26,14 +26,9 @@ export class MoneyDialogComponent implements OnInit {
 
   onNoClick(): void {
 
-    // if (this.data.split[1] === 0) {
-    //   this.data.split[0] = 0;
-    // } else this.data.split[1] = this.data.split[1] - 1;
-
-    if (this.data.split === undefined && this.data.value <= this.price) {
+    if (this.data.split === undefined && this.data.value <= this.price || this.data.split === null && this.data.value <= this.price) {
       this.moneyMissing = false;
       this.dialogRef.close(this.data.value = 0);
-      this.toastr.success('Payment successful');
     } else {
       this.moneyMissing = true;
     }
