@@ -43,8 +43,14 @@ export class CustomerDialogComponent implements OnInit {
   onRowClicked(row: any) {
     this.selectedRowIndex = row.id;
     this.dataRow = row;
-    this.name = row.name;
-    this.id = row.id;
+  }
+
+  selectRow() {
+    if (this.dataRow == null) {
+      this.toastr.warning('Selecione um cliente', 'Erro');
+    } else {
+      this.dialogRef.close([this.dataRow.name, this.dataRow.id]);
+    }
   }
 
   listLocalData() {
@@ -108,6 +114,11 @@ export class CustomerDialogComponent implements OnInit {
 
   onOptionsSelected() {
     this.listLocalData();
+  }
+
+  unselectRow() {
+    this.selectedRowIndex = -1;
+    this.dataRow = null;
   }
 
   ngOnInit(): void {

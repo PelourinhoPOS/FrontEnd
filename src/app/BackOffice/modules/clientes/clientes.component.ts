@@ -11,6 +11,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { createMask } from '@ngneat/input-mask';
 import { SelectionModel } from '@angular/cdk/collections';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-clientes',
@@ -483,14 +484,16 @@ export class CreateClientModalComponent implements OnInit {
   }
 
   submitForm() {
+    moment.locale('pt-pt');
+
     this.cliente = this.clientsForm.value; //get the data from the form
     this.cliente.phone = parseInt(this.phone.value); //convert the phone number to integer
     this.cliente.nif = parseInt(this.nif.value); //convert the nif to integer
 
     if (this.update) {
-      this.cliente.lastUpdate = new Date().toJSON().slice(0, 10); //set the last update
+      this.cliente.lastUpdate = moment().format('L'); //set the last update
     } else {
-      this.cliente.registerDate = new Date().toJSON().slice(0, 10); //set the register date
+      this.cliente.registerDate = moment().format('L'); //set the register date
     }
 
     if (this.clientsForm.valid) {

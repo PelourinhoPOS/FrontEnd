@@ -26,21 +26,22 @@
                     <mat-card-subtitle>{{today}}</mat-card-subtitle>
                     <mat-card-content class="cardContent">
                         <p class="cardData">
-                            0
+                            {{nVendas}}
                         </p>
                     </mat-card-content>
-                    <mat-card-subtitle>Total: 0 </mat-card-subtitle>
+                    <mat-card-subtitle>Total: {{totalVendas}}</mat-card-subtitle>
                 </mat-card>
 
             </mat-grid-tile>
             <mat-grid-tile>
                 
                 <mat-card>
-                    <mat-card-title>Shiba Inu</mat-card-title>
-                    <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-                    <mat-card-content>
-                      <p>This card indeterminates progress bar.</p>
+                    <mat-card-title>Nº de produtos vendidos</mat-card-title>
+                    <mat-card-subtitle>Desde sempre</mat-card-subtitle>
+                    <mat-card-content class="cardContent">
+                      <p class="cardData">{{this.nProdutos}}</p>
                     </mat-card-content>
+                    <mat-card-subtitle>Ultimo produto vendido: </mat-card-subtitle>
                   </mat-card>
 
             </mat-grid-tile>

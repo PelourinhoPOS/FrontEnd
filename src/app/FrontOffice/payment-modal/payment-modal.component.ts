@@ -499,25 +499,36 @@ export class PaymentModalComponent implements OnInit {
     this.formattedTime = hh + ':' + min + ':' + sec;
   }
 
+
   verifyCheckout() {
-    if (this.done.length > 0) {
-      this.getDate();
-      this.getZone();
-      this.getClient();
-      this.getUser();
-      this.getPriceWithoutIva();
+
+    if (this.eachtotal > 100 && this.name === 'Consumidor Final') {
+      this.toastr.error('Não pode selecionar o consumidor final numa fatura com valor superior a 100€');
     } else {
-      this.toastr.error('Nothing To Pay!');
-    }
+      if (this.done.length > 0) {
+        this.getDate();
+        this.getZone();
+        this.getClient();
+        this.getUser();
+        this.getPriceWithoutIva();
+      } else {
+        this.toastr.error('Nothing To Pay!');
+      }
 
-    if (this.done.length > 0 && this.method === undefined) {
-      this.toastr.error('Select a Payment Method!');
-    }
+      if (this.done.length > 0 && this.method === undefined) {
+        this.toastr.error('Select a Payment Method!');
+      }
 
-    if (this.eachtotal > 100 && this.name === undefined) {
-      this.toastr.error('Select a Customer!');
+      if (this.eachtotal > 100 && this.name === undefined) {
+        this.toastr.error('Select a Customer!');
+      }
     }
+  }
 
+  checkItems(){
+    if(this.done.length === 0){
+      this.toastr.warning('No Products To Pay!');
+    }
   }
 
   ngOnInit(): void {

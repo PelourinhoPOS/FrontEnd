@@ -1,6 +1,6 @@
 <div class="top">
   <div>
-    <button mat-raised-button class="btnOptions" [mat-dialog-close]="[name, id]">Select</button>
+    <button mat-raised-button class="btnOptions" (click)="selectRow()">Select</button>
     <button mat-raised-button class="btnOptions" (click)="openUpdateModal();">Update</button>
   </div>
 

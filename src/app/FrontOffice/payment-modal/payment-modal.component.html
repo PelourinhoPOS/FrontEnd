@@ -82,7 +82,7 @@
             </button>
             <h2>PAYMENT</h2>
             <button
-                *ngIf="this.done.length > 0 && this.method !== undefined && this.eachtotal > 100 && this.customerResult !== undefined || this.done.length > 0 && this.method !== undefined && this.eachtotal < 100; else elseBlock"
+                *ngIf="this.done.length > 0 && this.method !== undefined && this.eachtotal > 100 && this.customerResult !== undefined && this.name!=='Consumidor Final' || this.done.length > 0 && this.method !== undefined && this.eachtotal < 100 && this.name!=='Consumidor Final'; else elseBlock"
                 class="top2" (click)="drawer.toggle(); verifyCheckout();">
                 VALIDATE
                 <mat-icon>arrow_forward_ios</mat-icon>
@@ -120,10 +120,10 @@
                 </div>
                 <p>Total: {{this.total}}€</p>
                 <div style="display: flex;">
-                    <div class="methods" (click)="payment(); resetMethod()">
+                    <div class="methods" (click)="payment(); resetMethod(); checkItems();">
                         <button>Money</button>
                     </div>
-                    <div class="methods" (click)="resetMethod();">
+                    <div class="methods" (click)="resetMethod(); checkItems();">
                         <button>MB</button>
                     </div>
                     <div class="methods" id="noMargin" (click)="paymentMethods()" *ngIf="!this.method">

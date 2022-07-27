@@ -65,7 +65,7 @@ export abstract class BaseService<T extends { id?: number, nif?: number, phone?:
       artigo: 'id, id_category',
       categories: 'id, id_category',
       paymentMethods: 'id',
-      doc_header: 'id',
+      doc_header: 'id, date',
       doc_line: 'id',
       doc_product: 'id',
     });

@@ -7,6 +7,7 @@ import { VirtualKeyboardComponent } from 'src/app/BackOffice/shared/components/v
 import { MesasService } from 'src/app/BackOffice/modules/boards/mesas.service';
 import { Mesa } from 'src/app/BackOffice/models/mesa';
 import { CookieService } from 'ngx-cookie-service';
+import { ToastrService } from 'ngx-toastr';
 
 export interface DialogData {
   id: number,
@@ -22,7 +23,7 @@ export class ChangeProductDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<ChangeProductDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData, public ArtigosService: ArtigosService, private fb: FormBuilder,
-    public dialog: MatDialog, public mesasService: MesasService, public CookieService: CookieService) { }
+    public dialog: MatDialog, public mesasService: MesasService, public CookieService: CookieService, public toastr: ToastrService,) { }
 
   Form = this.fb.group({
     price: new FormControl('', [Validators.required]),
@@ -35,6 +36,9 @@ export class ChangeProductDialogComponent implements OnInit {
   public promotion: number = 1;
   public boardId;
   public total;
+  public saveId;
+  public cart;
+  public modified;
 
   dialogKeyboard: any;
 
@@ -71,10 +75,20 @@ export class ChangeProductDialogComponent implements OnInit {
   }
 
   getById() {
-    this.ArtigosService.getDataOffline().subscribe((data) => {
-      this.item = data.find(item => item.id == this.data.id);
-      this.getQuantity(this.item.id);
-    })
+    if (this.data.id < 1000000) {
+      this.ArtigosService.getDataOffline().subscribe((data) => {
+        this.item = data.find(item => item.id == this.data.id);
+        this.getQuantity(this.item.id);
+      });
+    }
+
+    if (this.item === undefined) {
+      this.mesasService.getDataOffline().subscribe((data) => {
+        this.cart = (data.find(item => item.id == this.CookieService.get('boardId')).cart);
+        this.item = (this.cart.find(item => item.product.id == this.data.id).product);
+        this.getQuantity(this.item.id);
+      });
+    }
   }
 
   getQuantity(item) {
@@ -93,13 +107,50 @@ export class ChangeProductDialogComponent implements OnInit {
     this.quantity = "";
   }
 
+  getBoardData() {
+    this.mesasService.getDataOffline().subscribe((data) => {
+      this.cart = (data.find(item => item.id == this.CookieService.get('boardId')).cart);
+    });
+  }
+
   updateProduct(id) {
+
+    this.saveId = id;
 
     this.data.cart.forEach(element => {
       if (element.product.id == id) {
         element.quantity = this.quantity;
-        element.product.price = this.item.price;
+
+        if (element.product.id == id && this.item.price !== element.product.price) {
+          element.quantity = this.quantity;
+          element.product.price = this.item.price;
+          element.product.id = Date.now();
+        }
       }
+
+      for (let i = 0; i < this.cart.length; i++) {
+        if (this.cart[i].product.id == id) {
+          this.cart[i].quantity = this.quantity;
+          if (this.item.price !== this.cart[i].product.price) {
+            this.cart[i].quantity = this.quantity;
+            this.cart[i].product.price = this.item.price;
+            this.cart[i].product.id = Date.now();
+          }
+        }
+      }
+
+      let mesa: Mesa = {
+        id: this.CookieService.get('boardId'),
+        cart: this.cart
+      }
+
+      this.mesasService.update(mesa).then(() => {
+        this.toastr.success('Produto atualizado com sucesso')
+      }).catch((err) => {
+        err
+      });
+
+
     });
 
     const round = (num, places) => {
@@ -117,6 +168,7 @@ export class ChangeProductDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.getById();
+    this.getBoardData();
   }
 
 }
