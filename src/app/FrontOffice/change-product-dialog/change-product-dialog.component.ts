@@ -39,6 +39,7 @@ export class ChangeProductDialogComponent implements OnInit {
   public saveId;
   public cart;
   public modified;
+  public id: number = 0;
 
   dialogKeyboard: any;
 
@@ -139,12 +140,15 @@ export class ChangeProductDialogComponent implements OnInit {
         }
       }
 
+      this.id = Number(this.CookieService.get('boardId'));
+
       let mesa: Mesa = {
-        id: this.CookieService.get('boardId'),
-        cart: this.cart
+        id: this.id,
+        cart: this.cart,
+        total: this.total,
       }
 
-      this.mesasService.update(mesa).then(() => {
+      this.mesasService.updateDataOffline(mesa).then(() => {
         this.toastr.success('Produto atualizado com sucesso')
       }).catch((err) => {
         err

@@ -168,10 +168,11 @@ export class FoodDrinksComponent implements OnInit {
             this.artigosService.getLocalDataFromId('id', this.selfid).then(
               (data => {
                 this.productbyid = data;
-                console.log(data);
+
                 if (this.cart[i].product.id == id && this.productbyid[0].price == this.cart[i].product.price) {
                   this.cart[i].quantity++;
                   this.totalPrice();
+                  
                   let mesa: Mesa = {
                     id: this.boardId,
                     cart: this.cart,

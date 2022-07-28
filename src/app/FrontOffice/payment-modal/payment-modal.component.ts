@@ -296,23 +296,25 @@ export class PaymentModalComponent implements OnInit {
 
   receiveDone() {
     this.getId(this.productid);
+
     this.todo.filter((item) => {
       if (item.product.id === this.productid) {
-        if (item.quantity > 1) {
+        if (item.quantity > 0) {
           item.quantity -= 1;
-          this.done.push(item);
+          if (this.done.includes(item) === true) {
+
+          } else {
+            this.done.push(item);
+
+          }
           this.totalPrice();
           this.eachPrice();
-
-        } else {
+        }
+        if (item.quantity === 0) {
           this.todo.splice(this.todo.indexOf(item), 1);
           this.totalPrice();
           this.eachPrice();
         }
-        // this.done.push(item);
-        // this.todo.splice(this.todo.indexOf(item), 1);
-        // this.totalPrice();
-        // this.eachPrice();
       }
     });
     this.splited = null;
@@ -525,8 +527,8 @@ export class PaymentModalComponent implements OnInit {
     }
   }
 
-  checkItems(){
-    if(this.done.length === 0){
+  checkItems() {
+    if (this.done.length === 0) {
       this.toastr.warning('No Products To Pay!');
     }
   }

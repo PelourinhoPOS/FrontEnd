@@ -26,7 +26,7 @@
             <mat-icon class="x" (click)="removeProduct(item.product.id)" (click)="totalPrice()">close</mat-icon>
             <span *ngIf="this.cart">{{ item.product.name }} </span>
             <span class="iva_card">{{item.product.iva * 100}}%</span>
-            <span class="price_card">{{ item.product.price }}€</span>
+            <span class="price_card">{{ (item.product.price).toFixed(2) }}€</span>
             <span class="quantity">{{ item.quantity }}</span>
           </div>
           <hr style="width: 100%; height: 1px" />
@@ -34,8 +34,8 @@
       </div>
       <div class="flexBottom">
         <div style="display: flex; flex-direction: column; font-family: Ubuntu">
-          <span class="totalPrice">Total: {{ this.total }}€</span>
-          <span class="iva">Tax: {{ this.totalIva }}</span>
+          <span class="totalPrice">Total: {{ this.total.toFixed(2) }}€</span>
+          <span class="iva">Tax: {{ this.totalIva.toFixed(2) }}€</span>
         </div>
         <div *ngIf="!this.board.boardType">
           <button class="actionBtn" routerLink="/payment">PAY</button>
