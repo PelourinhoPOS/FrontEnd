@@ -197,15 +197,6 @@ export class FoodDrinksComponent implements OnInit {
       }));
   }
 
-  // getProductById() {
-  //   this.artigosService.getLocalDataFromId('id', this.selfid).then(
-  //     (data => {
-  //       this.productbyid = data;
-  //       console.log(data);
-  //     })
-  //   );
-  // }
-
   removeProduct(id) {
 
     this.cart.forEach((product) => {
