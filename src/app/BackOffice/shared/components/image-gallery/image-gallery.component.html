@@ -1,0 +1,20 @@
+<div class="containerFlick">
+    <h1 class="text-center">FLICKR IMAGES</h1>
+    <div class="form-group">
+        <input type="search" class="form-control" (keyup)="search($event)" placeholder="Search images">
+    </div>
+
+    <div class="rowFlick">
+        <mat-grid-list cols="5" rowHeight="180px" gutterSize="30px">
+            <mat-grid-tile *ngFor="let image of images">
+                <div class="card" (click)="onClose(image.url, image.title);">
+                    <!-- <a href="{{image.url}}_b.jpg"> -->
+                        <img class="imgFlick" src="{{image.url}}_m.jpg" title="{{image.title}}">
+                    <!-- </a> -->
+                </div>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
+    <div class="search-results" infiniteScroll (scrolled)="onScroll()">
+    </div>
+</div>

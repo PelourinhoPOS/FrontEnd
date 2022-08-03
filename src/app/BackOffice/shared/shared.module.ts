@@ -19,6 +19,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
 import { CookieService } from 'ngx-cookie-service';
 import { InputMaskModule } from '@ngneat/input-mask';
+import { ImageGalleryComponent } from './components/image-gallery/image-gallery.component';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import { InputMaskModule } from '@ngneat/input-mask';
     FooterComponent,
     AreaComponent,
     VirtualKeyboardComponent,
-    DeleteModalComponent, 
+    DeleteModalComponent,
+    ImageGalleryComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +44,7 @@ import { InputMaskModule } from '@ngneat/input-mask';
     RouterModule,
     HighchartsChartModule,
     FormsModule,
+    MatGridListModule,
     MatDialogModule,
     FormsModule,
     ReactiveFormsModule,

@@ -20,6 +20,7 @@ import { ArtigosService } from './artigos.service';
 })
 export class ArtigosComponent implements OnInit {
 
+
   public header: any
   public sticky: any;
 

@@ -10,11 +10,12 @@
     <table class="dataTable">
         <tr>
             <td class="rowStyle">
-                <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
+                <img *ngIf="this.picute" [src]="this.picute" width="250" class="preview-avatar" (click)="openImages()">
+                <img *ngIf="!this.picute" [src]="url" width="250" class="preview-avatar" (click)="openImages()">
                 <input type="file" class="file" style="display: none;" (change)="onFileSelected($event)" #fileUpload>
-                <div class="file-upload" (click)="fileUpload.click()" class="upload-div">
+                <div class="file-upload" (click)="openImages()" class="upload-div">
                     <mat-icon>attach_file</mat-icon>
-                    <p class="input-text"> {{fileName || "Sem imagem"}} </p>
+                    <p class="input-text"> {{this.title || "Sem imagem"}} </p>
                 </div>
             </td>
         </tr>
@@ -32,7 +33,8 @@
                 <table class="dataTable">
                     <tr>
                         <td>
-                            <span style="font-size: 15px;"><i>Os campos marcados com * são de preenchimento obrigatório.</i></span>
+                            <span style="font-size: 15px;"><i>Os campos marcados com * são de preenchimento
+                                    obrigatório.</i></span>
                         </td>
                         <td>
                             <mat-dialog-actions align="end">

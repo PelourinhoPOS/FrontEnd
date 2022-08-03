@@ -15,6 +15,7 @@ import { DeleteModalComponent } from '../../shared/components/delete-modal/delet
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
 import { MesasService } from './mesas.service';
 import { ZonasService } from './zonas.service';
+import { ImageGalleryComponent } from '../../shared/components/image-gallery/image-gallery.component'
 
 export interface DialogData {
   id: string,
@@ -394,7 +395,8 @@ export class MesasComponent implements OnInit, AfterViewInit {
 
 export class CreateBoardModalComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, public dialogRefClose: MatDialogRef<CreateBoardModalComponent>, private toastr: ToastrService) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, public dialogRefClose: MatDialogRef<CreateBoardModalComponent>,
+    private toastr: ToastrService) { }
 
   public zone: Zone = new Zone(); //save the client data
   public dialogRef: any; //save the dialog reference
@@ -403,6 +405,8 @@ export class CreateBoardModalComponent implements OnInit {
   fileName = '';
   url = './assets/images/user.png';
   typeSelected = 'square';
+  picute;
+  title;
 
   formZones: FormGroup;
 
@@ -466,6 +470,18 @@ export class CreateBoardModalComponent implements OnInit {
       // const upload$ = this.http.post("/api/thumbnail-upload", formData);
       // upload$.subscribe();
     }
+  }
+
+  openImages() {
+    const dialogRef = this.dialog.open(ImageGalleryComponent, {
+      height: '80%',
+      width: '60%',
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      this.picute = data[0];
+      this.title = data[1];
+      console.log(this.picute);
+    });
   }
 
   //open the modal keyboard
