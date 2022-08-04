@@ -11,6 +11,7 @@ import { DeleteModalComponent } from '../../shared/components/delete-modal/delet
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
 import { UsersService } from './users.service';
 import { SelectionModel } from '@angular/cdk/collections';
+import { ImageGalleryComponent } from '../../shared/components/image-gallery/image-gallery.component';
 
 @Component({
   selector: 'app-empregados',
@@ -371,6 +372,8 @@ export class CreateEmployeeModalComponent implements OnInit {
   stateSelected = 'true';
 
   usersForm: FormGroup; //save the form
+  picute;
+  title;
 
   ngOnInit(): void {
 
@@ -480,6 +483,18 @@ export class CreateEmployeeModalComponent implements OnInit {
     } else {
       this.toastr.error('Existem erros no formulário.', 'Aviso');
     }
+  }
+
+  openImages() {
+    const dialogRef = this.dialog.open(ImageGalleryComponent, {
+      height: '80%',
+      width: '60%',
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      this.picute = data[0];
+      this.title = data[1];
+      console.log(this.picute);
+    });
   }
 
   //open the modal keyboard

@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { combineLatest, map, Observable, of, Subscription } from 'rxjs'
 import { PaymentMethod } from '../../models/paymentMethods';
 import { DeleteModalComponent } from '../../shared/components/delete-modal/delete-modal.component';
+import { ImageGalleryComponent } from '../../shared/components/image-gallery/image-gallery.component';
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
 import { PaymentMethodsService } from './payment-methods.service';
 
@@ -341,6 +342,8 @@ export class CreatePaymentMethodsComponent implements OnInit {
   fileName = '';
   url = './assets/images/paymentDefault.png';
   categorySelected = '1';
+  picute;
+  title;
 
   paymentForm: FormGroup;
 
@@ -391,6 +394,18 @@ export class CreatePaymentMethodsComponent implements OnInit {
     } else {
       this.toastr.error('Existem erros no formulário.', 'Aviso');
     }
+  }
+
+    openImages() {
+    const dialogRef = this.dialog.open(ImageGalleryComponent, {
+      height: '80%',
+      width: '60%',
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      this.picute = data[0];
+      this.title = data[1];
+      console.log(this.picute);
+    });
   }
 
   //open the modal keyboard

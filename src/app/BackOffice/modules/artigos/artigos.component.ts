@@ -9,6 +9,7 @@ import { combineLatest, map, Observable, of, Subscription } from 'rxjs';
 import { Artigo } from '../../models/artigo';
 import { OnlineOfflineService } from '../../services/online-offline.service';
 import { DeleteModalComponent } from '../../shared/components/delete-modal/delete-modal.component';
+import { ImageGalleryComponent } from '../../shared/components/image-gallery/image-gallery.component';
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
 import { CategoriesService } from '../categories/categories.service';
 import { ArtigosService } from './artigos.service';
@@ -420,6 +421,8 @@ export class CreateArticleModalComponent implements OnInit {
   subUnitySelected = "kg";
 
   formProducts: FormGroup;
+  picute;
+  title;
 
   ngOnInit(): void {
 
@@ -621,6 +624,18 @@ export class CreateArticleModalComponent implements OnInit {
         this.toastr.error('Existem erros no formulário.', 'Aviso'); //show error message
       }
     }
+  }
+
+  openImages() {
+    const dialogRef = this.dialog.open(ImageGalleryComponent, {
+      height: '80%',
+      width: '60%',
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      this.picute = data[0];
+      this.title = data[1];
+      console.log(this.picute);
+    });
   }
 
   //open the modal keyboard

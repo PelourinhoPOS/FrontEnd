@@ -10,6 +10,7 @@ import { Categories } from '../../models/categories';
 import { SubCategories } from '../../models/subcategories';
 import { OnlineOfflineService } from '../../services/online-offline.service';
 import { DeleteModalComponent } from '../../shared/components/delete-modal/delete-modal.component';
+import { ImageGalleryComponent } from '../../shared/components/image-gallery/image-gallery.component';
 import { VirtualKeyboardComponent } from '../../shared/components/virtual-keyboard/virtual-keyboard.component';
 import { CategoriesService } from './categories.service';
 
@@ -369,6 +370,8 @@ export class CreateCategorieModalComponent implements OnInit {
   url = './assets/images/categoryDefault.jpg';
   categoryItems: any;
   subcategorySelected: any;
+  picute;
+  title;
 
   categoriesForm: FormGroup;
 
@@ -441,6 +444,18 @@ export class CreateCategorieModalComponent implements OnInit {
     } else {
       this.toastr.error('Existem erros no formulário.', 'Aviso');
     }
+  }
+
+  openImages() {
+    const dialogRef = this.dialog.open(ImageGalleryComponent, {
+      height: '80%',
+      width: '60%',
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      this.picute = data[0];
+      this.title = data[1];
+      console.log(this.picute);
+    });
   }
 
   //open the modal keyboard

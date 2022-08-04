@@ -10,11 +10,12 @@
     <table class="table-form">
         <tr>
             <td>
-                <img [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
+                <img *ngIf="this.picute" [src]="this.picute" width="250" class="preview-avatar" (click)="fileUpload.click()">
+                <img *ngIf="!this.picute" [src]="url" width="250" class="preview-avatar" (click)="fileUpload.click()">
                 <input type="file" class="file" style="display: none;" (change)="onFileSelected($event)" #fileUpload>
-                <div class="file-upload" (click)="fileUpload.click()" class="upload-div">
+                <div class="file-upload" (click)="openImages()" class="upload-div">
                     <mat-icon>attach_file</mat-icon>
-                    <p class="input-text"> {{fileName || "Sem imagem"}} </p>
+                    <p class="input-text"> {{this.title || "Get Internet Image"}} </p>
                 </div>
             </td>
             <td class="dataTable">
