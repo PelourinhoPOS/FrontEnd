@@ -43,6 +43,7 @@ export class CustomerDialogComponent implements OnInit {
   onRowClicked(row: any) {
     this.selectedRowIndex = row.id;
     this.dataRow = row;
+    console.log(row);
   }
 
   selectRow() {

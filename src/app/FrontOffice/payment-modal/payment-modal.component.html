@@ -109,7 +109,7 @@
                         [ngClass]="{'active': clickedIndex == i }" (click)="clickedIndex = i; changeClick1()"
                         (click)="getId(items.product.id)">
                         <span>{{items.product.name}}</span>
-                        <span class="pricePos">{{items.product.price}}€</span>
+                        <span class="pricePos">{{items.product.price.toFixed(2)}}€</span>
                         <span class="priceIvaPos">{{items.product.iva * 100}}%</span>
                         <span class="priceIva2Pos">{{(items.product.price * items.product.iva).toFixed(2)}}€</span>
                         <span class="unityPos" *ngIf="items.product.unity_value">{{items.product.unity_value
@@ -172,7 +172,7 @@
                         [ngClass]="{'active': clickedIndexJ == j }" (click)="clickedIndexJ = j; changeClick2()"
                         (click)="getId(items.product.id)">
                         <span>{{items.product.name}}</span>
-                        <span class="pricePos">{{items.product.price}}€</span>
+                        <span class="pricePos">{{items.product.price.toFixed(2)}}€</span>
                         <span class="priceIvaPos">{{items.product.iva * 100}}%</span>
                         <span class="priceIva2Pos">{{(items.product.price * items.product.iva).toFixed(2)}}€</span>
                         <span class="unityPos" *ngIf="items.product.unity_value">{{items.product.unity_value

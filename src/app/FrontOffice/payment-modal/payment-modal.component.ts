@@ -302,7 +302,7 @@ export class PaymentModalComponent implements OnInit {
         if (item.quantity > 0) {
           item.quantity -= 1;
           if (this.done.includes(item) === true) {
-            
+
           } else {
             this.done.push(item);
 

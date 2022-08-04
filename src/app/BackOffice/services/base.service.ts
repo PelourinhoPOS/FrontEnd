@@ -298,10 +298,9 @@ export abstract class BaseService<T extends { id?: number, nif?: number, phone?:
                   this.getData = getData.find(x => x.id_category == data.id);
 
                   if (this.getData === undefined) {
-                    await this.table.delete(data.id);
+                    await this.table.delete(data[0].id);
                     this.refreshData.next();
-                    resolve(data);
-
+                    resolve(data[0]);
                   } else {
                     reject(this.toastr.warning('Não pode eliminar uma categoria que está associada a um artigo.', 'Aviso'));
                   }
@@ -366,6 +365,18 @@ export abstract class BaseService<T extends { id?: number, nif?: number, phone?:
             reject(this.toastr.error('Erro ao eliminar linha de documento localmente', 'Aviso'));
           }
         });
+
+      case 'artigo':
+        return new Promise(async (resolve, reject) => {
+          try {
+            await this.table.delete(data[0].id);
+            this.refreshData.next();
+            resolve(data[0]);
+          } catch {
+            reject(this.toastr.error('Erro ao eliminar produto localmente', 'Aviso'));
+          }
+        });
+        break;
 
       default:
         return new Promise(async (resolve, reject) => {

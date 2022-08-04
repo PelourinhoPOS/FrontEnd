@@ -85,7 +85,7 @@
             <span class="productName">{{ prod.name }}</span>
             <span class="productWeight" *ngIf="!prod.unity_value">1 {{prod.sub_unity}}</span>
             <span class="productWeight" *ngIf="prod.unity_value">{{ prod.unity_value }} {{prod.sub_unity}}</span>
-            <span class="productPrice">{{ prod.price }}€</span>
+            <span class="productPrice">{{ prod.price.toFixed(2) }}€</span>
           </div>
         </mat-grid-tile>
       </mat-grid-list>
