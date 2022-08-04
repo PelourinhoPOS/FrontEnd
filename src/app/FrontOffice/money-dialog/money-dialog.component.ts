@@ -28,7 +28,7 @@ export class MoneyDialogComponent implements OnInit {
 
     if (this.data.split === undefined && this.data.value <= this.price || this.data.split === null && this.data.value <= this.price) {
       this.moneyMissing = false;
-      this.dialogRef.close(this.data.value = 0);
+      this.dialogRef.close(this.data.value);
     } else {
       this.moneyMissing = true;
     }
@@ -36,7 +36,7 @@ export class MoneyDialogComponent implements OnInit {
     if (this.data.split !== undefined) {
       console.log(this.data);
       if (this.data.split[0] <= this.price) {
-        this.data.split[1] = this.data.split[1] - 1;
+        // this.data.split[1] = this.data.split[1] - 1;
         this.dialogRef.close([this.data.value, this.data.split[1]]);
         this.moneyMissing = false;
       } else if (this.data.split[0] <= this.price) {

@@ -153,6 +153,9 @@ export class PaymentModalComponent implements OnInit {
       }).catch(err => {
         this.toastr.error(err, 'Erro');
       });
+    this.simulateClick();
+    this.done = [];
+    this.eachPrice();
   }
 
   openDialog(): void {
@@ -235,20 +238,20 @@ export class PaymentModalComponent implements OnInit {
         this.result = result;
         console.log(this.result);
 
-        if (this.result >= 0 && this.eachtotal < 100) {
+        if (this.result >= 0 && this.eachtotal < 100 || this.result && this.splited[0] < 100) {
           this.simulateClick();
         }
 
-        if (this.eachtotal > 100 && this.id_customer === undefined) {
+        if (this.eachtotal > 100 && this.id_customer === undefined || this.splited[0] > 100 && this.id_customer === undefined) {
           this.toastr.warning('This Invoice Needs To Be Simplified!');
           this.openDialog();
         }
 
-        if (this.eachtotal > 100 && this.id_customer !== undefined) {
+        if (this.eachtotal > 100 && this.id_customer !== undefined || this.splited[0] > 100 && this.id_customer !== undefined) {
           this.simulateClick();
         }
 
-        if (this.result >= 0 && this.eachtotal > 100 && this.id_customer !== undefined) {
+        if (this.result >= 0 && this.eachtotal > 100 && this.id_customer !== undefined || this.result && this.splited[1] > 100 && this.id_customer !== undefined) {
           this.simulateClick();
         }
 
@@ -476,9 +479,15 @@ export class PaymentModalComponent implements OnInit {
 
   getPriceWithoutIva() {
     let price = 0;
-    this.done.forEach((item) => {
-      price += item.product.price * item.quantity;
-    });
+    if (!this.splited) {
+      this.done.forEach((item) => {
+        price += item.product.price * item.quantity;
+      });
+    } else {
+      this.done.forEach((item) => {
+        price += ((item.product.price * item.quantity) / this.splited[1]);
+      });
+    }
     this.totalPriceWithoutIva = parseFloat(price.toFixed(2));
   }
 

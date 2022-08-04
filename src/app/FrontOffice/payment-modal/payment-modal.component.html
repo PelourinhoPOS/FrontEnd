@@ -28,6 +28,7 @@
                         <div><span>ATENDIDO POR</span>{{this.username}}</div>
                         <div *ngIf="this.method"><span>PAGO POR</span>{{this.method}}</div>
                         <div *ngIf="!this.method"><span>PAGO EM</span>Numerário</div>
+                        <div *ngIf="this.splited"><span>CONTA DIVIDIDA POR</span>{{this.splited[1]}}</div>
                         <div><span>ZONA</span>{{this.zoneName}}</div>
                     </div>
                     <table>
@@ -35,7 +36,7 @@
                             <tr>
                                 <th class="service">PRODUTOS</th>
                                 <th class="iva">IVA%</th>
-                                <th>TOTAL</th>
+                                <th>PRICE</th>
                                 <th>IVA</th>
                                 <th>QUANT.</th>
                                 <th>TOTAL</th>
@@ -47,9 +48,14 @@
                                 <td class="iva">{{item.product.iva * 100}}%</td>
                                 <td class="unit">{{(item.product.price).toFixed(2)}}€</td>
                                 <td class="iva">{{(item.product.price * item.product.iva).toFixed(2)}}€</td>
-                                <td class="qty">{{item.quantity}}</td>
-                                <td class="total">{{((item.product.price * item.quantity) * item.product.iva +
-                                    (item.product.price * item.quantity)).toFixed(2)}}</td>
+                                <td class="qty" *ngIf="!this.splited">{{item.quantity}}</td>
+                                <td class="qty" *ngIf="this.splited">{{(item.quantity / this.splited[1]).toFixed(1)}}
+                                </td>
+                                <td class="total" *ngIf="!this.splited">{{((item.product.price * item.quantity) *
+                                    item.product.iva + (item.product.price * item.quantity)).toFixed(2)}}€</td>
+                                <td class="total" *ngIf="this.splited">{{(((item.product.price * item.quantity) *
+                                    item.product.iva + (item.product.price *
+                                    item.quantity))/this.splited[1]).toFixed(2)}}€</td>
                             </tr>
                             <tr>
                                 <td colspan="5">SUBTOTAL</td>
@@ -57,11 +63,15 @@
                             </tr>
                             <tr>
                                 <td colspan="5">IVA</td>
-                                <td class="total">{{(this.eachtotal - this.totalPriceWithoutIva).toFixed(2)}}€</td>
+                                <td class="total" *ngIf="!this.splited">{{(this.eachtotal -
+                                    this.totalPriceWithoutIva).toFixed(2)}}€</td>
+                                <td class="total" *ngIf="this.splited">{{(this.splited[0]-
+                                    this.totalPriceWithoutIva).toFixed(2)}}€</td>
                             </tr>
                             <tr>
                                 <td colspan="5" class="grand total">TOTAL</td>
-                                <td class="grand total">{{(this.eachtotal).toFixed(2)}}€</td>
+                                <td class="grand total" *ngIf="!this.splited">{{(this.eachtotal).toFixed(2)}}€</td>
+                                <td class="grand total" *ngIf="this.splited">{{(this.splited[0]).toFixed(2)}}€</td>
                             </tr>
                         </tbody>
                     </table>
@@ -140,7 +150,6 @@
                     <span class="toPay" id="val"
                         *ngIf="this.splited && this.splited[1] > 0 && this.done.length > 0">{{this.splited[1]}} x
                         {{this.splited[0]}}€</span>
-                    <span class="toPay" id="val" *ngIf="this.result >= 0">{{this.result}}€</span>
                 </div>
             </div>
             <div class="margins">
