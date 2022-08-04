@@ -632,9 +632,9 @@ export class CreateArticleModalComponent implements OnInit {
       width: '60%',
     });
     dialogRef.afterClosed().subscribe(data => {
-      this.picute = data[0];
+      this.url = data[0];
       this.title = data[1];
-      console.log(this.picute);
+      this.image.setValue(this.url);
     });
   }
 
