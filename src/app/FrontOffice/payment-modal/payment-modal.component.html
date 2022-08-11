@@ -25,10 +25,10 @@
                 </header>
                 <main>
                     <div id="centerZone">
+                        <div *ngIf="this.splited"><span>CONTA DIVIDIDA</span></div>
                         <div><span>ATENDIDO POR</span>{{this.username}}</div>
                         <div *ngIf="this.method"><span>PAGO POR</span>{{this.method}}</div>
                         <div *ngIf="!this.method"><span>PAGO EM</span>Numerário</div>
-                        <div *ngIf="this.splited"><span>CONTA DIVIDIDA POR</span>{{this.splited[1]}}</div>
                         <div><span>ZONA</span>{{this.zoneName}}</div>
                     </div>
                     <table>

@@ -153,9 +153,24 @@ export class PaymentModalComponent implements OnInit {
       }).catch(err => {
         this.toastr.error(err, 'Erro');
       });
-    this.simulateClick();
-    this.done = [];
-    this.eachPrice();
+
+    if (!this.splited) {
+      this.simulateClick();
+      this.done = [];
+      this.eachPrice();
+    }
+
+    if (this.splited) {
+      this.splited[1] = this.splited[1] - 1;
+      this.toastr.success('Pagamento Efectuado Com Sucesso!');
+      this.simulateClick();
+      if (this.splited[1] == 0) {
+        this.splited = undefined;
+        this.done = [];
+        this.simulateClick();
+        this.eachPrice();
+      }
+    }
   }
 
   openDialog(): void {
@@ -225,43 +240,43 @@ export class PaymentModalComponent implements OnInit {
   }
 
   payment(): void {
-    if (this.done.length > 0) {
-      const dialogRef = this.dialog.open(MoneyDialogComponent, {
-        width: '700px',
-        height: '550px',
-        data: {
-          value: this.eachtotal,
-          split: this.splited,
-        }
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        this.result = result;
-        console.log(this.result);
+      if (this.done.length > 0) {
+        const dialogRef = this.dialog.open(MoneyDialogComponent, {
+          width: '700px',
+          height: '550px',
+          data: {
+            value: this.eachtotal,
+            split: this.splited,
+          }
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          this.result = result;
+          console.log(this.result);
 
-        if (this.result >= 0 && this.eachtotal < 100 || this.result && this.splited[0] < 100) {
-          this.simulateClick();
-        }
-
-        if (this.eachtotal > 100 && this.id_customer === undefined || this.splited[0] > 100 && this.id_customer === undefined) {
-          this.toastr.warning('This Invoice Needs To Be Simplified!');
-          this.openDialog();
-        }
-
-        if (this.eachtotal > 100 && this.id_customer !== undefined || this.splited[0] > 100 && this.id_customer !== undefined) {
-          this.simulateClick();
-        }
-
-        if (this.result >= 0 && this.eachtotal > 100 && this.id_customer !== undefined || this.result && this.splited[1] > 100 && this.id_customer !== undefined) {
-          this.simulateClick();
-        }
-
-        if (this.result.length > 0) {
-          if (this.result[1] === 0) {
+          if (this.result >= 0 && this.eachtotal < 100 || this.result && this.splited[0] < 100) {
             this.simulateClick();
           }
-        }
-      });
-    }
+
+          if (this.eachtotal > 100 && this.id_customer === undefined || this.splited[0] > 100 && this.id_customer === undefined) {
+            this.toastr.warning('This Invoice Needs To Be Simplified!');
+            this.openDialog();
+          }
+
+          if (this.eachtotal > 100 && this.id_customer !== undefined || this.splited[0] > 100 && this.id_customer !== undefined) {
+            this.simulateClick();
+          }
+
+          if (this.result >= 0 && this.eachtotal > 100 && this.id_customer !== undefined || this.result && this.splited[1] > 100 && this.id_customer !== undefined) {
+            this.simulateClick();
+          }
+
+          if (this.result.length > 0) {
+            if (this.result[1] === 0) {
+              this.simulateClick();
+            }
+          }
+        });
+      }
   }
 
   simulateClick() {
